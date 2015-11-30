@@ -6,14 +6,11 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define VIDEO_DURATION 5.0
-#define GIF_FPS 16.0
-
 // View Controllers
 #import "RecordViewController.h"
 
 // Models
-#import "GifMaker.h"
+#import "GifManager.h"
 
 // Categories
 #import "UIImage+Extras.h"
@@ -158,7 +155,7 @@
                                                  CVPixelBufferGetHeight(cvImage))];
     
     // Crop square center from the photo
-    UIImage *imageSecond = [UIImage imageByCroppingCGImage:&videoImage toSize:CGSizeMake(480, 480)];
+    UIImage *imageSecond = [UIImage imageByCroppingCGImage:videoImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
     
     // Add captured frame to 'capturedImages' array
     [self.capturedImages addObject:[UIImage imageWithData:UIImageJPEGRepresentation(imageSecond, 0.2)]];
@@ -199,14 +196,16 @@
         [self.instructionsLabel setText:@"Please be patient while we making magic"];
     });
     
-    if ([GifMaker makeAnimatedGif:self.capturedImages fps:GIF_FPS filename:[NSString generateRandomString]]) {
+    if ([GifManager makeAnimatedGif:self.capturedImages fps:GIF_FPS filename:[NSString generateRandomString]]) {
         // Gif done
         [self.capturedImages removeAllObjects];
         [[self delegate] refresh];
         [self.navigationController popViewControllerAnimated:YES];
     } else {
         NSLog(@"Gif creating error");
-        [self.instructionsLabel setText:@"Oops! We've had an error!"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.instructionsLabel setText:@"Oops! We've had an error!"];
+        });
     }
 }
 

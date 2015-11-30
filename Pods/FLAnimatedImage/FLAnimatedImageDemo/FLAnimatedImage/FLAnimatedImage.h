@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Raphael Schaad on 7/8/13.
-//  Copyright (c) 2013-2015 Flipboard. All rights reserved.
+//  Copyright (c) 2013-2014 Flipboard. All rights reserved.
 //
 
 
@@ -12,7 +12,7 @@
 // Allow user classes conveniently just importing one header.
 #import "FLAnimatedImageView.h"
 
-#if defined(DEBUG) && DEBUG
+#if DEBUG
 @protocol FLAnimatedImageDebugDelegate;
 #endif
 
@@ -50,7 +50,7 @@
 @property (nonatomic, assign, readonly) CGSize size; // The `.posterImage`'s `.size`
 
 @property (nonatomic, assign, readonly) NSUInteger loopCount; // 0 means repeating the animation indefinitely
-@property (nonatomic, strong, readonly) NSDictionary *delayTimesForIndexes; // Of type `NSTimeInterval` boxed in `NSNumber`s
+@property (nonatomic, strong, readonly) NSArray *delayTimes; // Of type `NSTimeInterval` boxed in `NSNumber`s
 @property (nonatomic, assign, readonly) NSUInteger frameCount; // Number of valid frames; equal to `[.delayTimes count]`
 
 @property (nonatomic, assign, readonly) NSUInteger frameCacheSizeCurrent; // Current size of intelligently chosen buffer window; can range in the interval [1..frameCount]
@@ -70,7 +70,7 @@
 
 @property (nonatomic, strong, readonly) NSData *data; // The data the receiver was initialized with; read-only
 
-#if defined(DEBUG) && DEBUG
+#if DEBUG
 // Only intended to report internal state for debugging
 @property (nonatomic, weak) id<FLAnimatedImageDebugDelegate> debug_delegate;
 @property (nonatomic, strong) NSMutableDictionary *debug_info; // To track arbitrary data (e.g. original URL, loading durations, cache hits, etc.)
@@ -86,7 +86,7 @@
 @end
 
 
-#if defined(DEBUG) && DEBUG
+#if DEBUG
 @protocol FLAnimatedImageDebugDelegate <NSObject>
 
 @optional

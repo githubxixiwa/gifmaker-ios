@@ -9,6 +9,12 @@
 #define GIF_EXTENSION @"gif"
 #define GIF_METADATA_EXTENSION @"metadata"
 
+// Frameworks
+#import <UIKit/UIKit.h>
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
+// Models
 #import "GifManager.h"
 
 @implementation GifManager
@@ -49,17 +55,51 @@
     return [[self gifStorageFolderURL] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, GIF_METADATA_EXTENSION]];
 }
 
-+ (void)addNewGifToStorageIndex:(GifElement *)gifElement {
++ (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)frames fps:(NSInteger)fps filename:(NSString *)filename {
+    // Set up GIF-file properties
+    NSDictionary *fileProperties = @{
+                                     (__bridge id)kCGImagePropertyGIFDictionary: @{
+                                             (__bridge id)kCGImagePropertyGIFLoopCount: @0, // 0 means loop forever
+                                             }
+                                     };
     
-    [self saveStorage];
+    NSDictionary *frameProperties = @{
+                                      (__bridge id)kCGImagePropertyGIFDictionary: @{
+                                              (__bridge id)kCGImagePropertyGIFDelayTime: @(1.0 / fps), // a float (not double!) in seconds, rounded to centiseconds in the GIF data
+                                              }
+                                      };
+    
+    // Save file in documents folder with filename as method argument
+    NSURL *fileURL = [self gifURLWithFilename:filename];
+    
+    // Init GIF-file
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, frames.count, NULL);
+    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)fileProperties);
+    
+    // Fill GIF-file with frames
+    for (UIImage *frame in frames) {
+        CGImageDestinationAddImage(destination, frame.CGImage, (__bridge CFDictionaryRef)frameProperties);
+    }
+    
+    // Finalize GIF-file
+    if (!CGImageDestinationFinalize(destination)) {
+        NSLog(@"failed to finalize image destination");
+        return false;
+    }
+    
+    // Clean memory
+    CFRelease(destination);
+    
+    // Save metadata on disk
+    GifElement *element = [[GifElement alloc] initWithFilenameWithoutExtension:filename datePosted:[NSDate date]];
+    [element save];
+    
+    NSLog(@"Gif done");
+    return true;
 }
 
 
 #pragma mark - Private Methods
-
-+ (void)saveStorage {
-    
-}
 
 + (NSArray<NSString *> *)filesInLocalStorageFolder {
     NSError *error;

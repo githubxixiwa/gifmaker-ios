@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Raphael Schaad on 7/8/13.
-//  Copyright (c) 2013-2015 Flipboard. All rights reserved.
+//  Copyright (c) 2013-2014 Flipboard. All rights reserved.
 //
 
 
@@ -28,7 +28,7 @@
 @property (nonatomic, strong, readonly) UIImage *currentFrame;
 @property (nonatomic, assign, readonly) NSUInteger currentFrameIndex;
 
-#if defined(DEBUG) && DEBUG
+#if DEBUG
 // Only intended to report internal state for debugging
 @property (nonatomic, weak) id<FLAnimatedImageViewDebugDelegate> debug_delegate;
 #endif
@@ -36,7 +36,7 @@
 @end
 
 
-#if defined(DEBUG) && DEBUG
+#if DEBUG
 @protocol FLAnimatedImageViewDebugDelegate <NSObject>
 
 @optional

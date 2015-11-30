@@ -10,6 +10,6 @@
 
 @interface UIImage (Extras)
 
-+ (UIImage *)imageByCroppingCGImage:(CGImageRef *)cgImage toSize:(CGSize)size;
++ (UIImage *)imageByCroppingCGImage:(CGImageRef)cgImage toSize:(CGSize)size;
 
 @end

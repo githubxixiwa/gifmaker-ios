@@ -1,0 +1,16 @@
+PODS:
+  - FLAnimatedImage (1.0.8)
+  - LLACircularProgressView (0.1.1)
+  - QBImagePickerController (3.2.0)
+
+DEPENDENCIES:
+  - FLAnimatedImage (~> 1.0)
+  - LLACircularProgressView
+  - QBImagePickerController
+
+SPEC CHECKSUMS:
+  FLAnimatedImage: f9422f796135aff80d8c00b2afc48015bb746e24
+  LLACircularProgressView: e179b0728217e9013cd07c2fadc7caa0c35b9199
+  QBImagePickerController: 75b3857b1307a3c01ce486559bc294f802ddec6c
+
+COCOAPODS: 0.39.0

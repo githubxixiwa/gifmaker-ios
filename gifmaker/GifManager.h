@@ -7,6 +7,7 @@
 //
 
 // Frameworks
+#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
 // Models
@@ -23,9 +24,12 @@
 /*! Return NSURL for the new GIF. You should pass 'filename' argument without extension. */
 + (NSURL *)gifURLWithFilename:(NSString *)filename;
 
+/*! Return NSURL of metadata file for passed 'filename'. You should pass 'filename' argument without extension. */
 + (NSURL *)metadataURLWithFilename:(NSString *)filename;
 
-/*! Load all local GIFS from storage with it's metadata */
-//+ (void)loadStorage;
+/*! Make GIF from 'frames' array.
+    Returns 'YES' if GIF done successfully, returns 'NO' on error.
+    Filename should be without extension. */
++ (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)frames fps:(NSInteger)fps filename:(NSString *)filename;
 
 @end

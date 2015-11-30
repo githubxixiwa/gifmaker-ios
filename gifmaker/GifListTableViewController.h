@@ -6,9 +6,13 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
 #import <UIKit/UIKit.h>
-#import "RecordViewController.h"
 
-@interface GifListTableViewController : UITableViewController <RecordGifDelegate>
+// View Controllers
+#import "RecordViewController.h"
+#import <QBImagePickerController/QBImagePickerController.h>
+
+@interface GifListTableViewController : UITableViewController <RecordGifDelegate, QBImagePickerControllerDelegate>
 
 @end
