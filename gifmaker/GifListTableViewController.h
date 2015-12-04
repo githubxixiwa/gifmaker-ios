@@ -8,11 +8,15 @@
 
 // Frameworks
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import <QBImagePickerController/QBImagePickerController.h>
 
 // View Controllers
 #import "RecordViewController.h"
-#import <QBImagePickerController/QBImagePickerController.h>
 
-@interface GifListTableViewController : UITableViewController <RecordGifDelegate, QBImagePickerControllerDelegate>
+// Models
+#import "GifTableViewCell.h"
+
+@interface GifListTableViewController : UITableViewController <RecordGifDelegate, QBImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate, GifTableViewСellActionsDelegate>
 
 @end

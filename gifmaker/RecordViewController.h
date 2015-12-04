@@ -29,4 +29,6 @@
 
 @property (nonatomic, strong) id delegate;
 
+- (IBAction)changeCameraButtonDidTap:(id)sender;
+
 @end

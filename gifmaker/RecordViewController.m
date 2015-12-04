@@ -8,6 +8,7 @@
 
 // View Controllers
 #import "RecordViewController.h"
+#import "CaptionsViewController.h"
 
 // Models
 #import "GifManager.h"
@@ -22,6 +23,7 @@
 @property (nonatomic, strong) AVCaptureDevice *currentCaptureDevice;
 @property (nonatomic, strong) NSMutableArray<UIImage *> *capturedImages;
 @property (nonatomic) BOOL recording;
+@property (nonatomic) BOOL frontCameraIsActive;
 
 @end
 
@@ -29,16 +31,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     self.capturedImages = [NSMutableArray array];
     self.recording = NO;
+    self.frontCameraIsActive = YES;
     
     [self.circularProgressView addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchDown];
     [self.circularProgressView addTarget:self action:@selector(pauseCapturing:) forControlEvents:UIControlEventTouchUpInside];
     
     self.navigationItem.title = @"Shoot YOUR gif!";
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"GIF IT!" style:UIBarButtonItemStyleDone target:self action:@selector(makeGif:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(nextButtonDidTap:)];
     [self.navigationItem.rightBarButtonItem setEnabled:NO];
 }
 
@@ -63,6 +65,9 @@
     NSError *error;
     AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:device
                                                                          error:&error];
+    if (error) {
+        NSLog(@"Error adding new AVCaptureDeviceInput!");
+    }
     
     if (input) {
         [self.captureSession addInput:input];
@@ -121,16 +126,17 @@
         
         // Set camera orientation
         [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
-        
-        // Set camera mirrored (to have a "what you see is what you got" result)
-        [connection setVideoMirrored:YES];
     }
     
+    // Set camera mirrored (to have a "what you see is what you got" result)
+    [connection setVideoMirrored:self.frontCameraIsActive];
+    
+    // Update progress bar state
     if (!self.recording || self.capturedImages.count == GIF_FPS * VIDEO_DURATION) {
         if (self.capturedImages.count == GIF_FPS * VIDEO_DURATION && self.circularProgressView.enabled == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.circularProgressView setAlpha:0.3];
-                [self.instructionsLabel setText:@"You've run out of time!\nNow press \"GIF IT!\""];
+                [self.instructionsLabel setText:@"You've run out of time!\nNow press \"Next\""];
             });
         }
         return;
@@ -155,10 +161,10 @@
                                                  CVPixelBufferGetHeight(cvImage))];
     
     // Crop square center from the photo
-    UIImage *imageSecond = [UIImage imageByCroppingCGImage:videoImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+    UIImage *croppedImage = [UIImage imageByCroppingCGImage:videoImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
     
     // Add captured frame to 'capturedImages' array
-    [self.capturedImages addObject:[UIImage imageWithData:UIImageJPEGRepresentation(imageSecond, 0.2)]];
+    [self.capturedImages addObject:croppedImage];
     
     // Clean memory
     CGImageRelease(videoImage);
@@ -188,25 +194,9 @@
 
 #pragma mark - Buttons handlers
 
-- (void)makeGif:(id)sender {
+- (void)nextButtonDidTap:(id)sender {
     [self.captureSession stopRunning];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.circularProgressView setEnabled:NO];
-        [self.instructionsLabel setText:@"Please be patient while we making magic"];
-    });
-    
-    if ([GifManager makeAnimatedGif:self.capturedImages fps:GIF_FPS filename:[NSString generateRandomString]]) {
-        // Gif done
-        [self.capturedImages removeAllObjects];
-        [[self delegate] refresh];
-        [self.navigationController popViewControllerAnimated:YES];
-    } else {
-        NSLog(@"Gif creating error");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.instructionsLabel setText:@"Oops! We've had an error!"];
-        });
-    }
+    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:self];
 }
 
 - (void)capture:(id)sender {
@@ -217,6 +207,42 @@
 - (void)pauseCapturing:(id)sender {
     self.recording = NO;
     NSLog(@"Paused. Captured %lu frames", (unsigned long)self.capturedImages.count);
+}
+
+- (IBAction)changeCameraButtonDidTap:(id)sender {
+    // Pause capturing when user changed the camera
+    [self pauseCapturing:nil];
+    
+    // Change active camera indicator
+    self.frontCameraIsActive = !self.frontCameraIsActive;
+    
+    // Stop session
+    [self.captureSession stopRunning];
+    [self.captureSession removeInput:self.captureSession.inputs.firstObject];
+    
+    // Select new capture device
+    AVCaptureDevice *newCaptureDevice = self.frontCameraIsActive ? [self frontCamera] : [self backCamera];
+    self.currentCaptureDevice = newCaptureDevice;
+    
+    // Get input stream from the new capture device
+    NSError *error;
+    AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:newCaptureDevice error:&error];
+    if (error) {
+        NSLog(@"Error adding new AVCaptureDeviceInput!");
+    }
+    
+    // Set new input for the capture session
+    [self.captureSession addInput:input];
+    
+    // Start capture session
+    [self.captureSession startRunning];
+}
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    ((CaptionsViewController*)segue.destinationViewController).capturedImages = self.capturedImages;
+    ((CaptionsViewController*)segue.destinationViewController).delegate = self.delegate;
 }
 
 @end

@@ -14,11 +14,14 @@
 @property (nonatomic, strong) NSString *filename;
 @property (nonatomic, strong) NSDate *datePosted;
 
-- (instancetype) initWithFilenameWithoutExtension:(NSString*)filename datePosted:(NSDate*)datePosted;
-- (instancetype) initWithMetadataFile:(NSURL*)metadataFileURL;
+- (instancetype)initWithFilenameWithoutExtension:(NSString *)filename datePosted:(NSDate *)datePosted;
+- (instancetype)initWithMetadataFile:(NSURL *)metadataFileURL;
 - (NSURL *)gifURL;
 
 /*! Save on disk */
-- (void) save;
+- (void)save;
+
+/*! Permanently remove gif file and metadata file */
+- (void)removeFromDisk;
 
 @end

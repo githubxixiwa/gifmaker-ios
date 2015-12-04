@@ -14,7 +14,7 @@
 
 @implementation GifElement
 
-- (instancetype) initWithFilenameWithoutExtension:(NSString*)filename datePosted:(NSDate*)datePosted {
+- (instancetype)initWithFilenameWithoutExtension:(NSString *)filename datePosted:(NSDate *)datePosted {
     self = [super init];
     if (self) {
         self.filename   = filename;
@@ -24,12 +24,12 @@
     return self;
 }
 
-- (instancetype) initWithMetadataFile:(NSURL*)metadataFileURL {
+- (instancetype)initWithMetadataFile:(NSURL *)metadataFileURL {
     self = [NSKeyedUnarchiver unarchiveObjectWithFile:[metadataFileURL relativePath]];
     return self;
 }
 
-- (id) initWithCoder:(NSCoder*)decoder {
+- (id)initWithCoder:(NSCoder *)decoder {
     self = [super init];
     if (!self) {
         return nil;
@@ -41,7 +41,7 @@
     return self;
 }
 
-- (void) encodeWithCoder:(NSCoder*)encoder {
+- (void)encodeWithCoder:(NSCoder *)encoder {
     [encoder encodeObject:self.filename forKey:kFilename];
     [encoder encodeObject:self.datePosted forKey:kDatePosted];
 }
@@ -50,8 +50,20 @@
     return [GifManager gifURLWithFilename:self.filename];
 }
 
-- (void) save {
+- (void)save {
     [NSKeyedArchiver archiveRootObject:self toFile:[[GifManager metadataURLWithFilename:self.filename] relativePath]];
+}
+
+- (void)removeFromDisk {
+    NSError *gifFileRemoveError;
+    if (![[NSFileManager defaultManager] removeItemAtURL:[self gifURL] error:&gifFileRemoveError]) {
+        NSLog(@"Can't delege GIFfile, error: %@", [gifFileRemoveError localizedDescription]);
+    }
+    
+    NSError *metadataFileRemoveError;
+    if (![[NSFileManager defaultManager] removeItemAtURL:[GifManager metadataURLWithFilename:self.filename] error:&metadataFileRemoveError]) {
+        NSLog(@"Can't delede metadata file, error: %@", [gifFileRemoveError localizedDescription]);
+    }
 }
 
 @end

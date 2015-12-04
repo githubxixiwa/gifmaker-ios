@@ -10,4 +10,13 @@
 
 @implementation GifTableViewCell
 
+- (IBAction)shareViaiMessageDidTap:(id)sender {
+    // Delegate method 'index' is a cell's tag (given by tableView)
+    [[self delegate] shareViaiMessageDidTapHandler:self.tag];
+}
+
+- (IBAction)deleteButtonDidTap:(id)sender {
+    [[self delegate] deleteMediaDidTapHandler:self.tag];
+}
+
 @end

@@ -22,6 +22,8 @@
 		496BC5651C03A559001713BA /* gifmakerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5641C03A559001713BA /* gifmakerUITests.m */; };
 		496BC5731C03B383001713BA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 496BC5721C03B383001713BA /* AVFoundation.framework */; };
 		496BC5811C0505BA001713BA /* RecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5801C0505BA001713BA /* RecordViewController.m */; };
+		49B4F0FC1C107AC6009475B1 /* CaptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */; };
+		49B4F0FE1C1091B6009475B1 /* impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49B4F0FD1C1091B6009475B1 /* impact.ttf */; };
 		6DEF7145A5DAAD9317A9130D /* libPods-gifmaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E0F92689A401979FA270A2B /* libPods-gifmaker.a */; };
 /* End PBXBuildFile section */
 
@@ -73,6 +75,9 @@
 		496BC5721C03B383001713BA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		496BC57F1C0505BA001713BA /* RecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordViewController.h; sourceTree = "<group>"; };
 		496BC5801C0505BA001713BA /* RecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordViewController.m; sourceTree = "<group>"; };
+		49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptionsViewController.h; sourceTree = "<group>"; };
+		49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptionsViewController.m; sourceTree = "<group>"; };
+		49B4F0FD1C1091B6009475B1 /* impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = impact.ttf; sourceTree = "<group>"; };
 		5A9EDDAD4E95EA425DBCABD4 /* Pods-gifmaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.debug.xcconfig"; sourceTree = "<group>"; };
 		7C1BFBC008A408BBCFA13AB9 /* Pods-gifmaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,6 +153,8 @@
 				49693F751C08AA35007298EF /* GifListTableViewController.m */,
 				496BC57F1C0505BA001713BA /* RecordViewController.h */,
 				496BC5801C0505BA001713BA /* RecordViewController.m */,
+				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
+				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 				49693F771C08B444007298EF /* GifTableViewCell.h */,
 				49693F781C08B444007298EF /* GifTableViewCell.m */,
 				49693F6E1C0881C9007298EF /* GifElement.h */,
@@ -158,6 +165,7 @@
 				496BC54B1C03A559001713BA /* Assets.xcassets */,
 				496BC54D1C03A559001713BA /* LaunchScreen.storyboard */,
 				496BC5501C03A559001713BA /* Info.plist */,
+				49B4F0FD1C1091B6009475B1 /* impact.ttf */,
 				496BC53F1C03A559001713BA /* Supporting Files */,
 			);
 			path = gifmaker;
@@ -313,6 +321,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49B4F0FE1C1091B6009475B1 /* impact.ttf in Resources */,
 				496BC54F1C03A559001713BA /* LaunchScreen.storyboard in Resources */,
 				496BC54C1C03A559001713BA /* Assets.xcassets in Resources */,
 				496BC54A1C03A559001713BA /* Main.storyboard in Resources */,
@@ -393,6 +402,7 @@
 				496BC5411C03A559001713BA /* main.m in Sources */,
 				49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */,
 				49693F791C08B444007298EF /* GifTableViewCell.m in Sources */,
+				49B4F0FC1C107AC6009475B1 /* CaptionsViewController.m in Sources */,
 				496BC5811C0505BA001713BA /* RecordViewController.m in Sources */,
 				49693F701C0881C9007298EF /* GifElement.m in Sources */,
 				49693F681C062606007298EF /* UIImage+Extras.m in Sources */,

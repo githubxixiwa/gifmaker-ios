@@ -8,11 +8,11 @@
 
 // View Controllers
 #import "GifListTableViewController.h"
+#import "CaptionsViewController.h"
 
 // Models
 #import "GifManager.h"
 #import "FLAnimatedImage.h"
-#import "GifTableViewCell.h"
 
 // Categories
 #import "UIImage+Extras.h"
@@ -27,7 +27,8 @@
 @implementation GifListTableViewController
 
 - (void)viewDidLoad {
-    self.navigationItem.title = @"GifMaker";
+    [super viewDidLoad];
+    self.navigationItem.title = @"💥GifMaker!💥";
     
     // Set up navigation bar buttons
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
@@ -35,6 +36,11 @@
     
     // Refresh GIF-files from storage
     [self refresh];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 
@@ -47,6 +53,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     GifTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
     cell.gifView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:[self.gifElements[indexPath.row] gifURL]]];
+    cell.delegate = self;
+    cell.tag = indexPath.row;
     return cell;
 }
 
@@ -61,7 +69,7 @@
     QBImagePickerController *imagePickerController = [QBImagePickerController new];
     imagePickerController.delegate = self;
     imagePickerController.allowsMultipleSelection = YES;
-    imagePickerController.minimumNumberOfSelection = GIF_FPS * 1; //1 second GIF is a minimum duration
+    imagePickerController.minimumNumberOfSelection = GIF_FPS * 1 / 2; //0.5 second GIF is a minimum duration
     imagePickerController.maximumNumberOfSelection = GIF_FPS * VIDEO_DURATION;
     imagePickerController.showsNumberOfSelectedAssets = YES;
     imagePickerController.mediaType = QBImagePickerMediaTypeImage;
@@ -74,7 +82,12 @@
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    ((RecordViewController*)segue.destinationViewController).delegate = self;
+    if ([segue.identifier isEqualToString:@"toRecordSegue"]) {
+        ((RecordViewController*)segue.destinationViewController).delegate = self;
+    } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
+        ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
+        ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+    }
 }
 
 
@@ -123,17 +136,51 @@
             // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
             [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
         }];
-        
     }
     
     [imagePickerController dismissViewControllerAnimated:YES completion:^{
-        [GifManager makeAnimatedGif:frames fps:GIF_FPS filename:[NSString generateRandomString]];
-        [self refresh];
+        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:frames];
     }];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
     [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark - GifTableViewCellActionsDelegate Methods
+
+- (void)shareViaiMessageDidTapHandler:(NSInteger)index {
+    NSData *gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+    
+    // Share via iMessage
+    if ([MFMessageComposeViewController canSendText]) {
+        MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
+        [messageController setMessageComposeDelegate:self];
+        [messageController setRecipients:@[]];
+        [messageController setBody:@"Shared with GifMaker!"];
+        [messageController addAttachmentData:[NSData dataWithData:gifData] typeIdentifier:@"public.movie" filename:@"animation.gif"];
+        [self presentViewController:messageController animated:YES completion:nil];
+    } else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:@"Can't share via iMessage!" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)deleteMediaDidTapHandler:(NSInteger)index {
+    // Ask user if he really want to remove GIF
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oh no!" message:@"Do you really want to delete this GIF?" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Yes!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self.gifElements[index] removeFromDisk];
+        [self refresh];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end
