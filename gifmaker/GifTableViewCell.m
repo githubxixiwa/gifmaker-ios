@@ -19,4 +19,12 @@
     [[self delegate] deleteMediaDidTapHandler:self.tag];
 }
 
+- (IBAction)shareViaFBMessengerDidTap:(id)sender {
+    [[self delegate] shareViaFBMessengerDidTapHandler:self.tag];
+}
+
+- (IBAction)shareToGalleryDidTap:(id)sender {
+    [[self delegate] shareToGalleryDidTapHandler:self.tag];
+}
+
 @end

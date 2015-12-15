@@ -8,6 +8,9 @@ target 'gifmaker' do
     pod 'QBImagePickerController'
     pod 'FLAnimatedImage', '~> 1.0'
     pod 'LLACircularProgressView'
+    pod 'FBSDKCoreKit'
+    pod 'FBSDKLoginKit'
+    pod 'FBSDKShareKit'
 
 end
 

@@ -24,4 +24,6 @@
 /*! Permanently remove gif file and metadata file */
 - (void)removeFromDisk;
 
+- (void)saveToGalleryAsVideo;
+
 @end

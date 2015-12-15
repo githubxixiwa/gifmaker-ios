@@ -7,6 +7,7 @@
 //
 
 #define FONT_SIZE 40
+#define SMALL_SCREEN ([UIScreen mainScreen].bounds.size.height < 667)
 
 // View Controllers
 #import "CaptionsViewController.h"
@@ -16,6 +17,13 @@
 
 // Categories
 #import "NSString+Extras.h"
+
+@interface CaptionsViewController ()
+
+/*! Center point of the current UIViewController's view. */
+@property (nonatomic) CGPoint center;
+
+@end
 
 @implementation CaptionsViewController
 
@@ -35,6 +43,11 @@
     [self.GIFFirstFramePreviewImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gifPreviewImageDidTap:)]];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.center = self.view.center;
+}
+
 - (void)gifPreviewImageDidTap:(id)sender {
     [self.view endEditing:YES];
 }
@@ -46,13 +59,31 @@
 
 #pragma mark - UITextFieldDelegate methods
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (SMALL_SCREEN) {
+        if (textField == self.headerCaptionTextField) {
+            self.view.center = self.center;
+        } else {
+            self.view.center = CGPointMake(self.center.x, self.center.y / 2);
+        }
+    }
+    
+    return YES;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     
     if (textField == self.headerCaptionTextField) {
         [self.footerCaptionTextField becomeFirstResponder];
+        if (SMALL_SCREEN) {
+            self.view.center = CGPointMake(self.center.x, self.center.y / 2);
+        }
     } else {
         [self.headerCaptionTextField becomeFirstResponder];
+        if (SMALL_SCREEN) {
+            self.view.center = self.center;
+        }
     }
     
     return NO;

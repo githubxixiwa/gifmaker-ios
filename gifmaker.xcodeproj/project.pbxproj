@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */; };
 		49693F681C062606007298EF /* UIImage+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F671C062606007298EF /* UIImage+Extras.m */; };
 		49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F6A1C087ECE007298EF /* NSString+Extras.m */; };
 		49693F701C0881C9007298EF /* GifElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F6F1C0881C9007298EF /* GifElement.m */; };
@@ -22,6 +23,8 @@
 		496BC5651C03A559001713BA /* gifmakerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5641C03A559001713BA /* gifmakerUITests.m */; };
 		496BC5731C03B383001713BA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 496BC5721C03B383001713BA /* AVFoundation.framework */; };
 		496BC5811C0505BA001713BA /* RecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5801C0505BA001713BA /* RecordViewController.m */; };
+		497131A41C176C2900DF7766 /* Exporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 497131A31C176C2900DF7766 /* Exporter.m */; };
+		497131A71C1774CD00DF7766 /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 497131A61C1774CD00DF7766 /* UIImage+animatedGIF.m */; };
 		49B4F0FC1C107AC6009475B1 /* CaptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */; };
 		49B4F0FE1C1091B6009475B1 /* impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49B4F0FD1C1091B6009475B1 /* impact.ttf */; };
 		6DEF7145A5DAAD9317A9130D /* libPods-gifmaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E0F92689A401979FA270A2B /* libPods-gifmaker.a */; };
@@ -46,6 +49,8 @@
 
 /* Begin PBXFileReference section */
 		3E0F92689A401979FA270A2B /* libPods-gifmaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gifmaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
+		4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
 		49693F661C062606007298EF /* UIImage+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extras.h"; sourceTree = "<group>"; };
 		49693F671C062606007298EF /* UIImage+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extras.m"; sourceTree = "<group>"; };
 		49693F691C087ECE007298EF /* NSString+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Extras.h"; sourceTree = "<group>"; };
@@ -75,6 +80,10 @@
 		496BC5721C03B383001713BA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		496BC57F1C0505BA001713BA /* RecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordViewController.h; sourceTree = "<group>"; };
 		496BC5801C0505BA001713BA /* RecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordViewController.m; sourceTree = "<group>"; };
+		497131A21C176C2900DF7766 /* Exporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exporter.h; sourceTree = "<group>"; };
+		497131A31C176C2900DF7766 /* Exporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Exporter.m; sourceTree = "<group>"; };
+		497131A51C1774CD00DF7766 /* UIImage+animatedGIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+animatedGIF.h"; sourceTree = "<group>"; };
+		497131A61C1774CD00DF7766 /* UIImage+animatedGIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+animatedGIF.m"; sourceTree = "<group>"; };
 		49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptionsViewController.h; sourceTree = "<group>"; };
 		49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptionsViewController.m; sourceTree = "<group>"; };
 		49B4F0FD1C1091B6009475B1 /* impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = impact.ttf; sourceTree = "<group>"; };
@@ -88,6 +97,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				496BC5731C03B383001713BA /* AVFoundation.framework in Frameworks */,
+				4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */,
 				6DEF7145A5DAAD9317A9130D /* libPods-gifmaker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,6 +126,8 @@
 				49693F671C062606007298EF /* UIImage+Extras.m */,
 				49693F691C087ECE007298EF /* NSString+Extras.h */,
 				49693F6A1C087ECE007298EF /* NSString+Extras.m */,
+				497131A51C1774CD00DF7766 /* UIImage+animatedGIF.h */,
+				497131A61C1774CD00DF7766 /* UIImage+animatedGIF.m */,
 			);
 			name = categories;
 			sourceTree = "<group>";
@@ -123,6 +135,7 @@
 		496BC5331C03A559001713BA = {
 			isa = PBXGroup;
 			children = (
+				4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */,
 				496BC5721C03B383001713BA /* AVFoundation.framework */,
 				496BC53E1C03A559001713BA /* gifmaker */,
 				496BC5581C03A559001713BA /* gifmakerTests */,
@@ -161,6 +174,8 @@
 				49693F6F1C0881C9007298EF /* GifElement.m */,
 				49693F711C0889DE007298EF /* GifManager.h */,
 				49693F721C0889DE007298EF /* GifManager.m */,
+				497131A21C176C2900DF7766 /* Exporter.h */,
+				497131A31C176C2900DF7766 /* Exporter.m */,
 				496BC5481C03A559001713BA /* Main.storyboard */,
 				496BC54B1C03A559001713BA /* Assets.xcassets */,
 				496BC54D1C03A559001713BA /* LaunchScreen.storyboard */,
@@ -209,6 +224,7 @@
 		E0229A771DEF1E82F63CEC06 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */,
 				3E0F92689A401979FA270A2B /* libPods-gifmaker.a */,
 			);
 			name = Frameworks;
@@ -398,6 +414,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				49693F761C08AA35007298EF /* GifListTableViewController.m in Sources */,
+				497131A71C1774CD00DF7766 /* UIImage+animatedGIF.m in Sources */,
 				496BC5441C03A559001713BA /* AppDelegate.m in Sources */,
 				496BC5411C03A559001713BA /* main.m in Sources */,
 				49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */,
@@ -406,6 +423,7 @@
 				496BC5811C0505BA001713BA /* RecordViewController.m in Sources */,
 				49693F701C0881C9007298EF /* GifElement.m in Sources */,
 				49693F681C062606007298EF /* UIImage+Extras.m in Sources */,
+				497131A41C176C2900DF7766 /* Exporter.m in Sources */,
 				49693F731C0889DE007298EF /* GifManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -547,6 +565,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = gifmaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cayugasoft.gifmaker;
@@ -560,6 +582,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = gifmaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cayugasoft.gifmaker;

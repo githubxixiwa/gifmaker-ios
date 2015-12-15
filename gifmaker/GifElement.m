@@ -11,6 +11,8 @@
 
 #import "GifElement.h"
 #import "GifManager.h"
+#import "Exporter.h"
+#import "UIImage+animatedGIF.h"
 
 @implementation GifElement
 
@@ -64,6 +66,13 @@
     if (![[NSFileManager defaultManager] removeItemAtURL:[GifManager metadataURLWithFilename:self.filename] error:&metadataFileRemoveError]) {
         NSLog(@"Can't delede metadata file, error: %@", [gifFileRemoveError localizedDescription]);
     }
+}
+
+- (void)saveToGalleryAsVideo {
+    [Exporter exportImageArrayAsVideo:[UIImage animatedImageWithAnimatedGIFURL:[self gifURL]].images
+                             filename:@"temp.mov"
+                          repeatCount:5
+                        saveToGallery:YES];
 }
 
 @end

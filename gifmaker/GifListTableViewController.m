@@ -6,6 +6,9 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
+#import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
+
 // View Controllers
 #import "GifListTableViewController.h"
 #import "CaptionsViewController.h"
@@ -34,6 +37,8 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectImagesFromGallery:)];
     
+    //self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
     // Refresh GIF-files from storage
     [self refresh];
 }
@@ -56,6 +61,14 @@
     cell.delegate = self;
     cell.tag = indexPath.row;
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [[UIScreen mainScreen] bounds].size.width + 60;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [[UIScreen mainScreen] bounds].size.width + 60;
 }
 
 
@@ -181,6 +194,15 @@
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)shareToGalleryDidTapHandler:(NSInteger)index {
+    [self.gifElements[index] saveToGalleryAsVideo];
+}
+
+- (void)shareViaFBMessengerDidTapHandler:(NSInteger)index {
+    NSData *gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+    [FBSDKMessengerSharer shareAnimatedGIF:gifData withOptions:nil];
 }
 
 @end

@@ -12,6 +12,8 @@
 @protocol GifTableViewСellActionsDelegate <NSObject>
 
 - (void)shareViaiMessageDidTapHandler:(NSInteger)index;
+- (void)shareViaFBMessengerDidTapHandler:(NSInteger)index;
+- (void)shareToGalleryDidTapHandler:(NSInteger)index;
 - (void)deleteMediaDidTapHandler:(NSInteger)index;
 
 @end
@@ -20,9 +22,12 @@
 
 @property (strong, nonatomic) IBOutlet FLAnimatedImageView *gifView;
 @property (strong, nonatomic) IBOutlet UILabel *postedDateLabel;
+@property (strong, nonatomic) IBOutlet UIButton *fbmessengerShareButton;
 @property (strong, nonatomic) id delegate;
 
 - (IBAction)shareViaiMessageDidTap:(id)sender;
+- (IBAction)shareToGalleryDidTap:(id)sender;
 - (IBAction)deleteButtonDidTap:(id)sender;
+- (IBAction)shareViaFBMessengerDidTap:(id)sender;
 
 @end

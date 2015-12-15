@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '8038B5032319D1D33F97E0D9'
+               BlueprintIdentifier = '31F248F1AC4AF50CC7D4178E'
                BlueprintName = 'Pods-gifmaker'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libPods-gifmaker.a'>
