@@ -11,6 +11,8 @@ target 'gifmaker' do
     pod 'FBSDKCoreKit'
     pod 'FBSDKLoginKit'
     pod 'FBSDKShareKit'
+    pod 'AFNetworking', '~> 3.0'
+    pod 'SVProgressHUD'
 
 end
 

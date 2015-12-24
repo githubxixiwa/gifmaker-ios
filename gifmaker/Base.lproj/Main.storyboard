@@ -36,39 +36,72 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="85P-9B-kFd">
                                                     <rect key="frame" x="0.0" y="600" width="600" height="60"/>
                                                     <subviews>
-                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="Kod-oZ-bgk">
+                                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Kod-oZ-bgk">
                                                             <rect key="frame" x="0.0" y="0.0" width="600" height="60"/>
                                                             <subviews>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1XW-ez-0RE">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="60"/>
-                                                                    <state key="normal" title="🎞 iMes"/>
-                                                                    <connections>
-                                                                        <action selector="shareViaiMessageDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="yl6-0g-BMR"/>
-                                                                    </connections>
-                                                                </button>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vVo-QH-QNC">
-                                                                    <rect key="frame" x="150" y="0.0" width="150" height="60"/>
-                                                                    <state key="normal" title="🎞 FBMes"/>
-                                                                    <connections>
-                                                                        <action selector="shareViaFBMessengerDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="PCF-mh-VhB"/>
-                                                                    </connections>
-                                                                </button>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ccw-7M-mUy">
-                                                                    <rect key="frame" x="300" y="0.0" width="150" height="60"/>
-                                                                    <state key="normal" title="🎞 Camera Roll"/>
-                                                                    <connections>
-                                                                        <action selector="shareToGalleryDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="vgN-sC-oFE"/>
-                                                                    </connections>
-                                                                </button>
-                                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZdB-cl-flU">
-                                                                    <rect key="frame" x="450" y="0.0" width="150" height="60"/>
-                                                                    <state key="normal" title="Delete">
-                                                                        <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                                    </state>
-                                                                    <connections>
-                                                                        <action selector="deleteButtonDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="XhU-uV-Tug"/>
-                                                                    </connections>
-                                                                </button>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9PW-qE-8de">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="60"/>
+                                                                    <subviews>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sVY-Zg-jE8">
+                                                                            <rect key="frame" x="82" y="12" width="36" height="36"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" secondItem="sVY-Zg-jE8" secondAttribute="height" multiplier="1:1" id="efp-4e-Qyx"/>
+                                                                            </constraints>
+                                                                            <state key="normal" backgroundImage="shareIcon"/>
+                                                                            <connections>
+                                                                                <action selector="shareButtonDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="rBC-dr-SNE"/>
+                                                                            </connections>
+                                                                        </button>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstItem="sVY-Zg-jE8" firstAttribute="centerX" secondItem="9PW-qE-8de" secondAttribute="centerX" id="NOY-vz-NYs"/>
+                                                                        <constraint firstItem="sVY-Zg-jE8" firstAttribute="height" secondItem="9PW-qE-8de" secondAttribute="height" multiplier="0.6" id="VMT-Te-LwI"/>
+                                                                        <constraint firstItem="sVY-Zg-jE8" firstAttribute="centerY" secondItem="9PW-qE-8de" secondAttribute="centerY" id="axf-of-Xdn"/>
+                                                                    </constraints>
+                                                                </view>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oGw-bW-FtT">
+                                                                    <rect key="frame" x="200" y="0.0" width="200" height="60"/>
+                                                                    <subviews>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tUz-cs-kCA">
+                                                                            <rect key="frame" x="82" y="12" width="36" height="36"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" secondItem="tUz-cs-kCA" secondAttribute="height" multiplier="1:1" id="Sug-oO-Pza"/>
+                                                                            </constraints>
+                                                                            <state key="normal" backgroundImage="deleteIcon"/>
+                                                                            <connections>
+                                                                                <action selector="deleteButtonDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="qwQ-lV-8xS"/>
+                                                                            </connections>
+                                                                        </button>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstItem="tUz-cs-kCA" firstAttribute="centerX" secondItem="oGw-bW-FtT" secondAttribute="centerX" id="0sg-mj-c63"/>
+                                                                        <constraint firstItem="tUz-cs-kCA" firstAttribute="centerY" secondItem="oGw-bW-FtT" secondAttribute="centerY" id="Euw-jF-sB5"/>
+                                                                        <constraint firstItem="tUz-cs-kCA" firstAttribute="height" secondItem="oGw-bW-FtT" secondAttribute="height" multiplier="0.6" id="fEA-OS-cdx"/>
+                                                                    </constraints>
+                                                                </view>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2vK-0o-tvf">
+                                                                    <rect key="frame" x="400" y="0.0" width="200" height="60"/>
+                                                                    <subviews>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DD1-Zc-Kbj">
+                                                                            <rect key="frame" x="85" y="15" width="30" height="30"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" secondItem="DD1-Zc-Kbj" secondAttribute="height" multiplier="1:1" id="wk7-zM-Z6a"/>
+                                                                            </constraints>
+                                                                            <state key="normal" backgroundImage="editIcon"/>
+                                                                            <connections>
+                                                                                <action selector="editGifDidTap:" destination="4Sp-6L-FVc" eventType="touchUpInside" id="utN-uv-7Qg"/>
+                                                                            </connections>
+                                                                        </button>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstItem="DD1-Zc-Kbj" firstAttribute="centerY" secondItem="2vK-0o-tvf" secondAttribute="centerY" id="03l-Vb-sDJ"/>
+                                                                        <constraint firstItem="DD1-Zc-Kbj" firstAttribute="centerX" secondItem="2vK-0o-tvf" secondAttribute="centerX" id="QFY-qu-38E"/>
+                                                                        <constraint firstItem="DD1-Zc-Kbj" firstAttribute="height" secondItem="2vK-0o-tvf" secondAttribute="height" multiplier="0.5" id="msC-3O-57L"/>
+                                                                    </constraints>
+                                                                </view>
                                                             </subviews>
                                                         </stackView>
                                                     </subviews>
@@ -84,7 +117,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="fbmessengerShareButton" destination="vVo-QH-QNC" id="3mR-Ku-q7K"/>
+                                    <outlet property="editButton" destination="DD1-Zc-Kbj" id="LN4-UB-IKZ"/>
                                     <outlet property="gifView" destination="VFz-FB-GiM" id="RJH-y5-vxX"/>
                                 </connections>
                             </tableViewCell>
@@ -264,7 +297,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Press &quot;GIF IT!&quot; when you're done" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s61-Lg-jmb">
                                 <rect key="frame" x="20" y="632" width="560" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -318,6 +351,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="deleteIcon" width="612" height="792"/>
+        <image name="editIcon" width="400" height="400"/>
+        <image name="shareIcon" width="612" height="792"/>
         <image name="switchcameraicon" width="612" height="315"/>
     </resources>
     <inferredMetricsTieBreakers>

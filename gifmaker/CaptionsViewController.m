@@ -137,7 +137,8 @@
     });
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray<UIImage *> *gifReadyImages = [NSMutableArray array];
+        NSMutableArray<UIImage *> *gifReadyImagesWithCaptions = [NSMutableArray array];
+        NSMutableArray<UIImage *> *gifReadyImagesWithoutCaptions = [NSMutableArray array];
         
         // Add captions to the images
         for (UIImage *capturedImage in self.capturedImages) {
@@ -146,12 +147,17 @@
                                               headerText:self.headerCaptionTextField.attributedText.string
                                               footerText:self.footerCaptionTextField.attributedText.string];
                 UIImage *imageWithTextOnItCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(imageWithTextOnIt, 0.2)];
-                [gifReadyImages addObject:imageWithTextOnItCompressed];
+                UIImage *imageWithoutTextCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(capturedImage, 0.2)];
+                [gifReadyImagesWithCaptions addObject:imageWithTextOnItCompressed];
+                [gifReadyImagesWithoutCaptions addObject:imageWithoutTextCompressed];
             }
         }
     
         // Make GIF
-        if ([GifManager makeAnimatedGif:gifReadyImages fps:GIF_FPS filename:[NSString generateRandomString]]) {
+        if ([GifManager makeAnimatedGif:gifReadyImagesWithCaptions
+                              rawFrames:gifReadyImagesWithoutCaptions
+                                    fps:GIF_FPS
+                               filename:[NSString generateRandomString]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // Gif done
                 [[self delegate] refresh];

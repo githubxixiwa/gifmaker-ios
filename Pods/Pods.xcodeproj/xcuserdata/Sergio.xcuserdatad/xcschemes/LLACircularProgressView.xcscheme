@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '9FC368F2524CBDB6869C0B2A'
+               BlueprintIdentifier = 'E80962625F5B2BE123F36666'
                BlueprintName = 'LLACircularProgressView'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libLLACircularProgressView.a'>

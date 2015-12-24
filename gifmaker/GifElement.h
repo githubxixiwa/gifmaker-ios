@@ -7,12 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface GifElement : NSObject <NSCoding>
 
 /*! Filename without extension */
 @property (nonatomic, strong) NSString *filename;
 @property (nonatomic, strong) NSDate *datePosted;
+@property (nonatomic) BOOL editable;
 
 - (instancetype)initWithFilenameWithoutExtension:(NSString *)filename datePosted:(NSDate *)datePosted;
 - (instancetype)initWithMetadataFile:(NSURL *)metadataFileURL;
@@ -25,5 +27,11 @@
 - (void)removeFromDisk;
 
 - (void)saveToGalleryAsVideo;
+
+/* Save gif's raw frames to make possibility to change a captions in the future. */
+- (void)makeEditable:(NSArray<UIImage *> *)images;
+
+/* Get gif's raw frames (to get ability to change a captions). */
+- (NSArray<UIImage *> *)getEditableFrames;
 
 @end

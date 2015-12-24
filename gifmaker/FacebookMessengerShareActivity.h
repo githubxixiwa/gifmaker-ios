@@ -1,0 +1,16 @@
+//
+//  FacebookMessengerShareActivity.h
+//  gifmaker
+//
+//  Created by Sergio on 12/23/15.
+//  Copyright © 2015 Cayugasoft. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
+
+@interface FacebookMessengerShareActivity : UIActivity
+
+@property (nonatomic, strong) NSData *gifData;
+
+@end

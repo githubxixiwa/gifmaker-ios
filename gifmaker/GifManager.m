@@ -47,6 +47,10 @@
     return localMetadataFilesArray;
 }
 
++ (NSURL *)gifRawFramesStorageFolderURL:(NSString *)filename {
+    return [[self gifStorageFolderURL] URLByAppendingPathComponent:filename isDirectory:YES];
+}
+
 + (NSURL *)gifURLWithFilename:(NSString *)filename {
     return [[self gifStorageFolderURL] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, GIF_EXTENSION]];
 }
@@ -55,7 +59,10 @@
     return [[self gifStorageFolderURL] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, GIF_METADATA_EXTENSION]];
 }
 
-+ (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)frames fps:(NSInteger)fps filename:(NSString *)filename {
++ (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)framesWithCaptions
+              rawFrames:(NSArray<UIImage *> *)rawFrames
+                    fps:(NSInteger)fps
+               filename:(NSString *)filename {
     // Set up GIF-file properties
     NSDictionary *fileProperties = @{
                                      (__bridge id)kCGImagePropertyGIFDictionary: @{
@@ -73,11 +80,11 @@
     NSURL *fileURL = [self gifURLWithFilename:filename];
     
     // Init GIF-file
-    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, frames.count, NULL);
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, framesWithCaptions.count, NULL);
     CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)fileProperties);
     
     // Fill GIF-file with frames
-    for (UIImage *frame in frames) {
+    for (UIImage *frame in framesWithCaptions) {
         CGImageDestinationAddImage(destination, frame.CGImage, (__bridge CFDictionaryRef)frameProperties);
     }
     
@@ -92,6 +99,7 @@
     
     // Save metadata on disk
     GifElement *element = [[GifElement alloc] initWithFilenameWithoutExtension:filename datePosted:[NSDate date]];
+    [element makeEditable:rawFrames];
     [element save];
     
     NSLog(@"Gif done");

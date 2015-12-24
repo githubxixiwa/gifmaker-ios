@@ -6,9 +6,6 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-// Frameworks
-#import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
-
 // View Controllers
 #import "GifListTableViewController.h"
 #import "CaptionsViewController.h"
@@ -20,6 +17,12 @@
 // Categories
 #import "UIImage+Extras.h"
 #import "NSString+Extras.h"
+
+// Sharing Activities
+#import "FacebookShareActivity.h"
+#import "IMessageShareActivity.h"
+#import "FacebookMessengerShareActivity.h"
+#import "SaveVideoActivity.h"
 
 @interface GifListTableViewController()
 
@@ -36,8 +39,6 @@
     // Set up navigation bar buttons
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectImagesFromGallery:)];
-    
-    //self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     // Refresh GIF-files from storage
     [self refresh];
@@ -57,6 +58,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     GifTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
+    [cell.editButton setEnabled:[self.gifElements[indexPath.row] editable]];
     cell.gifView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:[self.gifElements[indexPath.row] gifURL]]];
     cell.delegate = self;
     cell.tag = indexPath.row;
@@ -163,26 +165,71 @@
 
 #pragma mark - GifTableViewCellActionsDelegate Methods
 
-- (void)shareViaiMessageDidTapHandler:(NSInteger)index {
-    NSData *gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+- (void)shareButtonDidTapHandler:(NSInteger)index {
+    // Prepare custom share buttons
     
-    // Share via iMessage
-    if ([MFMessageComposeViewController canSendText]) {
-        MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
-        [messageController setMessageComposeDelegate:self];
-        [messageController setRecipients:@[]];
-        [messageController setBody:@"Shared with GifMaker!"];
-        [messageController addAttachmentData:[NSData dataWithData:gifData] typeIdentifier:@"public.movie" filename:@"animation.gif"];
-        [self presentViewController:messageController animated:YES completion:nil];
-    } else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:@"Can't share via iMessage!" preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
-    }
+    IMessageShareActivity *imessageShareActivity = [[IMessageShareActivity alloc] init];
+    imessageShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+    imessageShareActivity.viewController = self;
+    
+    FacebookShareActivity *facebookShareActivity = [[FacebookShareActivity alloc] init];
+    facebookShareActivity.gifURL = [self.gifElements[index] gifURL];
+    facebookShareActivity.showInViewController = self;
+    
+    FacebookMessengerShareActivity *facebookMessengerShareActivity = [[FacebookMessengerShareActivity alloc] init];
+    facebookMessengerShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+    
+    SaveVideoActivity *saveVideoActivity = [[SaveVideoActivity alloc] init];
+    saveVideoActivity.gifElement = self.gifElements[index];
+    
+    // Make sharing controller with our share buttons
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc]
+                                                        initWithActivityItems:@[]
+                                                        applicationActivities:@[imessageShareActivity,
+                                                                                facebookShareActivity,
+                                                                                facebookMessengerShareActivity,
+                                                                                saveVideoActivity]];
+    
+    // Exclude all system's sharing services (use only our ones)
+    NSArray *excludeActivities = @[UIActivityTypeAirDrop,
+                                   UIActivityTypePrint,
+                                   UIActivityTypeAssignToContact,
+                                   UIActivityTypeAddToReadingList,
+                                   UIActivityTypePostToFlickr,
+                                   UIActivityTypePostToVimeo,
+                                   UIActivityTypeCopyToPasteboard,
+                                   UIActivityTypeOpenInIBooks,
+                                   UIActivityTypePostToWeibo,
+                                   UIActivityTypePostToTwitter,
+                                   UIActivityTypeMail,
+                                   UIActivityTypePostToFacebook,
+                                   UIActivityTypePostToTencentWeibo,
+                                   UIActivityTypeSaveToCameraRoll];
+    
+    activityViewController.excludedActivityTypes = excludeActivities;
+    
+    // Present sharing controller to the user
+    [self.navigationController presentViewController:activityViewController
+                                       animated:YES
+                                     completion:^{
+                                         // Do something on completion
+                                     }];
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)editButtonDidTapHandler:(NSInteger)index {
+    // Check for editable images presense
+    NSArray<UIImage *> *images = [self.gifElements[index] getEditableFrames];
+    if (images) {
+        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:images];
+    } else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops!" message:@"It seems that GIF's sources can't be found. Maybe someone removed them via iTunes?" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Oh no!" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 - (void)deleteMediaDidTapHandler:(NSInteger)index {
@@ -194,15 +241,6 @@
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alertController animated:YES completion:nil];
-}
-
-- (void)shareToGalleryDidTapHandler:(NSInteger)index {
-    [self.gifElements[index] saveToGalleryAsVideo];
-}
-
-- (void)shareViaFBMessengerDidTapHandler:(NSInteger)index {
-    NSData *gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
-    [FBSDKMessengerSharer shareAnimatedGIF:gifData withOptions:nil];
 }
 
 @end
