@@ -9,6 +9,8 @@
 #define kFilename @"filename"
 #define kDatePosted @"datePosted"
 #define kEditable @"editable"
+#define kHeaderCaption @"headerCaption"
+#define kFooterCaption @"footerCaption"
 
 #import "GifElement.h"
 #import "GifManager.h"
@@ -23,6 +25,8 @@
         self.filename   = filename;
         self.datePosted = datePosted;
         self.editable   = NO;
+        self.headerCaption = @"";
+        self.footerCaption = @"";
     }
     
     return self;
@@ -39,9 +43,11 @@
         return nil;
     }
     
-    self.filename   = [decoder decodeObjectForKey:kFilename];
-    self.datePosted = [decoder decodeObjectForKey:kDatePosted];
-    self.editable   = [decoder decodeObjectForKey:kEditable];
+    self.filename      = [decoder decodeObjectForKey:kFilename];
+    self.datePosted    = [decoder decodeObjectForKey:kDatePosted];
+    self.editable      = [decoder decodeObjectForKey:kEditable];
+    self.headerCaption = [decoder decodeObjectForKey:kHeaderCaption];
+    self.footerCaption = [decoder decodeObjectForKey:kFooterCaption];
     
     return self;
 }
@@ -50,6 +56,8 @@
     [encoder encodeObject:self.filename forKey:kFilename];
     [encoder encodeObject:self.datePosted forKey:kDatePosted];
     [encoder encodeObject:@(self.editable) forKey:kEditable];
+    [encoder encodeObject:self.headerCaption forKey:kHeaderCaption];
+    [encoder encodeObject:self.footerCaption forKey:kFooterCaption];
 }
 
 - (void)makeEditable:(NSArray<UIImage *> *)images {

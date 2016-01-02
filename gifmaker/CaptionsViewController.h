@@ -22,4 +22,10 @@
 @property (nonatomic, strong) NSArray<UIImage *> *capturedImages;
 @property (nonatomic, strong) id delegate;
 
+/*! Force set text in header caption */
+@property (nonatomic, strong) NSString *headerCaptionTextForced;
+
+/*! Forse set text in footer caption */
+@property (nonatomic, strong) NSString *footerCaptionTextForced;
+
 @end

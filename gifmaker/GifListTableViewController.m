@@ -100,8 +100,11 @@
     if ([segue.identifier isEqualToString:@"toRecordSegue"]) {
         ((RecordViewController*)segue.destinationViewController).delegate = self;
     } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
-        ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
+        GifElement *editingGif = (GifElement *)sender;
+        ((CaptionsViewController*)segue.destinationViewController).capturedImages = [editingGif getEditableFrames];
         ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+        ((CaptionsViewController*)segue.destinationViewController).headerCaptionTextForced = editingGif.headerCaption;
+        ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
     }
 }
 
@@ -224,7 +227,7 @@
     // Check for editable images presense
     NSArray<UIImage *> *images = [self.gifElements[index] getEditableFrames];
     if (images) {
-        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:images];
+        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:self.gifElements[index]];
     } else {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops!" message:@"It seems that GIF's sources can't be found. Maybe someone removed them via iTunes?" preferredStyle:UIAlertControllerStyleAlert];
         [alertController addAction:[UIAlertAction actionWithTitle:@"Oh no!" style:UIAlertActionStyleCancel handler:nil]];

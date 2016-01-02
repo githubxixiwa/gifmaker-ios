@@ -62,6 +62,8 @@
 + (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)framesWithCaptions
               rawFrames:(NSArray<UIImage *> *)rawFrames
                     fps:(NSInteger)fps
+          headerCaption:(NSString *)headerCaption
+          footerCaption:(NSString *)footerCaption
                filename:(NSString *)filename {
     // Set up GIF-file properties
     NSDictionary *fileProperties = @{
@@ -99,6 +101,8 @@
     
     // Save metadata on disk
     GifElement *element = [[GifElement alloc] initWithFilenameWithoutExtension:filename datePosted:[NSDate date]];
+    [element setHeaderCaption:headerCaption];
+    [element setFooterCaption:footerCaption];
     [element makeEditable:rawFrames];
     [element save];
     

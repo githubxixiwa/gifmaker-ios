@@ -36,6 +36,8 @@
 + (BOOL)makeAnimatedGif:(NSArray<UIImage *> *)framesWithCaptions
               rawFrames:(NSArray<UIImage *> *)rawFrames
                     fps:(NSInteger)fps
+          headerCaption:(NSString *)headerCaption
+          footerCaption:(NSString *)footerCaption
                filename:(NSString *)filename;
 
 @end

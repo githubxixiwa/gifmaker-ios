@@ -35,6 +35,13 @@
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
     [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
     
+    if (self.headerCaptionTextForced) {
+        [self setAttributedTextAsCaptionToTextField:self.headerCaptionTextField text:self.headerCaptionTextForced];
+    }
+    if (self.footerCaptionTextForced) {
+        [self setAttributedTextAsCaptionToTextField:self.footerCaptionTextField text:self.footerCaptionTextForced];
+    }
+    
     // Set up navigation bar buttons
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonDidPress:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"GIF IT!" style:UIBarButtonItemStyleDone target:self action:@selector(makeGifButtonDidPress:)];
@@ -95,10 +102,22 @@
     if (textSize.width > textField.bounds.size.width) {
         return NO;
     } else {
-        NSString *capitalizedString = [textField.text stringByAppendingString:[string uppercaseString]];
-        [textField setAttributedText:[self attributedStringWithText:capitalizedString]];
+        [self setAttributedTextAsCaptionToTextField:textField text:string];
         return [string isEqualToString:@""];
     }
+}
+
+- (void)setTextToHeaderCaption:(NSString*)text {
+    [self setAttributedTextAsCaptionToTextField:self.headerCaptionTextField text:text];
+}
+
+- (void)setTextToFooterCaption:(NSString*)text {
+    [self setAttributedTextAsCaptionToTextField:self.footerCaptionTextField text:text];
+}
+
+- (void)setAttributedTextAsCaptionToTextField:(UITextField *)textField text:(NSString *)text {
+    NSString *capitalizedString = [textField.text stringByAppendingString:[text uppercaseString]];
+    [textField setAttributedText:[self attributedStringWithText:capitalizedString]];
 }
 
 
@@ -157,6 +176,8 @@
         if ([GifManager makeAnimatedGif:gifReadyImagesWithCaptions
                               rawFrames:gifReadyImagesWithoutCaptions
                                     fps:GIF_FPS
+                          headerCaption:self.headerCaptionTextField.attributedText.string
+                          footerCaption:self.footerCaptionTextField.attributedText.string
                                filename:[NSString generateRandomString]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // Gif done

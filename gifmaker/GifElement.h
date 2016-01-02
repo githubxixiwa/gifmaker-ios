@@ -14,6 +14,8 @@
 /*! Filename without extension */
 @property (nonatomic, strong) NSString *filename;
 @property (nonatomic, strong) NSDate *datePosted;
+@property (nonatomic, strong) NSString *headerCaption;
+@property (nonatomic, strong) NSString *footerCaption;
 @property (nonatomic) BOOL editable;
 
 - (instancetype)initWithFilenameWithoutExtension:(NSString *)filename datePosted:(NSDate *)datePosted;
