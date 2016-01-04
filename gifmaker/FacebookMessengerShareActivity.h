@@ -11,6 +11,7 @@
 
 @interface FacebookMessengerShareActivity : UIActivity
 
+@property (nonatomic, strong) UIViewController *showInViewController;
 @property (nonatomic, strong) NSData *gifData;
 
 @end

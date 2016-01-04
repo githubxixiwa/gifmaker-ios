@@ -9,6 +9,7 @@
 // Frameworks
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
+#import <AFNetworking/AFNetworking.h>
 
 // Models
 #import "AppDelegate.h"
@@ -22,7 +23,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
-    [FBSDKMessengerShareButton class];
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     return YES;
 }
 

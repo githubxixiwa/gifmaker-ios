@@ -8,6 +8,9 @@
 
 #import "IMessageShareActivity.h"
 
+// Categories
+#import "NSObject+Helpers.h"
+
 @implementation IMessageShareActivity
 
 - (NSString *)activityType {
@@ -35,6 +38,11 @@
 }
 
 - (void)performActivity {
+    // Check for internet connection
+    if (![self checkNetworkIsReachable:self.viewController showAlertIfNoNetwork:YES]) {
+        return;
+    }
+    
     if ([MFMessageComposeViewController canSendText]) {
         MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
         [messageController setMessageComposeDelegate:self.viewController];

@@ -8,6 +8,9 @@
 
 #import "FacebookMessengerShareActivity.h"
 
+// Categories
+#import "NSObject+Helpers.h"
+
 @implementation FacebookMessengerShareActivity
 
 - (NSString *)activityType {
@@ -35,6 +38,11 @@
 }
 
 - (void)performActivity {
+    // Check for internet connection
+    if (![self checkNetworkIsReachable:self.showInViewController showAlertIfNoNetwork:YES]) {
+        return;
+    }
+    
     [FBSDKMessengerSharer shareAnimatedGIF:self.gifData withOptions:nil];
 }
 

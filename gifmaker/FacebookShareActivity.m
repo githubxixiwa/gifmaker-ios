@@ -14,6 +14,9 @@
 // Models
 #import "FacebookShareActivity.h"
 
+// Categories
+#import "NSObject+Helpers.h"
+
 @implementation FacebookShareActivity
 
 - (NSString *)activityType {
@@ -41,6 +44,11 @@
 }
 
 - (void)performActivity {
+    // Check for internet connection
+    if (![self checkNetworkIsReachable:self.showInViewController showAlertIfNoNetwork:YES]) {
+        return;
+    }
+    
     /* First of all we need to upload a GIF to our backend */
     
     // Show progress HUD
@@ -79,7 +87,7 @@
                           NSLog(@"Error: %@", [error localizedDescription]);
                       } else {
                           /* Successfully uploaded. Let's check 'success' status of returned json answer. */
-                          BOOL success = responseObject[@"success"];
+                          BOOL success = [responseObject[@"success"] boolValue];
                           if (success) {
                               NSString *urlString = responseObject[@"data"][@"file"];
                               dispatch_async(dispatch_get_main_queue(), ^{

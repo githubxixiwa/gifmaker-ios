@@ -181,6 +181,7 @@
     
     FacebookMessengerShareActivity *facebookMessengerShareActivity = [[FacebookMessengerShareActivity alloc] init];
     facebookMessengerShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
+    facebookMessengerShareActivity.showInViewController = self;
     
     SaveVideoActivity *saveVideoActivity = [[SaveVideoActivity alloc] init];
     saveVideoActivity.gifElement = self.gifElements[index];

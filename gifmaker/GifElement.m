@@ -12,9 +12,12 @@
 #define kHeaderCaption @"headerCaption"
 #define kFooterCaption @"footerCaption"
 
+// Models
 #import "GifElement.h"
 #import "GifManager.h"
 #import "Exporter.h"
+
+// Categories
 #import "UIImage+animatedGIF.h"
 
 @implementation GifElement
