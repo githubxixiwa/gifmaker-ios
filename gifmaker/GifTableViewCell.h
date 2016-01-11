@@ -19,6 +19,7 @@
 
 @interface GifTableViewCell : UITableViewCell
 
+@property (strong, nonatomic) IBOutlet UIView *cardView;
 @property (strong, nonatomic) IBOutlet FLAnimatedImageView *gifView;
 @property (strong, nonatomic) IBOutlet UILabel *postedDateLabel;
 @property (strong, nonatomic) IBOutlet UIButton *editButton;

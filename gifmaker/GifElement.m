@@ -48,7 +48,7 @@
     
     self.filename      = [decoder decodeObjectForKey:kFilename];
     self.datePosted    = [decoder decodeObjectForKey:kDatePosted];
-    self.editable      = [decoder decodeObjectForKey:kEditable];
+    self.editable      = [[decoder decodeObjectForKey:kEditable] boolValue];
     self.headerCaption = [decoder decodeObjectForKey:kHeaderCaption];
     self.footerCaption = [decoder decodeObjectForKey:kFooterCaption];
     

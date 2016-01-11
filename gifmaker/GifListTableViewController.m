@@ -6,6 +6,11 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+#define GalleryButtonTAG 300
+#define CameraButtonTAG 301
+
+#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
+
 // View Controllers
 #import "GifListTableViewController.h"
 #import "CaptionsViewController.h"
@@ -27,6 +32,8 @@
 @interface GifListTableViewController()
 
 @property (nonatomic, strong) NSMutableArray<GifElement *> *gifElements;
+@property (nonatomic) NSInteger precalculatedCellHeight;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 @end
 
@@ -34,11 +41,29 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"💥GifMaker!💥";
+    //self.navigationItem.title = @"💥GifMaker!💥";
+    
+    // Precalculate cell height
+    self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * 1.24;
+    
+    // Preinit date formatter
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
     // Set up navigation bar buttons
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectImagesFromGallery:)];
+    UIButton *galleryButton = [self.tableView viewWithTag:GalleryButtonTAG];
+    UIButton *cameraButton = [self.tableView viewWithTag:CameraButtonTAG];
+    
+    galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    
+    [galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
+    [cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
+//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectImagesFromGallery:)];
+    
+    [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     
     // Refresh GIF-files from storage
     [self refresh];
@@ -46,9 +71,17 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 
 #pragma mark - Table View Delegate Methods
 
@@ -58,19 +91,22 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     GifTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
-    [cell.editButton setEnabled:[self.gifElements[indexPath.row] editable]];
-    cell.gifView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:[self.gifElements[indexPath.row] gifURL]]];
+    GifElement *gifElement = self.gifElements[indexPath.row];
+    [cell.editButton setEnabled:gifElement.editable];
+    cell.gifView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:[NSData dataWithContentsOfURL:gifElement.gifURL]];
+    cell.postedDateLabel.text = [NSString stringWithFormat:@"posted with love on %@", [self.dateFormatter stringFromDate:gifElement.datePosted]];
+
     cell.delegate = self;
     cell.tag = indexPath.row;
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [[UIScreen mainScreen] bounds].size.width + 60;
+    return self.precalculatedCellHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [[UIScreen mainScreen] bounds].size.width + 60;
+    return self.precalculatedCellHeight;
 }
 
 
@@ -128,6 +164,7 @@
     self.gifElements = [NSMutableArray arrayWithArray:[self.gifElements sortedArrayUsingDescriptors:sortDescriptors]];
     
     [self.tableView reloadData];
+    [self scrollToTop];
 }
 
 
@@ -245,6 +282,16 @@
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+
+#pragma mark - Helpers
+
+- (void)scrollToTop {
+    if ([self numberOfSectionsInTableView:self.tableView] > 0 && [self.tableView numberOfRowsInSection:0] > 0) {
+        NSIndexPath *top = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
+        [self.tableView scrollToRowAtIndexPath:top atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
 }
 
 @end
