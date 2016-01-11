@@ -9,8 +9,6 @@
 #define GalleryButtonTAG 300
 #define CameraButtonTAG 301
 
-#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
-
 // View Controllers
 #import "GifListTableViewController.h"
 #import "CaptionsViewController.h"
@@ -41,7 +39,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //self.navigationItem.title = @"💥GifMaker!💥";
     
     // Precalculate cell height
     self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * 1.24;
@@ -59,9 +56,6 @@
     
     [galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
     [cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
-    
-//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(shootGIFFromCamera:)];
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectImagesFromGallery:)];
     
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     

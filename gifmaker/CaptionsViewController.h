@@ -17,7 +17,9 @@
 @property (strong, nonatomic) IBOutlet UIImageView *GIFFirstFramePreviewImageView;
 @property (strong, nonatomic) IBOutlet UITextField *headerCaptionTextField;
 @property (strong, nonatomic) IBOutlet UITextField *footerCaptionTextField;
-@property (strong, nonatomic) IBOutlet UILabel *instructionsLabel;
+@property (strong, nonatomic) IBOutlet UIButton *gifItButton;
+@property (strong, nonatomic) IBOutlet UIButton *cancelButton;
+@property (strong, nonatomic) IBOutlet UIView *cardView;
 
 @property (nonatomic, strong) NSArray<UIImage *> *capturedImages;
 @property (nonatomic, strong) id delegate;

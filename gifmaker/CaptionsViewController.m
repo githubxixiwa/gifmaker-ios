@@ -29,7 +29,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"Add captions";
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
@@ -43,11 +44,22 @@
     }
     
     // Set up navigation bar buttons
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonDidPress:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"GIF IT!" style:UIBarButtonItemStyleDone target:self action:@selector(makeGifButtonDidPress:)];
+    self.cancelButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    self.gifItButton.transform  = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    [self.cancelButton addTarget:self action:@selector(cancelButtonDidPress:)  forControlEvents:UIControlEventTouchUpInside];
+    [self.gifItButton  addTarget:self action:@selector(makeGifButtonDidPress:) forControlEvents:UIControlEventTouchUpInside];
     
     // Hide keyboard (if it's open) on gif preview tap
     [self.GIFFirstFramePreviewImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gifPreviewImageDidTap:)]];
+    
+    // Set background image
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
+    
+    // Set shadow for the card
+    [self.cardView.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [self.cardView.layer setShadowOffset:CGSizeMake(6, 6)];
+    [self.cardView.layer setShadowRadius:3.0];
+    [self.cardView.layer setShadowOpacity:0.3];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -55,24 +67,29 @@
     self.center = self.view.center;
 }
 
-- (void)gifPreviewImageDidTap:(id)sender {
-    [self.view endEditing:YES];
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
-- (void)errorOccured:(id)sender {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+- (void)gifPreviewImageDidTap:(id)sender {
+    [self.view endEditing:YES];
+    [self animateAction:^{
+        self.view.center = self.center;
+    }];
 }
 
 
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    if (SMALL_SCREEN) {
-        if (textField == self.headerCaptionTextField) {
+    if (textField == self.headerCaptionTextField) {
+        [self animateAction:^{
             self.view.center = self.center;
-        } else {
+        }];
+    } else {
+        [self animateAction:^{
             self.view.center = CGPointMake(self.center.x, self.center.y / 2);
-        }
+        }];
     }
     
     return YES;
@@ -83,14 +100,14 @@
     
     if (textField == self.headerCaptionTextField) {
         [self.footerCaptionTextField becomeFirstResponder];
-        if (SMALL_SCREEN) {
+        [self animateAction:^{
             self.view.center = CGPointMake(self.center.x, self.center.y / 2);
-        }
+        }];
     } else {
         [self.headerCaptionTextField becomeFirstResponder];
-        if (SMALL_SCREEN) {
+        [self animateAction:^{
             self.view.center = self.center;
-        }
+        }];
     }
     
     return NO;
@@ -128,23 +145,21 @@
 }
 
 - (void)makeGifButtonDidPress:(id)sender {
-    // Disable 'GIT IT!' button
-    [self.navigationItem.rightBarButtonItem setEnabled:NO];
+    // Disable 'GIF IT!' button
+    [self.gifItButton setEnabled:NO];
     
-    // Hide navigation bar and dismiss keyboard (if open)
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    // Dismiss keyboard (if open)
     [self.view endEditing:YES];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Hide instructions and captions with animation
+        // Hide captions with animation
         [UIView animateWithDuration:0.2 animations:^{
-            [self.instructionsLabel setHidden:YES];
             [self.headerCaptionTextField setHidden:YES];
             [self.footerCaptionTextField setHidden:YES];
         }];
         
-        // Flip GIF preview view a app logo
-        [UIView transitionWithView:self.GIFFirstFramePreviewImageView
+        // Flip card view an app logo
+        [UIView transitionWithView:self.cardView
                           duration:0.64
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
@@ -185,11 +200,13 @@
                 [self.navigationController popToRootViewControllerAnimated:YES];
             });
         } else {
-            NSLog(@"Gif creating error");
+            NSLog(@"Gif creation error");
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.instructionsLabel setHidden:NO];
-                [self.instructionsLabel setText:@"Oops! Gif creating error.\nTap app logo to return."];
-                [self.GIFFirstFramePreviewImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(errorOccured:)]];
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops!" message:@"Error occured!" preferredStyle:UIAlertControllerStyleAlert];
+                [alertController addAction:[UIAlertAction actionWithTitle:@"Go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self.navigationController popToRootViewControllerAnimated:YES];
+                }]];
+                [self presentViewController:alertController animated:YES completion:nil];
             });
         }
     });
@@ -254,6 +271,12 @@
     UIGraphicsEndImageContext();
     
     return imageWithHeaderAndFooterText;
+}
+
+- (void)animateAction:(void (^)())action {
+    [UIView animateWithDuration:0.24 animations:^{
+        action(self);
+    }];
 }
 
 @end

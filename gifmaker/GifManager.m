@@ -93,7 +93,7 @@
     // Finalize GIF-file
     if (!CGImageDestinationFinalize(destination)) {
         NSLog(@"failed to finalize image destination");
-        return false;
+        return NO;
     }
     
     // Clean memory
@@ -107,7 +107,7 @@
     [element save];
     
     NSLog(@"Gif done");
-    return true;
+    return YES;
 }
 
 

@@ -6,8 +6,8 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
-
+// Models
+#import "GifManager.h"
 #import "GifTableViewCell.h"
 
 @interface GifTableViewCell()
