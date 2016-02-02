@@ -130,11 +130,18 @@
     if ([segue.identifier isEqualToString:@"toRecordSegue"]) {
         ((RecordViewController*)segue.destinationViewController).delegate = self;
     } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
-        GifElement *editingGif = (GifElement *)sender;
-        ((CaptionsViewController*)segue.destinationViewController).capturedImages = [editingGif getEditableFrames];
-        ((CaptionsViewController*)segue.destinationViewController).delegate = self;
-        ((CaptionsViewController*)segue.destinationViewController).headerCaptionTextForced = editingGif.headerCaption;
-        ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
+        if ([sender isKindOfClass:[NSArray class]]) {
+            // Creating gif
+            ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
+            ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+        } else if ([sender isKindOfClass:[GifElement class]]) {
+            // Editing gif
+            GifElement *editingGif = (GifElement *)sender;
+            ((CaptionsViewController*)segue.destinationViewController).capturedImages = [editingGif getEditableFrames];
+            ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+            ((CaptionsViewController*)segue.destinationViewController).headerCaptionTextForced = editingGif.headerCaption;
+            ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
+        }
     }
 }
 
