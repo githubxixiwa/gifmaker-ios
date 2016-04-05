@@ -17,6 +17,9 @@
 #import "UIImage+Extras.h"
 #import "NSString+Extras.h"
 
+// Helpers
+#import "Macros.h"
+
 @interface RecordViewController ()
 
 @property (nonatomic, strong) AVCaptureSession *captureSession;
@@ -36,17 +39,24 @@
     self.recording = NO;
     self.frontCameraIsActive = YES;
     
+    self.cancelButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    self.nextButton.transform   = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    
     [self.circularProgressView addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchDown];
     [self.circularProgressView addTarget:self action:@selector(pauseCapturing:) forControlEvents:UIControlEventTouchUpInside];
+    [self.circularProgressView setProgressTintColor:[UIColor redColor]];//RGB(199, 156, 106)];
     
-    self.navigationItem.title = @"Shoot YOUR gif!";
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(nextButtonDidTap:)];
-    [self.navigationItem.rightBarButtonItem setEnabled:NO];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -58,7 +68,11 @@
     AVCaptureDevice *device = [self frontCamera];
     
     if (!device) {
-        NSLog(@"Couldn't get a camera.");
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error!" message:@"Couldn't get a camera." preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self.navigationController popViewControllerAnimated:true];
+        }]];
+        [self presentViewController:alertController animated:YES completion:nil];
         return;
     }
     
@@ -93,6 +107,9 @@
     self.currentCaptureDevice = device;
     [self.captureSession startRunning];
 }
+
+
+#pragma mark - AVFoundation methods
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     // [One-time case] Control camera preferences: FPS, mirroring, orientation, stabilization
@@ -136,13 +153,11 @@
         if (self.capturedImages.count == GIF_FPS * VIDEO_DURATION && self.circularProgressView.enabled == YES) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.circularProgressView setAlpha:0.3];
-                [self.instructionsLabel setText:@"You've run out of time!\nNow press \"Next\""];
             });
         }
         return;
     } else {
         CGFloat progress = self.capturedImages.count / ((GIF_FPS * VIDEO_DURATION) - 1);
-        //NSLog(@"Setting progress %f", progress);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationItem.rightBarButtonItem setEnabled:YES];
             [self.circularProgressView setProgress:progress animated:YES];
@@ -171,7 +186,7 @@
 }
 
 
-#pragma mark - Camera position
+#pragma mark - Camera
 
 - (AVCaptureDevice *)frontCamera {
     return [self getCameraByPosition:AVCaptureDevicePositionFront];
@@ -194,9 +209,34 @@
 
 #pragma mark - Buttons handlers
 
-- (void)nextButtonDidTap:(id)sender {
-    [self.captureSession stopRunning];
-    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:self];
+- (IBAction)cancelButtonDidTap:(id)sender {
+    void (^performPop)() = ^void() {
+        [self.captureSession stopRunning];
+        [self.navigationController popViewControllerAnimated:YES];
+    };
+    
+    if (self.capturedImages.count > 0) {
+        // Double check canceling by asking user
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Are you sure?!" message:@"You'll lost your captured video 😿" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Yes, kitty, I want to go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            performPop();
+        }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no 😬" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    } else {
+        performPop();
+    }
+}
+
+- (IBAction)nextButtonDidTap:(id)sender {
+    if (self.capturedImages.count > 0) {
+        [self.captureSession stopRunning];
+        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:self];
+    } else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hey!" message:@"Shoot something first 😸\nPress and hold circle button at the bottom of the screen." preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Okay, got it" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 - (void)capture:(id)sender {

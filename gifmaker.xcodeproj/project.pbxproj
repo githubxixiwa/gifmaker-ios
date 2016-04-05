@@ -54,6 +54,7 @@
 
 /* Begin PBXFileReference section */
 		3E0F92689A401979FA270A2B /* libPods-gifmaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gifmaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49043E871CB3FFDD00A3696C /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
 		4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
 		4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Helpers.h"; sourceTree = "<group>"; };
@@ -179,6 +180,7 @@
 				496CBBD41C2B392200D5C117 /* models */,
 				496CBBD31C2B38FA00D5C117 /* sharingActivities */,
 				49693F6D1C087F0A007298EF /* categories */,
+				49043E871CB3FFDD00A3696C /* Macros.h */,
 				496BC5421C03A559001713BA /* AppDelegate.h */,
 				496BC5431C03A559001713BA /* AppDelegate.m */,
 				49693F741C08AA35007298EF /* GifListTableViewController.h */,

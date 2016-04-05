@@ -25,7 +25,9 @@
 
 @property (strong, nonatomic) IBOutlet UIView *cameraPreviewUIView;
 @property (strong, nonatomic) IBOutlet LLACircularProgressView *circularProgressView;
-@property (strong, nonatomic) IBOutlet UILabel *instructionsLabel;
+
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
 @property (nonatomic, strong) id delegate;
 

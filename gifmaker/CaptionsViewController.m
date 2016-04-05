@@ -141,7 +141,7 @@
 #pragma mark - Navigation Buttons Methods
 
 - (void)cancelButtonDidPress:(id)sender {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:true];
 }
 
 - (void)makeGifButtonDidPress:(id)sender {
