@@ -1,16 +1,13 @@
 //
-//  GifListTableViewController.m
+//  GifListViewController.m
 //  gifmaker
 //
 //  Created by Sergio on 11/23/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define GalleryButtonTAG 300
-#define CameraButtonTAG 301
-
 // View Controllers
-#import "GifListTableViewController.h"
+#import "GifListViewController.h"
 #import "CaptionsViewController.h"
 
 // Models
@@ -18,6 +15,7 @@
 #import "FLAnimatedImage.h"
 
 // Categories
+#import "UIView+Extras.h"
 #import "UIImage+Extras.h"
 #import "NSString+Extras.h"
 
@@ -27,15 +25,22 @@
 #import "FacebookMessengerShareActivity.h"
 #import "SaveVideoActivity.h"
 
-@interface GifListTableViewController()
+@interface GifListViewController()
+
+@property (weak, nonatomic) IBOutlet UIView *headerView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIButton *cameraButton;
+@property (weak, nonatomic) IBOutlet UIButton *galleryButton;
 
 @property (nonatomic, strong) NSMutableArray<GifElement *> *gifElements;
 @property (nonatomic) NSInteger precalculatedCellHeight;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
+@property (nonatomic, strong) UIView *transparencyGradientLayer;
+
 @end
 
-@implementation GifListTableViewController
+@implementation GifListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -48,16 +53,13 @@
     [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
     // Set up navigation bar buttons
-    UIButton *galleryButton = [self.tableView viewWithTag:GalleryButtonTAG];
-    UIButton *cameraButton = [self.tableView viewWithTag:CameraButtonTAG];
+    self.galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    self.cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
     
-    galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
-    cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    [self.galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
     
-    [galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
-    [cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     
     // Refresh GIF-files from storage
     [self refresh];
@@ -66,6 +68,41 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
+
+    if (self.transparencyGradientLayer == nil) {
+        // Hide header view to get background view snapshop without it
+        self.headerView.hidden = YES;
+        
+        CGRect transparencyGradientLayerRect = CGRectMake(self.tableView.frame.origin.x,
+                                                          self.tableView.frame.origin.y,
+                                                          [[UIScreen mainScreen] bounds].size.width,
+                                                          12);
+        
+        // Snapshot background view above the tableView
+        UIImage *transparencyGradientLayerImage = [self.view croppedImageForRect:transparencyGradientLayerRect];
+        
+        // Create a gradient layer
+        CAGradientLayer *alphaGradientLayer = [CAGradientLayer layer];
+        NSArray *colors = @[(id)[[UIColor colorWithWhite:0 alpha:0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:1] CGColor]];
+        [alphaGradientLayer setColors:colors];
+        
+        // Start the gradient at the bottom and go almost half way up.
+        [alphaGradientLayer setStartPoint:CGPointMake(0.0f, 1.0f)];
+        [alphaGradientLayer setEndPoint:CGPointMake(0.0f, 0.6f)];
+        
+        // Create a image view and apply the mask
+        self.transparencyGradientLayer = [[UIImageView alloc] initWithImage:transparencyGradientLayerImage];
+        [alphaGradientLayer setFrame:[self.transparencyGradientLayer bounds]];
+        [[self.transparencyGradientLayer layer] setMask:alphaGradientLayer];
+        self.transparencyGradientLayer.frame = transparencyGradientLayerRect;
+        
+        // Finally add the masked image view as subview
+        [[self view] addSubview:self.transparencyGradientLayer];
+        
+        // Bring headerView back visible again and put it on top of our visual stack 
+        self.headerView.hidden = NO;
+        [self.view bringSubviewToFront:self.headerView];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -77,7 +114,12 @@
     return YES;
 }
 
+
 #pragma mark - Table View Delegate Methods
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.gifElements.count;

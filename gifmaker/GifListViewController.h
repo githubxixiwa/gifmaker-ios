@@ -1,5 +1,5 @@
 //
-//  GifListTableViewController.h
+//  GifListViewController.h
 //  gifmaker
 //
 //  Created by Sergio on 11/23/15.
@@ -17,6 +17,6 @@
 // Models
 #import "GifTableViewCell.h"
 
-@interface GifListTableViewController : UITableViewController <RecordGifDelegate, QBImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate, GifTableViewСellActionsDelegate>
+@interface GifListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, RecordGifDelegate, QBImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate, GifTableViewСellActionsDelegate>
 
 @end

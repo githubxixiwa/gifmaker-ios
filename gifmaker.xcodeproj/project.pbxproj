@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49043E8A1CB5760B00A3696C /* UIView+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49043E891CB5760B00A3696C /* UIView+Extras.m */; };
 		4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */; };
 		4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4331C3A9A84006FC60E /* NSObject+Helpers.m */; };
 		4958B4371C3A9DD1006FC60E /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4361C3A9DD1006FC60E /* UIImage+animatedGIF.m */; };
@@ -14,7 +15,7 @@
 		49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F6A1C087ECE007298EF /* NSString+Extras.m */; };
 		49693F701C0881C9007298EF /* GifElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F6F1C0881C9007298EF /* GifElement.m */; };
 		49693F731C0889DE007298EF /* GifManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F721C0889DE007298EF /* GifManager.m */; };
-		49693F761C08AA35007298EF /* GifListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F751C08AA35007298EF /* GifListTableViewController.m */; };
+		49693F761C08AA35007298EF /* GifListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F751C08AA35007298EF /* GifListViewController.m */; };
 		49693F791C08B444007298EF /* GifTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 49693F781C08B444007298EF /* GifTableViewCell.m */; };
 		496BC5411C03A559001713BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5401C03A559001713BA /* main.m */; };
 		496BC5441C03A559001713BA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 496BC5431C03A559001713BA /* AppDelegate.m */; };
@@ -55,6 +56,8 @@
 /* Begin PBXFileReference section */
 		3E0F92689A401979FA270A2B /* libPods-gifmaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gifmaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49043E871CB3FFDD00A3696C /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
+		49043E881CB5760B00A3696C /* UIView+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extras.h"; sourceTree = "<group>"; };
+		49043E891CB5760B00A3696C /* UIView+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extras.m"; sourceTree = "<group>"; };
 		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
 		4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
 		4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Helpers.h"; sourceTree = "<group>"; };
@@ -69,8 +72,8 @@
 		49693F6F1C0881C9007298EF /* GifElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifElement.m; sourceTree = "<group>"; };
 		49693F711C0889DE007298EF /* GifManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifManager.h; sourceTree = "<group>"; };
 		49693F721C0889DE007298EF /* GifManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifManager.m; sourceTree = "<group>"; };
-		49693F741C08AA35007298EF /* GifListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifListTableViewController.h; sourceTree = "<group>"; };
-		49693F751C08AA35007298EF /* GifListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifListTableViewController.m; sourceTree = "<group>"; };
+		49693F741C08AA35007298EF /* GifListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifListViewController.h; sourceTree = "<group>"; };
+		49693F751C08AA35007298EF /* GifListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifListViewController.m; sourceTree = "<group>"; };
 		49693F771C08B444007298EF /* GifTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifTableViewCell.h; sourceTree = "<group>"; };
 		49693F781C08B444007298EF /* GifTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifTableViewCell.m; sourceTree = "<group>"; };
 		496BC53C1C03A559001713BA /* gifmaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gifmaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +141,8 @@
 		49693F6D1C087F0A007298EF /* categories */ = {
 			isa = PBXGroup;
 			children = (
+				49043E881CB5760B00A3696C /* UIView+Extras.h */,
+				49043E891CB5760B00A3696C /* UIView+Extras.m */,
 				49693F661C062606007298EF /* UIImage+Extras.h */,
 				49693F671C062606007298EF /* UIImage+Extras.m */,
 				49693F691C087ECE007298EF /* NSString+Extras.h */,
@@ -183,8 +188,8 @@
 				49043E871CB3FFDD00A3696C /* Macros.h */,
 				496BC5421C03A559001713BA /* AppDelegate.h */,
 				496BC5431C03A559001713BA /* AppDelegate.m */,
-				49693F741C08AA35007298EF /* GifListTableViewController.h */,
-				49693F751C08AA35007298EF /* GifListTableViewController.m */,
+				49693F741C08AA35007298EF /* GifListViewController.h */,
+				49693F751C08AA35007298EF /* GifListViewController.m */,
 				496BC57F1C0505BA001713BA /* RecordViewController.h */,
 				496BC5801C0505BA001713BA /* RecordViewController.m */,
 				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
@@ -457,8 +462,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				496CBBCC1C2AED4400D5C117 /* IMessageShareActivity.m in Sources */,
+				49043E8A1CB5760B00A3696C /* UIView+Extras.m in Sources */,
 				496CBBD21C2AFE5400D5C117 /* SaveVideoActivity.m in Sources */,
-				49693F761C08AA35007298EF /* GifListTableViewController.m in Sources */,
+				49693F761C08AA35007298EF /* GifListViewController.m in Sources */,
 				496BC5441C03A559001713BA /* AppDelegate.m in Sources */,
 				496BC5411C03A559001713BA /* main.m in Sources */,
 				49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */,
