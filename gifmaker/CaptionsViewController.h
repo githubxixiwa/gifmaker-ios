@@ -14,12 +14,14 @@
 
 @interface CaptionsViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet UIImageView *GIFFirstFramePreviewImageView;
-@property (strong, nonatomic) IBOutlet UITextField *headerCaptionTextField;
-@property (strong, nonatomic) IBOutlet UITextField *footerCaptionTextField;
-@property (strong, nonatomic) IBOutlet UIButton *gifItButton;
-@property (strong, nonatomic) IBOutlet UIButton *cancelButton;
-@property (strong, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet UIImageView *GIFFirstFramePreviewImageView;
+@property (weak, nonatomic) IBOutlet UITextField *headerCaptionTextField;
+@property (weak, nonatomic) IBOutlet UITextField *footerCaptionTextField;
+@property (weak, nonatomic) IBOutlet UIButton *gifItButton;
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
 
 @property (nonatomic, strong) NSArray<UIImage *> *capturedImages;
 @property (nonatomic, strong) id delegate;

@@ -22,6 +22,8 @@
 
 /*! Center point of the current UIViewController's view. */
 @property (nonatomic) CGPoint center;
+@property (nonatomic) BOOL scrollViewOffsetDidSet;
+@property (nonatomic) CGSize scrollViewDefaultSize;
 
 @end
 
@@ -65,6 +67,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.center = self.view.center;
+    self.scrollViewDefaultSize = self.scrollView.frame.size;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -73,22 +76,24 @@
 
 - (void)gifPreviewImageDidTap:(id)sender {
     [self.view endEditing:YES];
-    [self animateAction:^{
-        self.view.center = self.center;
-    }];
+    [self scrollViewDisableScrolling];
 }
 
 
 #pragma mark - UITextFieldDelegate methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (!self.scrollViewOffsetDidSet) {
+        [self scrollViewEnableScrolling];
+    }
+    
     if (textField == self.headerCaptionTextField) {
         [self animateAction:^{
-            self.view.center = self.center;
+            [self.scrollView setContentOffset:CGPointZero];
         }];
     } else {
         [self animateAction:^{
-            self.view.center = CGPointMake(self.center.x, self.center.y / 2);
+            [self.scrollView setContentOffset:CGPointMake(0, 0 + self.center.y / 2)];
         }];
     }
     
@@ -100,14 +105,8 @@
     
     if (textField == self.headerCaptionTextField) {
         [self.footerCaptionTextField becomeFirstResponder];
-        [self animateAction:^{
-            self.view.center = CGPointMake(self.center.x, self.center.y / 2);
-        }];
     } else {
         [self.headerCaptionTextField becomeFirstResponder];
-        [self animateAction:^{
-            self.view.center = self.center;
-        }];
     }
     
     return NO;
@@ -147,6 +146,9 @@
 - (void)makeGifButtonDidPress:(id)sender {
     // Disable 'GIF IT!' button
     [self.gifItButton setEnabled:NO];
+    
+    // Disable 'Cancel' button
+    [self.cancelButton setEnabled:NO];
     
     // Dismiss keyboard (if open)
     [self.view endEditing:YES];
@@ -271,6 +273,20 @@
     UIGraphicsEndImageContext();
     
     return imageWithHeaderAndFooterText;
+}
+
+- (void)scrollViewEnableScrolling {
+    self.scrollViewOffsetDidSet = YES;
+    [self animateAction:^{
+        [self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width, self.scrollView.frame.size.height + self.center.y / 2)];
+    }];
+}
+
+- (void)scrollViewDisableScrolling {
+    self.scrollViewOffsetDidSet = NO;
+    [self animateAction:^{
+        [self.scrollView setContentSize:self.scrollViewDefaultSize];
+    }];
 }
 
 - (void)animateAction:(void (^)())action {

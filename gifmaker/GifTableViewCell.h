@@ -19,11 +19,11 @@
 
 @interface GifTableViewCell : UITableViewCell
 
-@property (strong, nonatomic) IBOutlet UIView *cardView;
-@property (strong, nonatomic) IBOutlet FLAnimatedImageView *gifView;
-@property (strong, nonatomic) IBOutlet UILabel *postedDateLabel;
-@property (strong, nonatomic) IBOutlet UIButton *editButton;
-@property (strong, nonatomic) id delegate;
+@property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet FLAnimatedImageView *gifView;
+@property (weak, nonatomic) IBOutlet UILabel *postedDateLabel;
+@property (weak, nonatomic) IBOutlet UIButton *editButton;
+@property (weak, nonatomic) id delegate;
 
 - (IBAction)shareButtonDidTap:(id)sender;
 - (IBAction)editGifDidTap:(id)sender;
