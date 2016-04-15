@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSMutableArray<UIImage *> *capturedImages;
 @property (nonatomic) BOOL recording;
 @property (nonatomic) BOOL frontCameraIsActive;
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -108,6 +109,11 @@
     [self.captureSession startRunning];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.timer invalidate];
+}
+
 
 #pragma mark - AVFoundation methods
 
@@ -150,7 +156,7 @@
     
     // Update progress bar state
     if (!self.recording || self.capturedImages.count == GIF_FPS * VIDEO_DURATION) {
-        if (self.capturedImages.count == GIF_FPS * VIDEO_DURATION && self.circularProgressView.enabled == YES) {
+        if (self.capturedImages.count == GIF_FPS * VIDEO_DURATION) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.circularProgressView setAlpha:0.3];
             });
@@ -218,7 +224,7 @@
     if (self.capturedImages.count > 0) {
         // Double check canceling by asking user
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Are you sure?!" message:@"You'll lost your captured video 😿" preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"Yes, kitty, I want to go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Yes, I want to go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             performPop();
         }]];
         [alertController addAction:[UIAlertAction actionWithTitle:@"Oops, no 😬" style:UIAlertActionStyleCancel handler:nil]];
@@ -241,12 +247,21 @@
 
 - (void)capture:(id)sender {
     self.recording = YES;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
     NSLog(@"Capturing");
 }
 
 - (void)pauseCapturing:(id)sender {
     self.recording = NO;
+    [self.timer invalidate];
     NSLog(@"Paused. Captured %lu frames", (unsigned long)self.capturedImages.count);
+}
+
+// Check if user reached max time of record
+- (void)timerFired:(id)sender {
+    if (self.capturedImages.count >= GIF_FPS * VIDEO_DURATION) {
+        [self nextButtonDidTap:sender];
+    }
 }
 
 - (IBAction)changeCameraButtonDidTap:(id)sender {
