@@ -214,30 +214,49 @@
 #pragma mark - QBImagePickerControllerDelegate Methods
 
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    __block BOOL error = false;
     NSMutableArray<UIImage *> *frames = [NSMutableArray array];
     
     // Configure options for PHAsset->UIImage extractor
     PHImageRequestOptions *requestOptions = [[PHImageRequestOptions alloc] init];
-    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-    requestOptions.synchronous  = YES;
+    requestOptions.resizeMode             = PHImageRequestOptionsResizeModeExact;
+    requestOptions.deliveryMode           = PHImageRequestOptionsDeliveryModeFastFormat;
+    requestOptions.version                = PHImageRequestOptionsVersionCurrent;
+    requestOptions.networkAccessAllowed   = YES;
+    requestOptions.synchronous            = YES;
+    
+    //TODO: make a preloader when photos are loading from iCloud? Because for now UI can stuck in this case (weird!).
     
     for (PHAsset *asset in assets) {
+        if (error) {
+            break;
+        }
+        
         CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(GIF_SIDE_SIZE, CGFLOAT_MAX)
                                                                    : CGSizeMake(CGFLOAT_MAX, GIF_SIDE_SIZE);
         
         // Get UIImage from PHAsset and add it to the 'frames' array
         [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:requestOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            // Crop center part of the image
-            UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-            
-            // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
-            [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
+            if (result == nil) {
+                error = YES;
+            } else {
+                // Crop center part of the image
+                UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+                
+                // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
+                [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
+            }
         }];
     }
     
     [imagePickerController dismissViewControllerAnimated:YES completion:^{
-        [self performSegueWithIdentifier:@"toCaptionsSegue" sender:frames];
+        if (error) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops 🤕" message:@"You can't import some photos because they can be compressed in the memory due to lack of it.\nTry to enable network and try again." preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+            [self performSegueWithIdentifier:@"toCaptionsSegue" sender:frames];
+        }
     }];
 }
 
