@@ -36,73 +36,67 @@
 @property (nonatomic) NSInteger precalculatedCellHeight;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
-@property (nonatomic, strong) UIView *transparencyGradientLayer;
+@property (weak, nonatomic) IBOutlet UIView *headerViewBottomLineView;
+@property (nonatomic) NSInteger lastContentOffsetY;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerViewTopConstraint;
+
+@property (nonatomic) BOOL waitingToScrollTheCell;
+@property (nonatomic) NSInteger waitingCellTopY;
+@property (nonatomic) NSInteger waitingCellRowIndex;
+@property (nonatomic) NSInteger waitingCellLastYOffset;
 
 @end
 
 @implementation GifListViewController
 
+
+#pragma mark - Global variables
+
+static double const headerDefaultHeight = 128.0;
+static double const headerMinimumHeight = 0.0;
+
+
+#pragma mark - Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // Precalculate cell height
     self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * 1.24;
-    
+
     // Preinit date formatter
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    
+
     // Set up navigation bar buttons
     self.galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
     self.cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
-    
+
     [self.galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
     [self.cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
-    
+
+    self.lastContentOffsetY = 0;
+    self.waitingToScrollTheCell = NO;
+
     // Refresh GIF-files from storage
     [self refresh];
+    
+    // TEMPORARY:
+    UITapGestureRecognizer *doubleTapNizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(testLineTapped)];
+    doubleTapNizer.numberOfTapsRequired = 3;
+    [self.headerView addGestureRecognizer:doubleTapNizer];
+}
+
+- (void)testLineTapped {
+    self.headerViewBottomLineView.hidden = !self.headerViewBottomLineView.hidden;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-
-    if (self.transparencyGradientLayer == nil) {
-        // Hide header view to get background view snapshop without it
-        self.headerView.hidden = YES;
-        
-        CGRect transparencyGradientLayerRect = CGRectMake(self.tableView.frame.origin.x,
-                                                          self.tableView.frame.origin.y,
-                                                          [[UIScreen mainScreen] bounds].size.width,
-                                                          12);
-        
-        // Snapshot background view above the tableView
-        UIImage *transparencyGradientLayerImage = [self.view croppedImageForRect:transparencyGradientLayerRect];
-        
-        // Create a gradient layer
-        CAGradientLayer *alphaGradientLayer = [CAGradientLayer layer];
-        NSArray *colors = @[(id)[[UIColor colorWithWhite:0 alpha:0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:1] CGColor]];
-        [alphaGradientLayer setColors:colors];
-        
-        // Start the gradient at the bottom and go almost half way up.
-        [alphaGradientLayer setStartPoint:CGPointMake(0.0f, 1.0f)];
-        [alphaGradientLayer setEndPoint:CGPointMake(0.0f, 0.6f)];
-        
-        // Create a image view and apply the mask
-        self.transparencyGradientLayer = [[UIImageView alloc] initWithImage:transparencyGradientLayerImage];
-        [alphaGradientLayer setFrame:[self.transparencyGradientLayer bounds]];
-        [[self.transparencyGradientLayer layer] setMask:alphaGradientLayer];
-        self.transparencyGradientLayer.frame = transparencyGradientLayerRect;
-        
-        // Finally add the masked image view as subview
-        [[self view] addSubview:self.transparencyGradientLayer];
-        
-        // Bring headerView back visible again and put it on top of our visual stack 
-        self.headerView.hidden = NO;
-        [self.view bringSubviewToFront:self.headerView];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -112,6 +106,15 @@
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    self.headerViewBottomLineView.layer.masksToBounds = NO;
+    self.headerViewBottomLineView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.headerViewBottomLineView.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+    self.headerViewBottomLineView.layer.shadowOpacity = 1.0;
 }
 
 
@@ -145,6 +148,136 @@
     return self.precalculatedCellHeight;
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    BOOL scrollingUp = scrollView.contentOffset.y > self.lastContentOffsetY;
+    
+    //NSLog(@"Content offset: %f, decelerating: %@", scrollView.contentOffset.y, scrollView.isDecelerating ? @"yes" : @"no");
+
+    if (self.lastContentOffsetY == 0 && scrollView.contentOffset.y == 0) {
+        // Last & current offset zero: Optim #0
+        self.lastContentOffsetY = scrollView.contentOffset.y;
+        return;
+    }
+    
+    if (self.headerViewTopConstraint.constant == headerMinimumHeight - headerDefaultHeight && scrollingUp) {
+        // Header already reached off: Optim #1
+        self.lastContentOffsetY = scrollView.contentOffset.y;
+        return;
+    }
+    
+    if (self.headerViewTopConstraint.constant == headerMinimumHeight && !scrollingUp) {
+        // Header already reached on: Optim #2
+        self.lastContentOffsetY = scrollView.contentOffset.y;
+        return;
+    }
+    
+    if (scrollView.tag == 1) {
+        // Scroll view prevented scroll back: Optim #3
+        scrollView.tag = 0;
+        self.lastContentOffsetY = scrollView.contentOffset.y;
+        return;
+    }
+    
+    // Reused blocks
+    
+    void (^setPreviousScrollOffsetBack)() = ^void() {
+        scrollView.tag = 1;
+        scrollView.contentOffset = CGPointMake(0, self.lastContentOffsetY);
+    };
+    
+    // Let's begin
+
+    double difference = scrollView.contentOffset.y - self.lastContentOffsetY;
+    double newTopConstraintValue = self.headerViewTopConstraint.constant - difference;
+
+    if (scrollingUp) {
+        self.waitingToScrollTheCell = NO;
+        // SCR UP
+        if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
+            newTopConstraintValue = headerMinimumHeight - headerDefaultHeight;
+        }
+
+        if (newTopConstraintValue > headerMinimumHeight - headerDefaultHeight) {
+            setPreviousScrollOffsetBack();
+        }
+    } else {
+        /*
+        if (self.headerViewTopConstraint.constant == -headerDefaultHeight && self.gifElements.count > 0) {
+            NSIndexPath *firstVisibleCellIndexPath = [self.tableView indexPathForCell:self.tableView.visibleCells.firstObject];
+            
+            if (firstVisibleCellIndexPath.row > 0) {
+                void (^nullateWaitingCell)() = ^void() {
+                    self.waitingToScrollTheCell = NO;
+                    self.waitingCellLastYOffset = -1;
+                    self.waitingCellTopY = -1;
+                    self.waitingCellRowIndex = -1;
+                    backFromWaitingCell = YES;
+                };
+                
+                CGRect firstVisibleCellRect = [self.tableView rectForRowAtIndexPath:firstVisibleCellIndexPath];
+                NSInteger firstVisibleCellYOffset = scrollView.contentOffset.y - (firstVisibleCellIndexPath.row * self.precalculatedCellHeight);
+                NSInteger firstVisibleCellCurrentOffsetToTop = firstVisibleCellRect.origin.y - (firstVisibleCellIndexPath.row * self.precalculatedCellHeight);
+                
+                BOOL abort = NO;
+                
+                if (self.waitingToScrollTheCell) {
+                    if (firstVisibleCellIndexPath.row != self.waitingCellRowIndex) {
+                        if (firstVisibleCellYOffset > self.waitingCellLastYOffset) {
+                            //NSLog(@"Changing ownership abort");
+                            abort = YES;
+                            nullateWaitingCell();
+                        } else {
+                            //NSLog(@"Changing ownership");
+                            self.waitingCellRowIndex = firstVisibleCellIndexPath.row;
+                            self.waitingCellTopY = firstVisibleCellRect.origin.y;
+                        }
+                    }
+                }
+                
+                if (!abort) {
+                    if (self.waitingToScrollTheCell && firstVisibleCellYOffset > firstVisibleCellCurrentOffsetToTop) {
+                        self.waitingCellLastYOffset = firstVisibleCellYOffset;
+                        
+                        //NSLog(@"QRT (fvcyf: %ld)", (long)firstVisibleCellYOffset);
+                        self.lastContentOffsetY = scrollView.contentOffset.y;
+                        return;
+                    } else if (firstVisibleCellYOffset > firstVisibleCellCurrentOffsetToTop) {
+                        self.waitingToScrollTheCell = YES;
+                        self.waitingCellRowIndex = firstVisibleCellIndexPath.row;
+                        self.waitingCellTopY = firstVisibleCellRect.origin.y;
+                        self.waitingCellLastYOffset = firstVisibleCellYOffset;
+                        
+                        //NSLog(@"aer (fvcyf: %ld)", (long)firstVisibleCellYOffset);
+                        self.lastContentOffsetY = scrollView.contentOffset.y;
+                        return;
+                    } else if (firstVisibleCellYOffset == firstVisibleCellCurrentOffsetToTop) {
+                        nullateWaitingCell();
+                        //NSLog(@"abe!");
+                    }
+                }
+            }
+        }
+        */
+        
+        // SCR DOWN
+        if (newTopConstraintValue > headerMinimumHeight) {
+            newTopConstraintValue = headerMinimumHeight;
+        } else if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
+            newTopConstraintValue = headerMinimumHeight - headerDefaultHeight;
+        }
+
+        if (newTopConstraintValue < headerMinimumHeight) {
+            setPreviousScrollOffsetBack();
+        }
+    }
+    
+    /* Header's off screen percentage
+    double percentage = 100 - ((newTopConstraintValue / (headerMinimumHeight - headerDefaultHeight)) * 100);
+     */
+    
+    self.headerViewTopConstraint.constant = newTopConstraintValue;
+    self.lastContentOffsetY = scrollView.contentOffset.y;
+}
 
 #pragma mark - Bar Button Items Methods
 
@@ -161,7 +294,7 @@
     imagePickerController.showsNumberOfSelectedAssets = YES;
     imagePickerController.mediaType = QBImagePickerMediaTypeImage;
     imagePickerController.prompt = [NSString stringWithFormat:@"%lu photos min, %lu max. Select photos in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection];
-    
+
     [self presentViewController:imagePickerController animated:YES completion:NULL];
 }
 
@@ -192,20 +325,20 @@
 
 - (void)refresh {
     self.gifElements = [NSMutableArray array];
-    
+
     // Load GIF-metadata files
     NSArray<NSURL *> *metadataFilesFromStorage = [GifManager localMetadataFilesPaths];
     for (NSURL *metadataFileURL in metadataFilesFromStorage) {
         GifElement *gifElement = [[GifElement alloc] initWithMetadataFile:metadataFileURL];
         [self.gifElements addObject:gifElement];
     }
-    
+
     NSSortDescriptor *dateDescriptor = [NSSortDescriptor
                                         sortDescriptorWithKey:@"datePosted"
                                         ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObject:dateDescriptor];
     self.gifElements = [NSMutableArray arrayWithArray:[self.gifElements sortedArrayUsingDescriptors:sortDescriptors]];
-    
+
     [self.tableView reloadData];
     [self scrollToTop];
 }
@@ -216,7 +349,7 @@
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     __block BOOL error = false;
     NSMutableArray<UIImage *> *frames = [NSMutableArray array];
-    
+
     // Configure options for PHAsset->UIImage extractor
     PHImageRequestOptions *requestOptions = [[PHImageRequestOptions alloc] init];
     requestOptions.resizeMode             = PHImageRequestOptionsResizeModeExact;
@@ -224,17 +357,17 @@
     requestOptions.version                = PHImageRequestOptionsVersionCurrent;
     requestOptions.networkAccessAllowed   = YES;
     requestOptions.synchronous            = YES;
-    
+
     //TODO: make a preloader when photos are loading from iCloud? Because for now UI can stuck in this case (weird!).
-    
+
     for (PHAsset *asset in assets) {
         if (error) {
             break;
         }
-        
+
         CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(GIF_SIDE_SIZE, CGFLOAT_MAX)
                                                                    : CGSizeMake(CGFLOAT_MAX, GIF_SIDE_SIZE);
-        
+
         // Get UIImage from PHAsset and add it to the 'frames' array
         [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:requestOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             if (result == nil) {
@@ -242,13 +375,13 @@
             } else {
                 // Crop center part of the image
                 UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-                
+
                 // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
                 [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
             }
         }];
     }
-    
+
     [imagePickerController dismissViewControllerAnimated:YES completion:^{
         if (error) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops 🤕" message:@"You can't import some photos because they can be compressed in the memory due to lack of it.\nTry to enable network and try again." preferredStyle:UIAlertControllerStyleAlert];
@@ -269,22 +402,22 @@
 
 - (void)shareButtonDidTapHandler:(NSInteger)index {
     // Prepare custom share buttons
-    
+
     IMessageShareActivity *imessageShareActivity = [[IMessageShareActivity alloc] init];
     imessageShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
     imessageShareActivity.viewController = self;
-    
+
     FacebookShareActivity *facebookShareActivity = [[FacebookShareActivity alloc] init];
     facebookShareActivity.gifURL = [self.gifElements[index] gifURL];
     facebookShareActivity.showInViewController = self;
-    
+
     FacebookMessengerShareActivity *facebookMessengerShareActivity = [[FacebookMessengerShareActivity alloc] init];
     facebookMessengerShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
     facebookMessengerShareActivity.showInViewController = self;
-    
+
     SaveVideoActivity *saveVideoActivity = [[SaveVideoActivity alloc] init];
     saveVideoActivity.gifElement = self.gifElements[index];
-    
+
     // Make sharing controller with our share buttons
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc]
                                                         initWithActivityItems:@[]
@@ -292,7 +425,7 @@
                                                                                 facebookShareActivity,
                                                                                 facebookMessengerShareActivity,
                                                                                 saveVideoActivity]];
-    
+
     // Exclude all system's sharing services (use only our ones)
     NSArray *excludeActivities = @[UIActivityTypeAirDrop,
                                    UIActivityTypePrint,
@@ -308,9 +441,9 @@
                                    UIActivityTypePostToFacebook,
                                    UIActivityTypePostToTencentWeibo,
                                    UIActivityTypeSaveToCameraRoll];
-    
+
     activityViewController.excludedActivityTypes = excludeActivities;
-    
+
     // Present sharing controller to the user
     [self.navigationController presentViewController:activityViewController
                                        animated:YES

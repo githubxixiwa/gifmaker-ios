@@ -7,6 +7,7 @@
 //
 
 #import "SaveVideoActivity.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 
 @implementation SaveVideoActivity
 
@@ -35,7 +36,15 @@
 }
 
 - (void)performActivity {
-    [self.gifElement saveToGalleryAsVideo];
+    [SVProgressHUD showWithStatus:@"Exporting... Please wait." maskType:SVProgressHUDMaskTypeBlack];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.gifElement saveToGalleryAsVideo];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    });
 }
 
 @end

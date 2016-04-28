@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A2454EA1685BE50FB7306245"
+               BlueprintIdentifier = "2208E307FFF7395EE139D452"
                BuildableName = "libPods-gifmaker.a"
                BlueprintName = "Pods-gifmaker"
                ReferencedContainer = "container:Pods.xcodeproj">

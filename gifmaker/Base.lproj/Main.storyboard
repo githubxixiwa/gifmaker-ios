@@ -23,6 +23,13 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sdr-IH-zxm" userLabel="Header View">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="128"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Lu-7Q-6vK" userLabel="Bottom line">
+                                        <rect key="frame" x="0.0" y="126" width="600" height="2"/>
+                                        <color key="backgroundColor" white="1" alpha="0.79927262931034482" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="2" id="m6D-UV-nNb"/>
+                                        </constraints>
+                                    </view>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="paper" translatesAutoresizingMaskIntoConstraints="NO" id="haF-V5-EDq">
                                         <rect key="frame" x="172" y="5" width="256" height="118"/>
                                         <constraints>
@@ -80,14 +87,17 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="4Lu-7Q-6vK" secondAttribute="trailing" id="25T-I9-izE"/>
                                     <constraint firstAttribute="height" constant="128" id="8p8-kZ-3Qj"/>
                                     <constraint firstItem="haF-V5-EDq" firstAttribute="centerY" secondItem="Sdr-IH-zxm" secondAttribute="centerY" id="AeR-3j-3el"/>
                                     <constraint firstItem="PVf-Ec-5CK" firstAttribute="centerX" secondItem="Sdr-IH-zxm" secondAttribute="centerX" id="Bou-fo-Bwl"/>
                                     <constraint firstItem="gRp-Lb-h1g" firstAttribute="leading" secondItem="Sdr-IH-zxm" secondAttribute="leading" constant="-220" id="DcT-6A-Agw"/>
                                     <constraint firstItem="haF-V5-EDq" firstAttribute="centerX" secondItem="Sdr-IH-zxm" secondAttribute="centerX" id="IFI-dQ-Ph9"/>
                                     <constraint firstItem="94g-do-IoB" firstAttribute="centerY" secondItem="Sdr-IH-zxm" secondAttribute="centerY" id="RU4-rb-2ks"/>
+                                    <constraint firstAttribute="bottom" secondItem="4Lu-7Q-6vK" secondAttribute="bottom" id="VfA-tJ-EAk"/>
                                     <constraint firstAttribute="trailing" secondItem="Sca-KB-vGd" secondAttribute="trailing" constant="-220" id="bk2-iD-aPy"/>
                                     <constraint firstItem="PVf-Ec-5CK" firstAttribute="centerY" secondItem="Sdr-IH-zxm" secondAttribute="centerY" multiplier="0.92" id="c7e-Uj-zqA"/>
+                                    <constraint firstItem="4Lu-7Q-6vK" firstAttribute="leading" secondItem="Sdr-IH-zxm" secondAttribute="leading" id="d5u-D2-LzO"/>
                                     <constraint firstItem="csS-Gn-PoV" firstAttribute="leading" secondItem="Sdr-IH-zxm" secondAttribute="leading" constant="-12" id="g5Z-fq-bo5"/>
                                     <constraint firstAttribute="trailing" secondItem="94g-do-IoB" secondAttribute="trailing" constant="-12" id="gic-Fu-AHX"/>
                                     <constraint firstItem="Sca-KB-vGd" firstAttribute="centerY" secondItem="Sdr-IH-zxm" secondAttribute="centerY" id="qzi-Hx-veh"/>
@@ -95,8 +105,8 @@
                                     <constraint firstItem="gRp-Lb-h1g" firstAttribute="centerY" secondItem="Sdr-IH-zxm" secondAttribute="centerY" id="wSh-pC-ITG"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="661" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Pk2-3h-UCv">
-                                <rect key="frame" x="0.0" y="116" width="600" height="884"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="661" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Pk2-3h-UCv">
+                                <rect key="frame" x="0.0" y="128" width="600" height="872"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="reuseIdentifier" rowHeight="740" id="8ct-gB-qPN" customClass="GifTableViewCell">
@@ -271,19 +281,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Pk2-3h-UCv" secondAttribute="bottom" id="E34-kY-cI4"/>
-                            <constraint firstItem="Pk2-3h-UCv" firstAttribute="top" secondItem="Sdr-IH-zxm" secondAttribute="bottom" constant="-12" id="Ks7-Dp-eGD"/>
+                            <constraint firstItem="Pk2-3h-UCv" firstAttribute="top" secondItem="Sdr-IH-zxm" secondAttribute="bottom" id="Ks7-Dp-eGD"/>
                             <constraint firstItem="Pk2-3h-UCv" firstAttribute="leading" secondItem="2Zl-H7-KEN" secondAttribute="leading" id="Mu6-M4-3au"/>
                             <constraint firstItem="Sdr-IH-zxm" firstAttribute="top" secondItem="2Zl-H7-KEN" secondAttribute="topMargin" id="R7k-FC-c6T"/>
                             <constraint firstItem="Sdr-IH-zxm" firstAttribute="leading" secondItem="2Zl-H7-KEN" secondAttribute="leading" id="RyQ-zh-Xaj"/>
                             <constraint firstAttribute="trailing" secondItem="Pk2-3h-UCv" secondAttribute="trailing" id="a42-W3-MMu"/>
                             <constraint firstAttribute="trailing" secondItem="Sdr-IH-zxm" secondAttribute="trailing" id="cHq-ED-4s3"/>
-                            <constraint firstItem="Sdr-IH-zxm" firstAttribute="top" secondItem="5E2-wE-YuB" secondAttribute="bottom" id="nV9-bz-nQV"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="nV9-bz-nQV"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="x1K-32-PDL"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -292,6 +296,9 @@
                         <outlet property="cameraButton" destination="94g-do-IoB" id="Dtu-vw-gx2"/>
                         <outlet property="galleryButton" destination="csS-Gn-PoV" id="eLC-Bh-f8D"/>
                         <outlet property="headerView" destination="Sdr-IH-zxm" id="1vh-Br-dcO"/>
+                        <outlet property="headerViewBottomLineView" destination="4Lu-7Q-6vK" id="Wo0-Bh-ofp"/>
+                        <outlet property="headerViewHeightConstraint" destination="8p8-kZ-3Qj" id="XLR-g7-rOv"/>
+                        <outlet property="headerViewTopConstraint" destination="R7k-FC-c6T" id="VUB-v9-2bq"/>
                         <outlet property="tableView" destination="Pk2-3h-UCv" id="OnN-3h-zPX"/>
                         <segue destination="HEI-g4-jvt" kind="show" identifier="toRecordSegue" id="jSB-Cd-Bzu"/>
                         <segue destination="Upl-jv-59b" kind="show" identifier="toCaptionsSegue" id="Y6c-GV-7ly"/>
@@ -719,6 +726,6 @@
         <image name="switchCameraIconNew" width="171" height="171"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zTT-XI-QlR"/>
+        <segue reference="Y6c-GV-7ly"/>
     </inferredMetricsTieBreakers>
 </document>
