@@ -18,6 +18,7 @@
 #import "UIView+Extras.h"
 #import "UIImage+Extras.h"
 #import "NSString+Extras.h"
+#import "UIImagePickerController+Additions.h"
 
 // Sharing Activities
 #import "FacebookShareActivity.h"
@@ -55,6 +56,7 @@
 
 static double const headerDefaultHeight = 128.0;
 static double const headerMinimumHeight = 0.0;
+static double const precalculatedCellHeightMultiplier = 1.24;
 
 
 #pragma mark - Lifecycle
@@ -63,7 +65,7 @@ static double const headerMinimumHeight = 0.0;
     [super viewDidLoad];
 
     // Precalculate cell height
-    self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * 1.24;
+    self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * precalculatedCellHeightMultiplier;
 
     // Preinit date formatter
     self.dateFormatter = [[NSDateFormatter alloc] init];
@@ -83,15 +85,6 @@ static double const headerMinimumHeight = 0.0;
 
     // Refresh GIF-files from storage
     [self refresh];
-    
-    // TEMPORARY:
-    UITapGestureRecognizer *doubleTapNizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(testLineTapped)];
-    doubleTapNizer.numberOfTapsRequired = 3;
-    [self.headerView addGestureRecognizer:doubleTapNizer];
-}
-
-- (void)testLineTapped {
-    self.headerViewBottomLineView.hidden = !self.headerViewBottomLineView.hidden;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -286,16 +279,33 @@ static double const headerMinimumHeight = 0.0;
 }
 
 - (void)selectImagesFromGallery:(id)sender {
-    QBImagePickerController *imagePickerController = [QBImagePickerController new];
-    imagePickerController.delegate = self;
-    imagePickerController.allowsMultipleSelection = YES;
-    imagePickerController.minimumNumberOfSelection = GIF_FPS * 1 / 2; //0.5 second GIF is a minimum duration
-    imagePickerController.maximumNumberOfSelection = GIF_FPS * VIDEO_DURATION;
-    imagePickerController.showsNumberOfSelectedAssets = YES;
-    imagePickerController.mediaType = QBImagePickerMediaTypeImage;
-    imagePickerController.prompt = [NSString stringWithFormat:@"%lu photos min, %lu max. Select photos in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection];
-
-    [self presentViewController:imagePickerController animated:YES completion:NULL];
+    [UIImagePickerController obtainPermissionForMediaSourceType:UIImagePickerControllerSourceTypePhotoLibrary withSuccessHandler:^{
+        // Permissions OK, open photo library to select
+        QBImagePickerController *imagePickerController = [QBImagePickerController new];
+        imagePickerController.delegate = self;
+        imagePickerController.allowsMultipleSelection = YES;
+        imagePickerController.minimumNumberOfSelection = GIF_FPS * 1 / 8; //0.125 second GIF is a minimum duration
+        imagePickerController.maximumNumberOfSelection = GIF_FPS * VIDEO_DURATION;
+        imagePickerController.showsNumberOfSelectedAssets = YES;
+        imagePickerController.assetCollectionSubtypes = @[
+                                                          @(PHAssetCollectionSubtypeSmartAlbumUserLibrary), // Camera Roll
+                                                          @(PHAssetCollectionSubtypeAlbumMyPhotoStream), // My Photo Stream
+                                                          @(PHAssetCollectionSubtypeSmartAlbumBursts), // Bursts
+                                                          @(PHAssetCollectionSubtypeSmartAlbumSelfPortraits), // Selfies
+                                                          @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded), // Recently Added
+                                                          @(PHAssetCollectionSubtypeSmartAlbumScreenshots) // Screenshots
+                                                          ];
+        imagePickerController.prompt = [NSString stringWithFormat:@"%lu photos min, %lu max. Select them in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection];
+        
+        [self presentViewController:imagePickerController animated:YES completion:NULL];
+    } andFailure:^{
+        // Permissions NOT OK, show error alert
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hey" message:@"App has no permissions to your photo gallery 😿\nPlease open setting and let app access it to continue." preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Open Setting" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        }]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }];
 }
 
 
