@@ -287,6 +287,7 @@ static double const precalculatedCellHeightMultiplier = 1.24;
         imagePickerController.minimumNumberOfSelection = GIF_FPS * 1 / 8; //0.125 second GIF is a minimum duration
         imagePickerController.maximumNumberOfSelection = GIF_FPS * VIDEO_DURATION;
         imagePickerController.showsNumberOfSelectedAssets = YES;
+        imagePickerController.mediaType = QBImagePickerMediaTypeImage;
         imagePickerController.assetCollectionSubtypes = @[
                                                           @(PHAssetCollectionSubtypeSmartAlbumUserLibrary), // Camera Roll
                                                           @(PHAssetCollectionSubtypeAlbumMyPhotoStream), // My Photo Stream
