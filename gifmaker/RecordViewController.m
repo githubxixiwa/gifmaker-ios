@@ -69,11 +69,7 @@
     AVCaptureDevice *device = [self frontCamera];
     
     if (!device) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error!" message:@"Couldn't get a camera." preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self.navigationController popViewControllerAnimated:true];
-        }]];
-        [self presentViewController:alertController animated:YES completion:nil];
+        [self displayCameraErrorAlert];
         return;
     }
     
@@ -82,12 +78,16 @@
                                                                          error:&error];
     if (error) {
         NSLog(@"Error adding new AVCaptureDeviceInput!");
+        [self displayCameraErrorAlert];
+        return;
     }
     
     if (input) {
         [self.captureSession addInput:input];
     } else {
         NSLog(@"Couldn't initialize device input: %@", error);
+        [self displayCameraErrorAlert];
+        return;
     }
     
     // Set output
@@ -284,6 +284,8 @@
     AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:newCaptureDevice error:&error];
     if (error) {
         NSLog(@"Error adding new AVCaptureDeviceInput!");
+        [self displayCameraErrorAlert];
+        return;
     }
     
     // Set new input for the capture session
@@ -293,11 +295,24 @@
     [self.captureSession startRunning];
 }
 
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     ((CaptionsViewController*)segue.destinationViewController).capturedImages = self.capturedImages;
     ((CaptionsViewController*)segue.destinationViewController).delegate = self.delegate;
+}
+
+
+#pragma mark - Helpers
+
+- (void)displayCameraErrorAlert {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Couldn't get a camera." message:@"Please allow camera usage if you disabled that." preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Open Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.navigationController popViewControllerAnimated:true];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end
