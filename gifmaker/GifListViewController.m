@@ -13,6 +13,7 @@
 // Models
 #import "GifManager.h"
 #import "FLAnimatedImage.h"
+#import "AnalyticsManager.h"
 
 // Categories
 #import "UIView+Extras.h"
@@ -320,6 +321,8 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             // Creating gif
             ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
             ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+            ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
+            ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceGallery;
         } else if ([sender isKindOfClass:[GifElement class]]) {
             // Editing gif
             GifElement *editingGif = (GifElement *)sender;
@@ -327,6 +330,8 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             ((CaptionsViewController*)segue.destinationViewController).delegate = self;
             ((CaptionsViewController*)segue.destinationViewController).headerCaptionTextForced = editingGif.headerCaption;
             ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
+            ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceEdited;
+            ((CaptionsViewController*)segue.destinationViewController).frameSource = editingGif.frameSource;
         }
     }
 }
@@ -464,6 +469,9 @@ static double const precalculatedCellHeightMultiplier = 1.24;
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    if (result == MessageComposeResultSent) {
+        [[AnalyticsManager sharedAnalyticsManager] gifSharedViaIMessage];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -483,6 +491,7 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     // Ask user if he really want to remove GIF
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oh no!" message:@"Do you really want to delete this GIF?" preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Yes!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[AnalyticsManager sharedAnalyticsManager] gifDeleted];
         [self.gifElements[index] removeFromDisk];
         [self refresh];
     }]];

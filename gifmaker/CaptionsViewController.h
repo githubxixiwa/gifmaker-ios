@@ -9,6 +9,9 @@
 // Frameworks
 #import <UIKit/UIKit.h>
 
+// Models
+#import "GifElement.h"
+
 // View Controllers
 #import "RecordViewController.h"
 
@@ -24,7 +27,11 @@
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 
 @property (nonatomic, strong) NSArray<UIImage *> *capturedImages;
+@property (nonatomic) GifCreationSource creationSource;
+@property (nonatomic) GifFrameSource frameSource;
 @property (nonatomic, strong) id delegate;
+
+//@property (nonatomic, strong) NSString *
 
 /*! Force set text in header caption */
 @property (nonatomic, strong) NSString *headerCaptionTextForced;

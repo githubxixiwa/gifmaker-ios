@@ -6,7 +6,9 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "FacebookMessengerShareActivity.h"
+#import "AnalyticsManager.h"
 
 // Categories
 #import "NSObject+Helpers.h"
@@ -43,6 +45,7 @@
         return;
     }
     
+    [[AnalyticsManager sharedAnalyticsManager] gifSharedViaFacebookMessenger];
     [FBSDKMessengerSharer shareAnimatedGIF:self.gifData withOptions:nil];
 }
 

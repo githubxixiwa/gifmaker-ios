@@ -15,10 +15,6 @@
 #import "QBVideoIndicatorView.h"
 
 static CGSize CGSizeScale(CGSize size, CGFloat scale) {
-    if ([[UIDevice currentDevice].model hasPrefix:@"iPad"]) {
-        scale = 1;
-    }
-    
     return CGSizeMake(size.width * scale, size.height * scale);
 }
 
@@ -459,22 +455,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
                                 contentMode:PHImageContentModeAspectFill
                                     options:nil
                               resultHandler:^(UIImage *result, NSDictionary *info) {
-                                  if (!result) {
-                                      if ([[UIDevice currentDevice].model hasPrefix:@"iPad"]) {
-                                          // Seems iPad on 9.3? Real device, man.
-                                          [self.imageManager requestImageForAsset:asset
-                                                                       targetSize:CGSizeMake(501, 501)
-                                                                      contentMode:PHImageContentModeAspectFill
-                                                                          options:nil
-                                                                    resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                                        if (cell.tag == indexPath.item) {
-                                                                            cell.imageView.image = result;
-                                                                        }
-                                                                    }];
-                                      } else {
-                                          return;
-                                      }
-                                  }
                                   if (cell.tag == indexPath.item) {
                                       cell.imageView.image = result;
                                   }

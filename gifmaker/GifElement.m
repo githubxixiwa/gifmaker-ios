@@ -11,6 +11,8 @@
 #define kEditable @"editable"
 #define kHeaderCaption @"headerCaption"
 #define kFooterCaption @"footerCaption"
+#define kCreationSource @"creationSource"
+#define kFrameSource @"frameSource"
 
 // Models
 #import "GifElement.h"
@@ -30,6 +32,8 @@
         self.editable   = NO;
         self.headerCaption = @"";
         self.footerCaption = @"";
+        self.creationSource = GifCreationSourceUnknown;
+        self.frameSource = GifFrameSourceUnknown;
     }
     
     return self;
@@ -46,12 +50,35 @@
         return nil;
     }
     
-    self.filename      = [decoder decodeObjectForKey:kFilename];
-    self.datePosted    = [decoder decodeObjectForKey:kDatePosted];
-    self.editable      = [[decoder decodeObjectForKey:kEditable] boolValue];
-    self.headerCaption = [decoder decodeObjectForKey:kHeaderCaption];
-    self.footerCaption = [decoder decodeObjectForKey:kFooterCaption];
+    self.filename       = [decoder decodeObjectForKey:kFilename];
+    self.datePosted     = [decoder decodeObjectForKey:kDatePosted];
+    self.editable       = [[decoder decodeObjectForKey:kEditable] boolValue];
+    self.headerCaption  = [decoder decodeObjectForKey:kHeaderCaption];
+    self.footerCaption  = [decoder decodeObjectForKey:kFooterCaption];
+    self.creationSource = [decoder decodeIntegerForKey:kCreationSource];
+    self.frameSource    = [decoder decodeIntegerForKey:kFrameSource];
     
+    /* 1.0.2 version attributes */
+    
+    // Detect if we need to save params which are unknown by default (creationSource & frameSource as example)
+    BOOL needToApplyChanges = NO;
+    
+    // Check if gif does not have support for attributes added in 1.0.2 version
+    if (self.creationSource == GifCreationSourceUnknown) {
+        self.creationSource = GifCreationSourceBaked;
+        needToApplyChanges = YES;
+    }
+    
+    if (self.frameSource == GifFrameSourceUnknown) {
+        self.frameSource = GifFrameSourceCamera;
+        needToApplyChanges = YES;
+    }
+    
+    if (needToApplyChanges) {
+        [self save];
+    }
+    
+    // Return
     return self;
 }
 
@@ -61,6 +88,8 @@
     [encoder encodeObject:@(self.editable) forKey:kEditable];
     [encoder encodeObject:self.headerCaption forKey:kHeaderCaption];
     [encoder encodeObject:self.footerCaption forKey:kFooterCaption];
+    [encoder encodeInteger:self.creationSource forKey:kCreationSource];
+    [encoder encodeInteger:self.frameSource forKey:kFrameSource];
 }
 
 - (void)makeEditable:(NSArray<UIImage *> *)images {

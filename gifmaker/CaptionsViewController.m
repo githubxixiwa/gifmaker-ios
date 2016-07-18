@@ -14,6 +14,7 @@
 
 // Models
 #import "GifManager.h"
+#import "AnalyticsManager.h"
 
 // Categories
 #import "NSString+Extras.h"
@@ -195,14 +196,26 @@
                                     fps:GIF_FPS
                           headerCaption:self.headerCaptionTextField.attributedText.string
                           footerCaption:self.footerCaptionTextField.attributedText.string
+                            frameSource:self.frameSource
+                         creationSource:self.creationSource
                                filename:[NSString generateRandomString]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // Gif done
+                
+                // Perform analytics network calls
+                if (self.creationSource == GifCreationSourceEdited) {
+                    [[AnalyticsManager sharedAnalyticsManager] gifEdited];
+                } else if (self.creationSource == GifCreationSourceBaked) {
+                    [[AnalyticsManager sharedAnalyticsManager] gifCreatedFrom:self.frameSource];
+                }
+                
+                // Perform 'done'-stage actions
                 [[self delegate] refresh];
                 [self.navigationController popToRootViewControllerAnimated:YES];
             });
         } else {
             NSLog(@"Gif creation error");
+            [[AnalyticsManager sharedAnalyticsManager] gifCreationError];
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops!" message:@"Error occured!" preferredStyle:UIAlertControllerStyleAlert];
                 [alertController addAction:[UIAlertAction actionWithTitle:@"Go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

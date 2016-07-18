@@ -9,10 +9,10 @@
 // Frameworks
 #import <AFNetworking/AFNetworking.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
 
 // Models
 #import "FacebookShareActivity.h"
+#import "AnalyticsManager.h"
 
 // Categories
 #import "NSObject+Helpers.h"
@@ -95,7 +95,7 @@
                                   
                                   FBSDKShareLinkContent *linkContent = [[FBSDKShareLinkContent alloc] init];
                                   linkContent.contentURL = [NSURL URLWithString:urlString];
-                                  [FBSDKShareDialog showFromViewController:self.showInViewController withContent:linkContent delegate:nil];
+                                  [FBSDKShareDialog showFromViewController:self.showInViewController withContent:linkContent delegate:self];
                               });
                           } else {
                               dispatch_async(dispatch_get_main_queue(), ^{
@@ -109,6 +109,23 @@
     [uploadTask resume];
     
     /* Continue in completion handler ^^^ */
+}
+
+
+#pragma mark - FBSDKSharingDelegate methods
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
+    [[AnalyticsManager sharedAnalyticsManager] gifSharedViaFacebookWallpost];
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer { }
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops" message:[NSString stringWithFormat:@"There was an error during sharing to Facebook.\n\nDetails: %@", error.localizedDescription] preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Okay 😐" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }]];
+    [self.showInViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

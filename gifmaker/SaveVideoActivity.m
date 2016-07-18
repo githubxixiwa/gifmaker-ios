@@ -6,7 +6,11 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "SaveVideoActivity.h"
+#import "AnalyticsManager.h"
+
+// Frameworks
 #import <SVProgressHUD/SVProgressHUD.h>
 
 @implementation SaveVideoActivity
@@ -40,6 +44,7 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.gifElement saveToGalleryAsVideo];
+        [[AnalyticsManager sharedAnalyticsManager] gifSharedViaSavingLocallyAsVideo];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD dismiss];

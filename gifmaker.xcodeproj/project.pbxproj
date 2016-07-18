@@ -32,9 +32,11 @@
 		496CBBCF1C2AF51100D5C117 /* FacebookMessengerShareActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 496CBBCE1C2AF51100D5C117 /* FacebookMessengerShareActivity.m */; };
 		496CBBD21C2AFE5400D5C117 /* SaveVideoActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 496CBBD11C2AFE5400D5C117 /* SaveVideoActivity.m */; };
 		497131A41C176C2900DF7766 /* Exporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 497131A31C176C2900DF7766 /* Exporter.m */; };
+		497B708F1D37B557006CA3FC /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 497B708E1D37B557006CA3FC /* NetworkManager.m */; };
 		49B4F0FC1C107AC6009475B1 /* CaptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */; };
 		49B4F0FE1C1091B6009475B1 /* impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49B4F0FD1C1091B6009475B1 /* impact.ttf */; };
-		6DEF7145A5DAAD9317A9130D /* libPods-gifmaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E0F92689A401979FA270A2B /* libPods-gifmaker.a */; };
+		49C388581D37CB4600FE0160 /* AnalyticsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 49C388571D37CB4600FE0160 /* AnalyticsManager.m */; };
+		4B81CDE7B677CEDB2FAD0815 /* libPods-gifmaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F967DCD718F97C04E6696A3 /* libPods-gifmaker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,7 +57,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3E0F92689A401979FA270A2B /* libPods-gifmaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gifmaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2F967DCD718F97C04E6696A3 /* libPods-gifmaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-gifmaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		38CF65B7AF7C1A3E4B0A1D97 /* Pods-gifmaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.debug.xcconfig"; sourceTree = "<group>"; };
 		49043E871CB3FFDD00A3696C /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		49043E881CB5760B00A3696C /* UIView+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extras.h"; sourceTree = "<group>"; };
 		49043E891CB5760B00A3696C /* UIView+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extras.m"; sourceTree = "<group>"; };
@@ -106,11 +109,14 @@
 		496CBBD11C2AFE5400D5C117 /* SaveVideoActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaveVideoActivity.m; sourceTree = "<group>"; };
 		497131A21C176C2900DF7766 /* Exporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exporter.h; sourceTree = "<group>"; };
 		497131A31C176C2900DF7766 /* Exporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Exporter.m; sourceTree = "<group>"; };
+		497B708D1D37B557006CA3FC /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
+		497B708E1D37B557006CA3FC /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
 		49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptionsViewController.h; sourceTree = "<group>"; };
 		49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptionsViewController.m; sourceTree = "<group>"; };
 		49B4F0FD1C1091B6009475B1 /* impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = impact.ttf; sourceTree = "<group>"; };
-		5A9EDDAD4E95EA425DBCABD4 /* Pods-gifmaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.debug.xcconfig"; sourceTree = "<group>"; };
-		7C1BFBC008A408BBCFA13AB9 /* Pods-gifmaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.release.xcconfig"; sourceTree = "<group>"; };
+		49C388561D37CB4600FE0160 /* AnalyticsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsManager.h; sourceTree = "<group>"; };
+		49C388571D37CB4600FE0160 /* AnalyticsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsManager.m; sourceTree = "<group>"; };
+		D470C605D8547346565B5001 /* Pods-gifmaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,7 +126,7 @@
 			files = (
 				496BC5731C03B383001713BA /* AVFoundation.framework in Frameworks */,
 				4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */,
-				6DEF7145A5DAAD9317A9130D /* libPods-gifmaker.a in Frameworks */,
+				4B81CDE7B677CEDB2FAD0815 /* libPods-gifmaker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,8 +175,8 @@
 				496BC5581C03A559001713BA /* gifmakerTests */,
 				496BC5631C03A559001713BA /* gifmakerUITests */,
 				496BC53D1C03A559001713BA /* Products */,
-				BD084BFB6F496C0129BBECE8 /* Pods */,
 				E0229A771DEF1E82F63CEC06 /* Frameworks */,
+				E7F8C0EF88CD92431F779AB5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -261,26 +267,30 @@
 				49693F721C0889DE007298EF /* GifManager.m */,
 				497131A21C176C2900DF7766 /* Exporter.h */,
 				497131A31C176C2900DF7766 /* Exporter.m */,
+				497B708D1D37B557006CA3FC /* NetworkManager.h */,
+				497B708E1D37B557006CA3FC /* NetworkManager.m */,
+				49C388561D37CB4600FE0160 /* AnalyticsManager.h */,
+				49C388571D37CB4600FE0160 /* AnalyticsManager.m */,
 			);
 			name = models;
-			sourceTree = "<group>";
-		};
-		BD084BFB6F496C0129BBECE8 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				5A9EDDAD4E95EA425DBCABD4 /* Pods-gifmaker.debug.xcconfig */,
-				7C1BFBC008A408BBCFA13AB9 /* Pods-gifmaker.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		E0229A771DEF1E82F63CEC06 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */,
-				3E0F92689A401979FA270A2B /* libPods-gifmaker.a */,
+				2F967DCD718F97C04E6696A3 /* libPods-gifmaker.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E7F8C0EF88CD92431F779AB5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				38CF65B7AF7C1A3E4B0A1D97 /* Pods-gifmaker.debug.xcconfig */,
+				D470C605D8547346565B5001 /* Pods-gifmaker.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,11 +300,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 496BC5691C03A559001713BA /* Build configuration list for PBXNativeTarget "gifmaker" */;
 			buildPhases = (
-				877BD68109CDE2A15BF11F3D /* Check Pods Manifest.lock */,
+				97EDF8FEAED55904907A3C5D /* 📦 Check Pods Manifest.lock */,
 				496BC5381C03A559001713BA /* Sources */,
 				496BC5391C03A559001713BA /* Frameworks */,
 				496BC53A1C03A559001713BA /* Resources */,
-				BBFA9849A7F45D2592E92932 /* Copy Pods Resources */,
+				3AD39E72503B52FBF12ED994 /* 📦 Embed Pods Frameworks */,
+				23F7669F349517D8D0E5F78A /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -413,34 +424,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		877BD68109CDE2A15BF11F3D /* Check Pods Manifest.lock */ = {
+		23F7669F349517D8D0E5F78A /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		BBFA9849A7F45D2592E92932 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3AD39E72503B52FBF12ED994 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		97EDF8FEAED55904907A3C5D /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -458,12 +484,14 @@
 				496BC5411C03A559001713BA /* main.m in Sources */,
 				49693F6B1C087ECE007298EF /* NSString+Extras.m in Sources */,
 				49693F791C08B444007298EF /* GifTableViewCell.m in Sources */,
+				497B708F1D37B557006CA3FC /* NetworkManager.m in Sources */,
 				49B4F0FC1C107AC6009475B1 /* CaptionsViewController.m in Sources */,
 				496CBBC91C2AE52C00D5C117 /* FacebookShareActivity.m in Sources */,
 				496BC5811C0505BA001713BA /* RecordViewController.m in Sources */,
 				4958B4371C3A9DD1006FC60E /* UIImage+animatedGIF.m in Sources */,
 				496CBBCF1C2AF51100D5C117 /* FacebookMessengerShareActivity.m in Sources */,
 				49693F701C0881C9007298EF /* GifElement.m in Sources */,
+				49C388581D37CB4600FE0160 /* AnalyticsManager.m in Sources */,
 				49693F681C062606007298EF /* UIImage+Extras.m in Sources */,
 				495E9E111CE20BE0005CF223 /* UIImagePickerController+Additions.m in Sources */,
 				4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */,
@@ -605,11 +633,11 @@
 		};
 		496BC56A1C03A559001713BA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A9EDDAD4E95EA425DBCABD4 /* Pods-gifmaker.debug.xcconfig */;
+			baseConfigurationReference = 38CF65B7AF7C1A3E4B0A1D97 /* Pods-gifmaker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -624,11 +652,11 @@
 		};
 		496BC56B1C03A559001713BA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C1BFBC008A408BBCFA13AB9 /* Pods-gifmaker.release.xcconfig */;
+			baseConfigurationReference = D470C605D8547346565B5001 /* Pods-gifmaker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

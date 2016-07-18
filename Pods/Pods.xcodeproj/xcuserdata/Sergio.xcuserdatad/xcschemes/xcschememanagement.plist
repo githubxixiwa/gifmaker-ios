@@ -6,113 +6,113 @@
 	<dict>
 		<key>AFNetworking.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 		<key>Bolts.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>FBSDKCoreKit.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 		<key>FBSDKLoginKit.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>4</integer>
 		</dict>
 		<key>FBSDKShareKit.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>5</integer>
 		</dict>
 		<key>FLAnimatedImage.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>6</integer>
 		</dict>
 		<key>LLACircularProgressView.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>7</integer>
 		</dict>
 		<key>Pods-gifmaker.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>8</integer>
 		</dict>
 		<key>QBImagePickerController-QBImagePicker.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>10</integer>
 		</dict>
 		<key>QBImagePickerController.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>9</integer>
 		</dict>
 		<key>SVProgressHUD.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>11</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0242E9512D346C34F8FEA03C72880820</key>
+		<key>0C1F8E331232C34F034FD26C684AFA0A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>0589B626471B8986D4E079C7D794ED67</key>
+		<key>1A79BA86DB198181905CBBFC1F1E6701</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>06C1EBFCE9541684B3DA5AD23FBFFB59</key>
+		<key>5FE77DADB3048CAD8B72DA959035CD2A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1B7193FC1443F9B3D599E012AA2B21EF</key>
+		<key>6E6736905609116C3C98370C36B78FB6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4668C9D3A8893DA37FA9FEC24C5F0AA0</key>
+		<key>81D7FE2A0FD9258247B1232874B837DA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5AC5012E5BE028BAB057837D1A8A46C7</key>
+		<key>90A1861B37EDFEE184AD0B4AF8BEC187</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7D305787123BA33D14A75126F9E0975C</key>
+		<key>928353533005A4198EBDA5B700D37B64</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8D144AB7C76931978C0299AFDA6D8C8F</key>
+		<key>A2C93204638CB835DDA6F0707D00BE15</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8D2CB05B5B8829A202A141694FC15766</key>
+		<key>A48601FEE4437A924848DB48369BA809</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B281DA29A9C3EDFB45BA53651F6BA611</key>
+		<key>B1B3EDB72233813E9350D95A142D9D0B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CE72FE0495A3E22533AA265CB671AF9B</key>
+		<key>E0994E5AC7E061802875AEBF79107190</key>
 		<dict>
 			<key>primary</key>
 			<true/>

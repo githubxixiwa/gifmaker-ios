@@ -40,6 +40,8 @@
                     fps:(NSInteger)fps
           headerCaption:(NSString *)headerCaption
           footerCaption:(NSString *)footerCaption
+            frameSource:(GifFrameSource)frameSource
+         creationSource:(GifCreationSource)creationSource
                filename:(NSString *)filename;
 
 @end

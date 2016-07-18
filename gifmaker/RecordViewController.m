@@ -301,6 +301,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     ((CaptionsViewController*)segue.destinationViewController).capturedImages = self.capturedImages;
     ((CaptionsViewController*)segue.destinationViewController).delegate = self.delegate;
+    ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceCamera;
+    ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
 }
 
 

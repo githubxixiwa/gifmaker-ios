@@ -64,6 +64,8 @@
                     fps:(NSInteger)fps
           headerCaption:(NSString *)headerCaption
           footerCaption:(NSString *)footerCaption
+            frameSource:(GifFrameSource)frameSource
+         creationSource:(GifCreationSource)creationSource
                filename:(NSString *)filename {
     // Set up GIF-file properties
     NSDictionary *fileProperties = @{
@@ -104,6 +106,8 @@
     [element setHeaderCaption:headerCaption];
     [element setFooterCaption:footerCaption];
     [element makeEditable:rawFrames];
+    [element setFrameSource:frameSource];
+    [element setCreationSource:creationSource];
     [element save];
     
     NSLog(@"Gif done");

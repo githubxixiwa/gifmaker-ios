@@ -9,11 +9,27 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+// The way how gif was created.
+typedef NS_ENUM(NSInteger, GifFrameSource) {
+    GifFrameSourceUnknown,
+    GifFrameSourceCamera,
+    GifFrameSourceGallery
+};
+
+// GifCreationSourceBaked: means 'created' from Camera or else; GifCreationSourceEdited: means 'edited' using another gif as source.
+typedef NS_ENUM(NSInteger, GifCreationSource) {
+    GifCreationSourceUnknown,
+    GifCreationSourceBaked,
+    GifCreationSourceEdited
+};
+
 @interface GifElement : NSObject <NSCoding>
 
 /*! Filename without extension */
 @property (nonatomic, strong) NSString *filename;
 @property (nonatomic, strong) NSDate *datePosted;
+@property (nonatomic) GifFrameSource frameSource;
+@property (nonatomic) GifCreationSource creationSource;
 @property (nonatomic, strong) NSString *headerCaption;
 @property (nonatomic, strong) NSString *footerCaption;
 @property (nonatomic) BOOL editable;
