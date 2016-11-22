@@ -105,6 +105,8 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We need your camera to let you record amazing GIFs!</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
