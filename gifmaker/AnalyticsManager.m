@@ -47,7 +47,10 @@
         case GifFrameSourceCamera:
             [self gifCreatedFromCamera];
             break;
-        case GifFrameSourceGallery:
+        case GifFrameSourceGalleryPhotos:
+            [self gifCreatedFromGallery];
+            break;
+        case GifFrameSourceGalleryVideo:
             [self gifCreatedFromGallery];
             break;
         default:

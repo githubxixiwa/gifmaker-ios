@@ -13,7 +13,8 @@
 typedef NS_ENUM(NSInteger, GifFrameSource) {
     GifFrameSourceUnknown,
     GifFrameSourceCamera,
-    GifFrameSourceGallery
+    GifFrameSourceGalleryPhotos,
+    GifFrameSourceGalleryVideo
 };
 
 // GifCreationSourceBaked: means 'created' from Camera or else; GifCreationSourceEdited: means 'edited' using another gif as source.

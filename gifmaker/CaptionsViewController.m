@@ -9,6 +9,8 @@
 #define FONT_SIZE 40
 #define SMALL_SCREEN ([UIScreen mainScreen].bounds.size.height < 667)
 
+#import "Macros.h"
+
 // View Controllers
 #import "CaptionsViewController.h"
 
@@ -18,6 +20,7 @@
 
 // Categories
 #import "NSString+Extras.h"
+#import "UIImage+Extras.h"
 
 @interface CaptionsViewController ()
 
@@ -37,7 +40,12 @@
     
     [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
-    [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
+    
+    if (self.frameSource == GifFrameSourceGalleryPhotos) {
+        [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
+    } else if (self.frameSource == GifFrameSourceGalleryVideo) {
+        [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
+    }
     
     if (self.headerCaptionTextForced) {
         [self setAttributedTextAsCaptionToTextField:self.headerCaptionTextField text:self.headerCaptionTextForced];
@@ -169,13 +177,53 @@
                             // Set the app logo image on flip
                             self.GIFFirstFramePreviewImageView.image = [UIImage imageNamed:@"weareallmakers"];
                         } completion:^(BOOL finished) {
-                            // Do something when animation is finished
+                            // Animate app logo rotation if we are making GIF from video (usually it takes longer time)
+                            if (self.frameSource == GifFrameSourceGalleryVideo) {
+                                CABasicAnimation* rotationAnimation;
+                                rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+                                rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0];
+                                rotationAnimation.duration = 4.0;
+                                rotationAnimation.cumulative = YES;
+                                rotationAnimation.repeatCount = INT_MAX;
+                                
+                                [self.GIFFirstFramePreviewImageView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+                            }
                         }];
     });
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray<UIImage *> *gifReadyImagesWithCaptions = [NSMutableArray array];
         NSMutableArray<UIImage *> *gifReadyImagesWithoutCaptions = [NSMutableArray array];
+        
+        // If frameSource is a video (to make a GIF from), take all needed frames(images) first
+        if (self.frameSource == GifFrameSourceGalleryVideo) {
+            self.capturedImages = [[NSMutableArray alloc] init];
+            
+            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self.videoSource.asset];
+            imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
+            imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+            imageGenerator.appliesPreferredTrackTransform = YES;
+
+            Float64 videoDuration = CMTimeGetSeconds(self.videoSource.asset.duration);
+            Float64 totalFrames = videoDuration * self.videoSource.fps;
+            
+            //Step through the frames (the counter must rely on fps: for 25fps video it will take every second frame, because typical gif fps number is 16)
+            for (int counter = 0; counter <= totalFrames; counter += round(self.videoSource.fps / GIF_FPS)) {
+                @autoreleasepool {
+                    NSLog(@"%@", [NSString stringWithFormat:@"Will handle %lu frame", (unsigned long)self.capturedImages.count]);
+                    if (self.capturedImages.count >= VIDEO_DURATION * GIF_FPS) {
+                        break;
+                    }
+                    
+                    NSError *error;
+                    CGImageRef cgImage = [imageGenerator copyCGImageAtTime:CMTimeMake(counter, (int32_t)self.videoSource.fps) actualTime:nil error:&error];
+                    UIImage *croppedImage = [UIImage imageByCroppingVideoFrameCGImage:cgImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+                    CGImageRelease(cgImage);
+                    
+                    [self.capturedImages addObject:croppedImage];
+                }
+            }
+        }
         
         // Add captions to the images
         for (UIImage *capturedImage in self.capturedImages) {

@@ -11,5 +11,6 @@
 @interface UIImage (Extras)
 
 + (UIImage *)imageByCroppingCGImage:(CGImageRef)cgImage toSize:(CGSize)size;
++ (UIImage *)imageByCroppingVideoFrameCGImage:(CGImageRef)cgImage toSize:(CGSize)size;
 
 @end

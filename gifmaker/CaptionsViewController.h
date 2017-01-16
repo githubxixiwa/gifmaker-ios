@@ -11,6 +11,7 @@
 
 // Models
 #import "GifElement.h"
+#import "VideoSource.h"
 
 // View Controllers
 #import "RecordViewController.h"
@@ -26,12 +27,11 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 
-@property (nonatomic, strong) NSArray<UIImage *> *capturedImages;
+@property (nonatomic, strong) NSMutableArray<UIImage *> *capturedImages;
+@property (nonatomic, strong) VideoSource *videoSource;
 @property (nonatomic) GifCreationSource creationSource;
 @property (nonatomic) GifFrameSource frameSource;
 @property (nonatomic, strong) id delegate;
-
-//@property (nonatomic, strong) NSString *
 
 /*! Force set text in header caption */
 @property (nonatomic, strong) NSString *headerCaptionTextForced;

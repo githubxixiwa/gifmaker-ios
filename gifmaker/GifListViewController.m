@@ -6,11 +6,14 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+#import "Macros.h"
+
 // View Controllers
 #import "GifListViewController.h"
 #import "CaptionsViewController.h"
 
 // Models
+#import "VideoSource.h"
 #import "GifManager.h"
 #import "FLAnimatedImage.h"
 #import "AnalyticsManager.h"
@@ -76,7 +79,7 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     self.galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
     self.cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
 
-    [self.galleryButton addTarget:self action:@selector(selectImagesFromGallery:) forControlEvents:UIControlEventTouchUpInside];
+    [self.galleryButton addTarget:self action:@selector(selectMediaSelectionMethod:) forControlEvents:UIControlEventTouchUpInside];
     [self.cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
 
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
@@ -279,25 +282,53 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     [self performSegueWithIdentifier:@"toRecordSegue" sender:self];
 }
 
-- (void)selectImagesFromGallery:(id)sender {
+- (void)selectMediaSelectionMethod:(id)sender {
+    UIAlertController *mediaSelectionMethodController = [UIAlertController alertControllerWithTitle:@"From which source you'll make your GIF?" message:@"From photos? From video?" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *imageSelectionAction = [UIAlertAction actionWithTitle:@"From 🖼 photos" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self selectMediaFromGallery:GifFrameSourceGalleryPhotos];
+    }];
+    UIAlertAction *videoSelectionAction = [UIAlertAction actionWithTitle:@"From 🎞 video" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self selectMediaFromGallery:GifFrameSourceGalleryVideo];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"cancel");
+    }];
+    
+    [mediaSelectionMethodController addAction:imageSelectionAction];
+    [mediaSelectionMethodController addAction:videoSelectionAction];
+    [mediaSelectionMethodController addAction:cancelAction];
+    
+    [self presentViewController:mediaSelectionMethodController animated:YES completion:^{
+        //
+    }];
+}
+
+- (void)selectMediaFromGallery:(GifFrameSource)frameSource {
     [UIImagePickerController obtainPermissionForMediaSourceType:UIImagePickerControllerSourceTypePhotoLibrary withSuccessHandler:^{
         // Permissions OK, open photo library to select
         QBImagePickerController *imagePickerController = [QBImagePickerController new];
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
-        imagePickerController.minimumNumberOfSelection = GIF_FPS * 1 / 8; //0.125 second GIF is a minimum duration
-        imagePickerController.maximumNumberOfSelection = GIF_FPS * VIDEO_DURATION;
+        imagePickerController.minimumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * 1 / 8 : 1;
+        imagePickerController.maximumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * VIDEO_DURATION : 1;
         imagePickerController.showsNumberOfSelectedAssets = YES;
-        imagePickerController.mediaType = QBImagePickerMediaTypeImage;
-        imagePickerController.assetCollectionSubtypes = @[
-                                                          @(PHAssetCollectionSubtypeSmartAlbumUserLibrary), // Camera Roll
-                                                          @(PHAssetCollectionSubtypeAlbumMyPhotoStream), // My Photo Stream
-                                                          @(PHAssetCollectionSubtypeSmartAlbumBursts), // Bursts
-                                                          @(PHAssetCollectionSubtypeSmartAlbumSelfPortraits), // Selfies
-                                                          @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded), // Recently Added
-                                                          @(PHAssetCollectionSubtypeSmartAlbumScreenshots) // Screenshots
-                                                          ];
-        imagePickerController.prompt = [NSString stringWithFormat:@"%lu photos min, %lu max. Select them in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection];
+        imagePickerController.mediaType = (frameSource == GifFrameSourceGalleryPhotos) ? QBImagePickerMediaTypeImage : QBImagePickerMediaTypeVideo;
+        imagePickerController.assetCollectionSubtypes =
+            frameSource == GifFrameSourceGalleryPhotos ?
+                @[
+                  @(PHAssetCollectionSubtypeSmartAlbumUserLibrary), // Camera Roll
+                  @(PHAssetCollectionSubtypeAlbumMyPhotoStream), // My Photo Stream
+                  @(PHAssetCollectionSubtypeSmartAlbumBursts), // Bursts
+                  @(PHAssetCollectionSubtypeSmartAlbumSelfPortraits), // Selfies
+                  @(PHAssetCollectionSubtypeSmartAlbumRecentlyAdded), // Recently Added
+                  @(PHAssetCollectionSubtypeSmartAlbumScreenshots), // Screenshots
+                ]
+            :
+                @[
+                  @(PHAssetCollectionSubtypeSmartAlbumVideos) // Videos
+                ]
+        ;
+        imagePickerController.prompt = frameSource == GifFrameSourceGalleryPhotos ? [NSString stringWithFormat:@"%lu photos min, %lu max. Select them in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection] : @"Select the video for your new GIF 😺";
         
         [self presentViewController:imagePickerController animated:YES completion:NULL];
     } andFailure:^{
@@ -318,15 +349,21 @@ static double const precalculatedCellHeightMultiplier = 1.24;
         ((RecordViewController*)segue.destinationViewController).delegate = self;
     } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
         if ([sender isKindOfClass:[NSArray class]]) {
-            // Creating gif
+            // Creating gif from photos
             ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
             ((CaptionsViewController*)segue.destinationViewController).delegate = self;
             ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
-            ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceGallery;
+            ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceGalleryPhotos;
+        } else if ([sender isKindOfClass:[VideoSource class]]) {
+            // Creating gif from video
+            ((CaptionsViewController*)segue.destinationViewController).videoSource = sender;
+            ((CaptionsViewController*)segue.destinationViewController).delegate = self;
+            ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
+            ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceGalleryVideo;
         } else if ([sender isKindOfClass:[GifElement class]]) {
             // Editing gif
             GifElement *editingGif = (GifElement *)sender;
-            ((CaptionsViewController*)segue.destinationViewController).capturedImages = [editingGif getEditableFrames];
+            ((CaptionsViewController*)segue.destinationViewController).capturedImages = [NSMutableArray arrayWithArray:[editingGif getEditableFrames]];
             ((CaptionsViewController*)segue.destinationViewController).delegate = self;
             ((CaptionsViewController*)segue.destinationViewController).headerCaptionTextForced = editingGif.headerCaption;
             ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
@@ -364,7 +401,6 @@ static double const precalculatedCellHeightMultiplier = 1.24;
 
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     __block BOOL error = false;
-    NSMutableArray<UIImage *> *frames = [NSMutableArray array];
 
     // Configure options for PHAsset->UIImage extractor
     PHImageRequestOptions *requestOptions = [[PHImageRequestOptions alloc] init];
@@ -375,38 +411,71 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     requestOptions.synchronous            = YES;
 
     //TODO: make a preloader when photos are loading from iCloud? Because for now UI can stuck in this case (weird!).
-
-    for (PHAsset *asset in assets) {
-        if (error) {
-            break;
-        }
-
-        CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(GIF_SIDE_SIZE, CGFLOAT_MAX)
-                                                                   : CGSizeMake(CGFLOAT_MAX, GIF_SIDE_SIZE);
-
-        // Get UIImage from PHAsset and add it to the 'frames' array
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:requestOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            if (result == nil) {
-                error = YES;
-            } else {
-                // Crop center part of the image
-                UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-
-                // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
-                [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
+    
+    void (^dismissViewController)(id) = ^void(id sender) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [imagePickerController dismissViewControllerAnimated:YES completion:^{
+                if (error) {
+                    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops 🤕" message:@"You can't import some photos because they can be compressed in the memory due to lack of it.\nTry to enable network and try again." preferredStyle:UIAlertControllerStyleAlert];
+                    [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
+                    [self presentViewController:alertController animated:YES completion:nil];
+                } else {
+                    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
+                }
+            }];
+        });
+    };
+    
+    if (imagePickerController.mediaType == QBImagePickerMediaTypeImage) {
+        NSMutableArray<UIImage *> *frames = [NSMutableArray array];
+        
+        for (PHAsset *asset in assets) {
+            if (error) {
+                break;
             }
+            
+            // Photo asset
+            CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(GIF_SIDE_SIZE, CGFLOAT_MAX) : CGSizeMake(CGFLOAT_MAX, GIF_SIDE_SIZE);
+            
+            // Get UIImage from PHAsset and add it to the 'frames' array
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:requestOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                if (result == nil) {
+                    error = YES;
+                } else {
+                    // Crop center part of the image
+                    UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+                    
+                    // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
+                    [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
+                }
+            }];
+        }
+        
+        dismissViewController(frames);
+        
+    } else if (imagePickerController.mediaType == QBImagePickerMediaTypeVideo) {
+        [[PHImageManager defaultManager] requestAVAssetForVideo:assets.firstObject options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+            NSArray *movieTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+            AVAssetTrack *movieTrack = [movieTracks firstObject];
+            
+            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+            imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
+            imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+            
+            // Extract first frame from the video to save a thumbnail
+            NSError *error;
+            CGImageRef firstFrame = [imageGenerator copyCGImageAtTime:CMTimeMake(0, movieTrack.nominalFrameRate) actualTime:nil error:&error];
+            UIImage *firstFrameImage = [UIImage imageByCroppingVideoFrameCGImage:firstFrame toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+            CGImageRelease(firstFrame);
+            
+            VideoSource *videoSource = [[VideoSource alloc] init];
+            videoSource.fps = movieTrack.nominalFrameRate;
+            videoSource.thumbnail = firstFrameImage;
+            videoSource.asset = asset;
+            
+            dismissViewController(videoSource);
         }];
     }
-
-    [imagePickerController dismissViewControllerAnimated:YES completion:^{
-        if (error) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops 🤕" message:@"You can't import some photos because they can be compressed in the memory due to lack of it.\nTry to enable network and try again." preferredStyle:UIAlertControllerStyleAlert];
-            [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController:alertController animated:YES completion:nil];
-        } else {
-            [self performSegueWithIdentifier:@"toCaptionsSegue" sender:frames];
-        }
-    }];
 }
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {

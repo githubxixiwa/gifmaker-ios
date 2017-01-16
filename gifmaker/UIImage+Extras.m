@@ -26,4 +26,42 @@
     return cropped;
 }
 
++ (UIImage *)imageByCroppingVideoFrameCGImage:(CGImageRef)cgImage toSize:(CGSize)size {
+    double width = CGImageGetWidth(cgImage);
+    double height = CGImageGetHeight(cgImage);
+    double newCropWidth, newCropHeight;
+    
+    if (width < height) {
+        if (width < size.width) {
+            newCropWidth = size.width;
+        } else {
+            newCropWidth = width;
+        }
+        newCropHeight = (newCropWidth * size.height)/size.width;
+    } else {
+        if (height < size.height) {
+            newCropHeight = size.height;
+        } else {
+            newCropHeight = height;
+        }
+        newCropWidth = (newCropHeight * size.width)/size.height;
+    }
+    
+    double x = width / 2.0 - newCropWidth / 2.0;
+    double y = height / 2.0 - newCropHeight / 2.0;
+    
+    CGRect cropRect = CGRectMake(x, y, newCropWidth, newCropHeight);
+    CGImageRef croppedImageRef = CGImageCreateWithImageInRect(cgImage, cropRect);
+    
+    UIImage *croppedImage = [UIImage imageWithCGImage:croppedImageRef];
+    CGImageRelease(croppedImageRef);
+    
+    UIGraphicsBeginImageContext(size);
+    [croppedImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage* resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
+}
+
 @end

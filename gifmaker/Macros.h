@@ -12,4 +12,8 @@
 #define RGB(r,g,b) RGBA(r,g,b,1.0)
 #define RGBA(r,g,b,a) ([UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a])
 
+#define VIDEO_DURATION 5.0
+#define GIF_FPS 16.0
+#define GIF_SIDE_SIZE 480
+
 #endif /* Macros_h */
