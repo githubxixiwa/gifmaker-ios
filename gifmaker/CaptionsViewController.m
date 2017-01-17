@@ -44,7 +44,11 @@
     if (self.frameSource == GifFrameSourceGalleryPhotos) {
         [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
     } else if (self.frameSource == GifFrameSourceGalleryVideo) {
-        [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
+        if (self.creationSource == GifCreationSourceEdited) {
+            [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
+        } else {
+            [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
+        }
     }
     
     if (self.headerCaptionTextForced) {
@@ -196,7 +200,7 @@
         NSMutableArray<UIImage *> *gifReadyImagesWithoutCaptions = [NSMutableArray array];
         
         // If frameSource is a video (to make a GIF from), take all needed frames(images) first
-        if (self.frameSource == GifFrameSourceGalleryVideo) {
+        if (self.frameSource == GifFrameSourceGalleryVideo && self.creationSource != GifCreationSourceEdited) {
             self.capturedImages = [[NSMutableArray alloc] init];
             
             AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self.videoSource.asset];
