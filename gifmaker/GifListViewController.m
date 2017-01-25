@@ -11,6 +11,7 @@
 // View Controllers
 #import "GifListViewController.h"
 #import "CaptionsViewController.h"
+#import "VideoScrubberViewController.h"
 
 // Models
 #import "VideoSource.h"
@@ -370,6 +371,9 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceEdited;
             ((CaptionsViewController*)segue.destinationViewController).frameSource = editingGif.frameSource;
         }
+    } else if ([segue.identifier isEqualToString:@"toVideoScrubberSegue"]) {
+        ((VideoScrubberViewController*)segue.destinationViewController).videoSource = sender;
+        ((VideoScrubberViewController*)segue.destinationViewController).gifListController = self;
     }
 }
 
@@ -420,7 +424,8 @@ static double const precalculatedCellHeightMultiplier = 1.24;
                     [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:alertController animated:YES completion:nil];
                 } else {
-                    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
+                    [self performSegueWithIdentifier:@"toVideoScrubberSegue" sender:sender];
+                    //[self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
                 }
             }];
         });
@@ -462,6 +467,9 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
             imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
             
+            Float64 videoDuration = CMTimeGetSeconds(asset.duration);
+            Float64 framesCount = videoDuration * movieTrack.nominalFrameRate;
+            
             // Extract first frame from the video to save a thumbnail
             NSError *error;
             CGImageRef firstFrame = [imageGenerator copyCGImageAtTime:CMTimeMake(0, movieTrack.nominalFrameRate) actualTime:nil error:&error];
@@ -470,6 +478,8 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             
             VideoSource *videoSource = [[VideoSource alloc] init];
             videoSource.fps = movieTrack.nominalFrameRate;
+            videoSource.duration = videoDuration;
+            videoSource.framesCount = framesCount;
             videoSource.thumbnail = firstFrameImage;
             videoSource.asset = asset;
             

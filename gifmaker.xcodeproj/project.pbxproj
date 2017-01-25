@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		49043E8A1CB5760B00A3696C /* UIView+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49043E891CB5760B00A3696C /* UIView+Extras.m */; };
+		49163E931E2E47BF008919D9 /* VideoScrubberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */; };
 		49178B3C1E29146A00E40B8B /* VideoSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 49178B3B1E29146A00E40B8B /* VideoSource.m */; };
 		4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */; };
 		4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4331C3A9A84006FC60E /* NSObject+Helpers.m */; };
@@ -63,6 +64,8 @@
 		49043E871CB3FFDD00A3696C /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		49043E881CB5760B00A3696C /* UIView+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extras.h"; sourceTree = "<group>"; };
 		49043E891CB5760B00A3696C /* UIView+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extras.m"; sourceTree = "<group>"; };
+		49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoScrubberViewController.h; sourceTree = "<group>"; };
+		49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoScrubberViewController.m; sourceTree = "<group>"; };
 		49178B3A1E29146A00E40B8B /* VideoSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoSource.h; sourceTree = "<group>"; };
 		49178B3B1E29146A00E40B8B /* VideoSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoSource.m; sourceTree = "<group>"; };
 		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
@@ -206,6 +209,8 @@
 				49693F751C08AA35007298EF /* GifListViewController.m */,
 				496BC57F1C0505BA001713BA /* RecordViewController.h */,
 				496BC5801C0505BA001713BA /* RecordViewController.m */,
+				49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */,
+				49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */,
 				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
 				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 				49693F771C08B444007298EF /* GifTableViewCell.h */,
@@ -502,6 +507,7 @@
 				49693F681C062606007298EF /* UIImage+Extras.m in Sources */,
 				495E9E111CE20BE0005CF223 /* UIImagePickerController+Additions.m in Sources */,
 				4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */,
+				49163E931E2E47BF008919D9 /* VideoScrubberViewController.m in Sources */,
 				497131A41C176C2900DF7766 /* Exporter.m in Sources */,
 				49693F731C0889DE007298EF /* GifManager.m in Sources */,
 			);

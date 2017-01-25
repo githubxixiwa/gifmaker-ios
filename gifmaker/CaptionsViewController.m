@@ -41,7 +41,7 @@
     [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
     
-    if (self.frameSource == GifFrameSourceGalleryPhotos) {
+    if (self.frameSource == GifFrameSourceGalleryPhotos || self.frameSource == GifFrameSourceCamera) {
         [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
     } else if (self.frameSource == GifFrameSourceGalleryVideo) {
         if (self.creationSource == GifCreationSourceEdited) {
@@ -207,12 +207,9 @@
             imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
             imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
             imageGenerator.appliesPreferredTrackTransform = YES;
-
-            Float64 videoDuration = CMTimeGetSeconds(self.videoSource.asset.duration);
-            Float64 totalFrames = videoDuration * self.videoSource.fps;
             
             //Step through the frames (the counter must rely on fps: for 25fps video it will take every second frame, because typical gif fps number is 16)
-            for (int counter = 0; counter <= totalFrames; counter += round(self.videoSource.fps / GIF_FPS)) {
+            for (NSInteger counter = self.videoSource.firstFrameNumber; counter <= self.videoSource.lastFrameNumber; counter += round(self.videoSource.fps / GIF_FPS)) {
                 @autoreleasepool {
                     NSLog(@"%@", [NSString stringWithFormat:@"Will handle %lu frame", (unsigned long)self.capturedImages.count]);
                     if (self.capturedImages.count >= VIDEO_DURATION * GIF_FPS) {

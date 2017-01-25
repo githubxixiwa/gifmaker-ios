@@ -14,6 +14,11 @@
 
 @property (nonatomic, strong) UIImage *thumbnail;
 @property (nonatomic) NSInteger fps;
+@property (nonatomic) Float64 duration;
+@property (nonatomic) NSInteger framesCount;
 @property (nonatomic, strong) AVAsset *asset;
+
+@property (nonatomic) NSInteger firstFrameNumber;
+@property (nonatomic) NSInteger lastFrameNumber;
 
 @end

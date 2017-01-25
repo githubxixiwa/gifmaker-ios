@@ -6,8 +6,6 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
-
 // Frameworks
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
