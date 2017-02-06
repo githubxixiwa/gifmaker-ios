@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *previewEndImageView;
 
 @property (weak, nonatomic) IBOutlet UIView *scrubberCinemaTapeView;
+@property (weak, nonatomic) IBOutlet UIView *scrubberCinemaTapeInnerOutlinerView;
 
 @property (weak, nonatomic) IBOutlet UIStackView *scrubberFramesStackView;
 @property (weak, nonatomic) IBOutlet UIImageView *scrubberFrame1;

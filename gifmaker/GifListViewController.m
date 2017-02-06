@@ -460,14 +460,27 @@ static double const precalculatedCellHeightMultiplier = 1.24;
         
     } else if (imagePickerController.mediaType == QBImagePickerMediaTypeVideo) {
         [[PHImageManager defaultManager] requestAVAssetForVideo:assets.firstObject options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+            Float64 videoDuration = CMTimeGetSeconds(asset.duration);
+            
+            // Check if video duration is lower than 5 seconds (if so, don't let GIF it)
+            if (videoDuration < VIDEO_DURATION) {
+                NSString *alertMessage = [NSString stringWithFormat:@"Video is too short!\nIt must be %ld seconds or longer 😿", (long)VIDEO_DURATION];
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Uh oh 😬"
+                                                                                         message:alertMessage
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+                [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [imagePickerController presentViewController:alertController animated:YES completion:nil];
+                return;
+            }
+            
             NSArray *movieTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
             AVAssetTrack *movieTrack = [movieTracks firstObject];
             
             AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
             imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
             imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+            imageGenerator.appliesPreferredTrackTransform = YES;
             
-            Float64 videoDuration = CMTimeGetSeconds(asset.duration);
             Float64 framesCount = videoDuration * movieTrack.nominalFrameRate;
             
             // Extract first frame from the video to save a thumbnail
@@ -477,11 +490,12 @@ static double const precalculatedCellHeightMultiplier = 1.24;
             CGImageRelease(firstFrame);
             
             VideoSource *videoSource = [[VideoSource alloc] init];
-            videoSource.fps = movieTrack.nominalFrameRate;
+            videoSource.fps = movieTrack.nominalFrameRate + 1;
             videoSource.duration = videoDuration;
             videoSource.framesCount = framesCount;
             videoSource.thumbnail = firstFrameImage;
             videoSource.asset = asset;
+            videoSource.orientation = [self extractOrientationFromVideoTrack:movieTrack];
             
             dismissViewController(videoSource);
         }];
@@ -586,6 +600,20 @@ static double const precalculatedCellHeightMultiplier = 1.24;
         NSIndexPath *top = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
         [self.tableView scrollToRowAtIndexPath:top atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
+}
+
+- (UIInterfaceOrientation)extractOrientationFromVideoTrack:(AVAssetTrack *)videoTrack {
+    CGSize size = [videoTrack naturalSize];
+    CGAffineTransform transform = [videoTrack preferredTransform];
+    
+    if (size.width == transform.tx && size.height == transform.ty)
+        return UIInterfaceOrientationLandscapeRight;
+    else if (transform.tx == 0 && transform.ty == 0)
+        return UIInterfaceOrientationLandscapeLeft;
+    else if (transform.tx == 0 && transform.ty == size.width)
+        return UIInterfaceOrientationPortraitUpsideDown;
+    else
+        return UIInterfaceOrientationPortrait;
 }
 
 @end

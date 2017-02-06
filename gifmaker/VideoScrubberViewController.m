@@ -7,6 +7,7 @@
 //
 
 #define PREVIEW_FRAMES_COUNT 6
+#define STEPPER_IN_SECONDS 1 // STEP OF SCROLLING A TIMELINE IN SECONDS
 
 // Frameworks
 #import <QuartzCore/QuartzCore.h>
@@ -20,6 +21,8 @@
 
 // Categories
 #import "UIImage+Extras.h"
+#import "UIView+Extras.h"
+#import "UIImageView+Extras.h"
 
 // Helpers
 #import "Macros.h"
@@ -28,6 +31,8 @@
 
 @property (nonatomic, strong) AVAssetImageGenerator *imageGenerator;
 @property (nonatomic) NSInteger prevOffsetPointX;
+@property (nonatomic, strong) NSCache *frameCache;
+@property (nonatomic) NSInteger stepperInPix;
 
 @end
 
@@ -35,6 +40,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.frameCache = [[NSCache alloc] init];
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
@@ -56,8 +63,11 @@
     
     self.videoSource.firstFrameNumber = 0;
     self.videoSource.lastFrameNumber = VIDEO_DURATION * self.videoSource.fps;
-    self.previewStartImageView.image = [self thumbnailAtFrame:self.videoSource.firstFrameNumber];
-    self.previewEndImageView.image = [self thumbnailAtFrame:self.videoSource.lastFrameNumber];
+
+    [self.previewStartImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:self.videoSource.firstFrameNumber]
+                                                    orientation:self.videoSource.orientation];
+    [self.previewEndImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:self.videoSource.lastFrameNumber]
+                                                  orientation:self.videoSource.orientation];
     
     /* Set 5 frames for the seeker frame previews */
     
@@ -91,13 +101,13 @@
     
     // Set preview images for the scrubber frames
     for (int i = 0; i < PREVIEW_FRAMES_COUNT; i++) {
-        scrubberPreviewFrames[i].image = previewFrames[i];
+        [scrubberPreviewFrames[i] setImageWithCheckingOrientation:previewFrames[i] orientation:self.videoSource.orientation];
     }
 }
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    
+
     /* Add mask to the END image */
     CGRect frame = self.previewEndImageView.frame;
     
@@ -109,27 +119,42 @@
     
     CAShapeLayer *previewEndImageViewTriangleMask = [CAShapeLayer layer];
     [previewEndImageViewTriangleMask setPath:trianglePath.CGPath];
-
+    
     self.previewEndImageView.layer.mask = previewEndImageViewTriangleMask;
     
     /* Make scrubber view the underneath frames by adding a mask */
-    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRect:self.scrubberDraggerBackgroundView.frame];
-    [maskPath appendPath:[UIBezierPath bezierPathWithRect:self.scrubberDraggerContentView.frame]];
+    UIBezierPath *frameLookerMaskPath = [UIBezierPath bezierPathWithRect:self.scrubberDraggerBackgroundView.frame];
+    [frameLookerMaskPath appendPath:[UIBezierPath bezierPathWithRect:self.scrubberDraggerContentView.frame]];
     
     CAShapeLayer *scrubberClearMask = [CAShapeLayer layer];
     scrubberClearMask.fillRule  = kCAFillRuleEvenOdd;
     scrubberClearMask.fillColor = [UIColor blackColor].CGColor;
-    scrubberClearMask.path      = maskPath.CGPath;
+    scrubberClearMask.path      = frameLookerMaskPath.CGPath;
     
     self.scrubberDraggerBackgroundView.layer.mask = scrubberClearMask;
     
     /* Set scrubber cinema tape border */
     self.scrubberCinemaTapeView.layer.borderWidth = 2.0;
     self.scrubberCinemaTapeView.layer.borderColor = [UIColor blackColor].CGColor;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     
-    /* TODO: update scrubber frame size related to max gif time (5 seconds) according to video lenght */
+    // Update scrubber frame size related to max gif time (5 seconds) according to video lenght
     self.scrubberWidthLayoutConstraint.constant = (self.scrubberFramesStackView.frame.size.width / self.videoSource.framesCount) * (self.videoSource.fps * VIDEO_DURATION);
-    [self.scrubberDragger setNeedsDisplay];
+    [UIView animateWithDuration:0.1 animations:^{
+        [self.scrubberDragger setNeedsUpdateConstraints];
+        [self.scrubberDragger setAlpha:1.0];
+    }];
+    
+    self.stepperInPix = self.scrubberFramesStackView.frame.size.width / self.videoSource.duration / STEPPER_IN_SECONDS;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.frameCache removeAllObjects];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -143,6 +168,8 @@
 
 - (void)scrubberDidPan:(UIPanGestureRecognizer *)panGesture {
     CGPoint offsetPoint = [panGesture translationInView:panGesture.view];
+    offsetPoint.x = offsetPoint.x + (self.stepperInPix - ((NSInteger)offsetPoint.x % self.stepperInPix));
+    
     NSInteger newConstant = self.scrubberLeadingLayoutConstraint.constant;
     
     switch (panGesture.state) {
@@ -151,17 +178,14 @@
             break;
         }
         case UIGestureRecognizerStateEnded:
-            NSLog(@"Pan Ended");
             break;
         case UIGestureRecognizerStateFailed:
-            NSLog(@"Pan Failed");
             break;
         case UIGestureRecognizerStateChanged: {
             newConstant = self.scrubberLeadingLayoutConstraint.constant + (offsetPoint.x - self.prevOffsetPointX);
             break;
         }
         case UIGestureRecognizerStateCancelled:
-            NSLog(@"Pan Cancelled");
             break;
         default:
             break;
@@ -190,11 +214,13 @@
         if (lastFrame > self.videoSource.framesCount) {
             lastFrame = self.videoSource.framesCount;
         }
-        NSLog(@"First: %ld, last: %ld", (long)firstFrame, (long)lastFrame);
-        
+
         // At second, set needed frame to the preview image views
-        self.previewStartImageView.image = [self thumbnailAtFrame:firstFrame];
-        self.previewEndImageView.image = [self thumbnailAtFrame:lastFrame];
+        
+        [self.previewStartImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:firstFrame]
+                                                        orientation:self.videoSource.orientation];
+        [self.previewEndImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:lastFrame]
+                                                      orientation:self.videoSource.orientation];
         
         // At third, assign selected frames to the videoSource property
         self.videoSource.firstFrameNumber = firstFrame;
@@ -220,12 +246,21 @@
 #pragma mark - Thumbnails getter
 
 - (UIImage *)thumbnailAtFrame:(NSUInteger)frameNumber {
-    NSError *error;
-    CGImageRef frameCGImage = [self.imageGenerator copyCGImageAtTime:CMTimeMake(frameNumber, (CGFloat)self.videoSource.fps) actualTime:nil error:&error];
-    UIImage *frameImage = [UIImage imageWithCGImage:frameCGImage]; //imageByCroppingVideoFrameCGImage:frameCGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-    CGImageRelease(frameCGImage);
+    NSString *frameNumberKey = [NSString stringWithFormat:@"%lu", (unsigned long)frameNumber];
+    UIImage *cachedImage = [self.frameCache objectForKey:frameNumberKey];
     
-    return frameImage;
+    if (cachedImage != nil) {
+        return cachedImage;
+    } else {
+        NSError *error;
+        CGImageRef frameCGImage = [self.imageGenerator copyCGImageAtTime:CMTimeMake(frameNumber, (CGFloat)self.videoSource.fps) actualTime:nil error:&error];
+        UIImage *frameImage = [UIImage imageByCroppingVideoFrameCGImage:frameCGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+        CGImageRelease(frameCGImage);
+        
+        [self.frameCache setObject:frameImage forKey:frameNumberKey];
+        
+        return frameImage;
+    }
 }
 
 

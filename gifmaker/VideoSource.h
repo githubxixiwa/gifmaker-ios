@@ -16,6 +16,7 @@
 @property (nonatomic) NSInteger fps;
 @property (nonatomic) Float64 duration;
 @property (nonatomic) NSInteger framesCount;
+@property (nonatomic) UIInterfaceOrientation orientation;
 @property (nonatomic, strong) AVAsset *asset;
 
 @property (nonatomic) NSInteger firstFrameNumber;

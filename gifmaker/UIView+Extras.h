@@ -11,5 +11,6 @@
 @interface UIView (Extras)
 
 - (UIImage *)croppedImageForRect:(CGRect)cropRect;
++ (UIImage *)snapshot:(UIView *)view;
 
 @end

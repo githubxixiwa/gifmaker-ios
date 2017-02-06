@@ -21,6 +21,7 @@
 // Categories
 #import "NSString+Extras.h"
 #import "UIImage+Extras.h"
+#import "UIImageView+Extras.h"
 
 @interface CaptionsViewController ()
 
@@ -47,7 +48,8 @@
         if (self.creationSource == GifCreationSourceEdited) {
             [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
         } else {
-            [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
+            [self.GIFFirstFramePreviewImageView setImageWithCheckingOrientation:self.videoSource.thumbnail
+                                                                    orientation:self.videoSource.orientation];
         }
     }
     
