@@ -14,7 +14,12 @@
 // Models
 #import "AppDelegate.h"
 
+// View Controllers
+#import "GifListViewController.h"
+
 @interface AppDelegate ()
+
+@property (nonatomic) BOOL shortcutFromFreshStart;
 
 @end
 
@@ -24,6 +29,11 @@
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
+    if (launchOptions[UIApplicationLaunchOptionsShortcutItemKey]) {
+        self.shortcutFromFreshStart = YES;
+    }
+    
     return YES;
 }
 
@@ -38,6 +48,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    self.shortcutFromFreshStart = NO;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -48,6 +59,32 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [FBSDKAppEvents activateApp];
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    NSString *actionType = [shortcutItem.type componentsSeparatedByString:@"."].lastObject;
+    UINavigationController *appNavigationController = ((UINavigationController*)self.window.rootViewController);
+    
+    if (appNavigationController.presentedViewController != nil) {
+        [appNavigationController.presentedViewController dismissViewControllerAnimated:NO completion:^{ }];
+    }
+    
+    [appNavigationController popToRootViewControllerAnimated:NO];
+    
+    if (![appNavigationController.viewControllers.lastObject isKindOfClass:[GifListViewController class]]) {
+        NSLog(@"Navigation tree seems to be corrupted.");
+        return;
+    }
+    
+    GifListViewController *gifListVC = appNavigationController.viewControllers.lastObject;
+    
+    if ([actionType isEqualToString:@"newFromPhotos"]) {
+        [gifListVC selectMediaFromGallery:GifFrameSourceGalleryPhotos];
+    } else if ([actionType isEqualToString:@"newFromVideo"]) {
+        [gifListVC selectMediaFromGallery:GifFrameSourceGalleryVideo];
+    } else if ([actionType isEqualToString:@"newFromCamera"]) {
+        self.shortcutFromFreshStart ? [gifListVC shootGIFFromCameraNotAnimated:nil] : [gifListVC shootGIFFromCamera:nil];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application

@@ -15,7 +15,6 @@
 
 // Models
 #import "VideoSource.h"
-#import "GifManager.h"
 #import "FLAnimatedImage.h"
 #import "AnalyticsManager.h"
 
@@ -283,6 +282,10 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     [self performSegueWithIdentifier:@"toRecordSegue" sender:self];
 }
 
+- (void)shootGIFFromCameraNotAnimated:(id)sender {
+    [self performSegueWithIdentifier:@"toRecordSegue_notAnimated" sender:self];
+}
+
 - (void)selectMediaSelectionMethod:(id)sender {
     UIAlertController *mediaSelectionMethodController = [UIAlertController alertControllerWithTitle:@"From which source you'll make your GIF?" message:@"From photos? From video?" preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *imageSelectionAction = [UIAlertAction actionWithTitle:@"From 🖼 photos" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -424,8 +427,7 @@ static double const precalculatedCellHeightMultiplier = 1.24;
                     [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:alertController animated:YES completion:nil];
                 } else {
-                    [self performSegueWithIdentifier:@"toVideoScrubberSegue" sender:sender];
-                    //[self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
+                    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
                 }
             }];
         });

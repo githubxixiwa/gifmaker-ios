@@ -309,6 +309,7 @@
                         <segue destination="HEI-g4-jvt" kind="show" identifier="toRecordSegue" id="jSB-Cd-Bzu"/>
                         <segue destination="Upl-jv-59b" kind="show" identifier="toCaptionsSegue" id="Y6c-GV-7ly"/>
                         <segue destination="kre-lP-Bux" kind="show" identifier="toVideoScrubberSegue" id="Cxp-Xt-EJs"/>
+                        <segue destination="HEI-g4-jvt" kind="show" identifier="toRecordSegue_notAnimated" animates="NO" id="B98-XQ-nQh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qhr-0e-fkh" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -752,7 +753,7 @@
                                         </variation>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CWa-MK-5yc">
-                                        <rect key="frame" x="235" y="25.5" width="130" height="67.5"/>
+                                        <rect key="frame" x="235" y="25" width="130" height="68"/>
                                         <attributedString key="attributedText">
                                             <fragment content="GifMaker!">
                                                 <attributes>
@@ -844,7 +845,7 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="START" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wL8-5d-uS5" userLabel="START title">
-                                        <rect key="frame" x="32" y="24" width="80" height="49.5"/>
+                                        <rect key="frame" x="32" y="24" width="80" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="80" id="LhX-1e-btE"/>
                                         </constraints>
@@ -853,7 +854,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="END" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gGA-Pa-K1l" userLabel="END title">
-                                        <rect key="frame" x="506" y="518.5" width="54" height="49.5"/>
+                                        <rect key="frame" x="506" y="518" width="54" height="50"/>
                                         <fontDescription key="fontDescription" name="AvenirNextCondensed-Italic" family="Avenir Next Condensed" pointSize="36"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -873,22 +874,22 @@
                                                 <rect key="frame" x="2" y="47" width="556" height="93"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FPi-ya-8lX">
-                                                        <rect key="frame" x="0.0" y="0.0" width="92.5" height="93"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Qa-MZ-kZB">
-                                                        <rect key="frame" x="92.5" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="93" y="0.0" width="92" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tma-w9-lvp">
-                                                        <rect key="frame" x="185.5" y="0.0" width="92.5" height="93"/>
+                                                        <rect key="frame" x="185" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SfD-ek-a72">
-                                                        <rect key="frame" x="278" y="0.0" width="92.5" height="93"/>
+                                                        <rect key="frame" x="278" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WBn-CA-XaJ">
-                                                        <rect key="frame" x="370.5" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="371" y="0.0" width="92" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PKw-ds-ICB">
-                                                        <rect key="frame" x="463.5" y="0.0" width="92.5" height="93"/>
+                                                        <rect key="frame" x="463" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                 </subviews>
                                             </stackView>
@@ -1024,6 +1025,7 @@
         <image name="switchCameraIconNew" width="121" height="121"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="OxW-AJ-doc"/>
+        <segue reference="Y6c-GV-7ly"/>
+        <segue reference="B98-XQ-nQh"/>
     </inferredMetricsTieBreakers>
 </document>

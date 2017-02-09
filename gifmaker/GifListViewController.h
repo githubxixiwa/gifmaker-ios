@@ -16,7 +16,12 @@
 
 // Models
 #import "GifTableViewCell.h"
+#import "GifManager.h"
 
 @interface GifListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, RecordGifDelegate, QBImagePickerControllerDelegate, MFMessageComposeViewControllerDelegate, GifTableViewСellActionsDelegate>
+
+- (void)selectMediaFromGallery:(GifFrameSource)frameSource;
+- (void)shootGIFFromCameraNotAnimated:(id)sender;
+- (void)shootGIFFromCamera:(id)sender;
 
 @end
