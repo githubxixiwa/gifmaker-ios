@@ -20,7 +20,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 @interface QBImagePickerController (Private)
 
-@property (nonatomic, strong) NSMutableOrderedSet *selectedAssets;
 @property (nonatomic, strong) NSBundle *assetBundle;
 
 @end
@@ -102,6 +101,7 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
     [self updateDoneButtonState];
     [self updateSelectionInfo];
+    [self.collectionView reloadData];
     
     // Scroll to bottom
     if (self.fetchResult.count > 0 && self.isMovingToParentViewController && !self.disableScrollToBottom) {
@@ -229,7 +229,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 {
     if (self.assetCollection) {
         PHFetchOptions *options = [PHFetchOptions new];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         
         switch (self.imagePickerController.mediaType) {
             case QBImagePickerMediaTypeImage:

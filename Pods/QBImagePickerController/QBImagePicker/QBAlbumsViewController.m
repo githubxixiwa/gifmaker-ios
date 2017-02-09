@@ -22,7 +22,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 @interface QBImagePickerController (Private)
 
-@property (nonatomic, strong) NSMutableOrderedSet *selectedAssets;
 @property (nonatomic, strong) NSBundle *assetBundle;
 
 @end
@@ -152,8 +151,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 - (void)updateAssetCollections
 {
-    NSMutableArray *assetCollections = [NSMutableArray array];
-    
     // Filter albums
     NSArray *assetCollectionSubtypes = self.imagePickerController.assetCollectionSubtypes;
     NSMutableDictionary *smartAlbums = [NSMutableDictionary dictionaryWithCapacity:assetCollectionSubtypes.count];
@@ -161,20 +158,27 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     
     for (PHFetchResult *fetchResult in self.fetchResults) {
         [fetchResult enumerateObjectsUsingBlock:^(PHAssetCollection *assetCollection, NSUInteger index, BOOL *stop) {
-            if (assetCollection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumRegular) {
+            PHAssetCollectionSubtype subtype = assetCollection.assetCollectionSubtype;
+            
+            if (subtype == PHAssetCollectionSubtypeAlbumRegular) {
                 [userAlbums addObject:assetCollection];
-            } else if ([assetCollectionSubtypes containsObject:@(assetCollection.assetCollectionSubtype)]) {
-                smartAlbums[@(assetCollection.assetCollectionSubtype)] = assetCollection;
+            } else if ([assetCollectionSubtypes containsObject:@(subtype)]) {
+                if (!smartAlbums[@(subtype)]) {
+                    smartAlbums[@(subtype)] = [NSMutableArray array];
+                }
+                [smartAlbums[@(subtype)] addObject:assetCollection];
             }
         }];
     }
     
+    NSMutableArray *assetCollections = [NSMutableArray array];
+
     // Fetch smart albums
     for (NSNumber *assetCollectionSubtype in assetCollectionSubtypes) {
-        PHAssetCollection *assetCollection = smartAlbums[assetCollectionSubtype];
+        NSArray *collections = smartAlbums[assetCollectionSubtype];
         
-        if (assetCollection) {
-            [assetCollections addObject:assetCollection];
+        if (collections) {
+            [assetCollections addObjectsFromArray:collections];
         }
     }
     
@@ -278,7 +282,6 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
     PHAssetCollection *assetCollection = self.assetCollections[indexPath.row];
     
     PHFetchOptions *options = [PHFetchOptions new];
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     
     switch (self.imagePickerController.mediaType) {
         case QBImagePickerMediaTypeImage:

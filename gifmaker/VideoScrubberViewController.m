@@ -52,6 +52,7 @@
     self.imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self.videoSource.asset];
     self.imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
     self.imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+    self.imageGenerator.appliesPreferredTrackTransform = YES;
     
     [self.scrubberDragger addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(scrubberDidPan:)]];
     

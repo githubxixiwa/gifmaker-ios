@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.5</string>
+	<string>1.1.7</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -99,6 +99,39 @@
 	<array>
 		<string>impact.ttf</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeCapturePhoto</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Make GIF from photos</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>From photos</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromPhotos</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeCaptureVideo</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Make GIF from video</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>From video</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromVideo</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeTaskCompleted</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Shoot GIF from camera</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>From camera</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromCamera</string>
+		</dict>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -111,39 +144,6 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-        <dict>
-            <key>UIApplicationShortcutItemType</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromPhotos</string>
-            <key>UIApplicationShortcutItemTitle</key>
-            <string>From photos</string>
-            <key>UIApplicationShortcutItemSubtitle</key>
-            <string>Make GIF from photos</string>
-            <key>UIApplicationShortcutItemIconType</key>
-            <string>UIApplicationShortcutIconTypeCapturePhoto</string>
-        </dict>
-        <dict>
-            <key>UIApplicationShortcutItemType</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromVideo</string>
-            <key>UIApplicationShortcutItemTitle</key>
-            <string>From video</string>
-            <key>UIApplicationShortcutItemSubtitle</key>
-            <string>Make GIF from video</string>
-            <key>UIApplicationShortcutItemIconType</key>
-            <string>UIApplicationShortcutIconTypeCaptureVideo</string>
-        </dict>
-        <dict>
-            <key>UIApplicationShortcutItemType</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER).3dtouch.newFromCamera</string>
-            <key>UIApplicationShortcutItemTitle</key>
-            <string>From camera</string>
-            <key>UIApplicationShortcutItemSubtitle</key>
-            <string>Shoot GIF from camera</string>
-            <key>UIApplicationShortcutItemIconType</key>
-            <string>UIApplicationShortcutIconTypeTaskCompleted</string>
-        </dict>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

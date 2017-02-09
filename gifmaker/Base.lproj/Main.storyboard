@@ -1025,7 +1025,7 @@
         <image name="switchCameraIconNew" width="121" height="121"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Y6c-GV-7ly"/>
         <segue reference="B98-XQ-nQh"/>
+        <segue reference="OxW-AJ-doc"/>
     </inferredMetricsTieBreakers>
 </document>

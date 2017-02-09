@@ -60,7 +60,6 @@
 
 static double const headerDefaultHeight = 128.0;
 static double const headerMinimumHeight = 0.0;
-static double const precalculatedCellHeightMultiplier = 1.24;
 
 
 #pragma mark - Lifecycle
@@ -69,7 +68,7 @@ static double const precalculatedCellHeightMultiplier = 1.24;
     [super viewDidLoad];
 
     // Precalculate cell height
-    self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * precalculatedCellHeightMultiplier;
+    self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * ([UIScreen mainScreen].scale == [UIScreen mainScreen].nativeScale ? 1.24 : 1.28);
 
     // Preinit date formatter
     self.dateFormatter = [[NSDateFormatter alloc] init];
@@ -427,7 +426,12 @@ static double const precalculatedCellHeightMultiplier = 1.24;
                     [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:alertController animated:YES completion:nil];
                 } else {
-                    [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
+                    // Show captions editor if GIF source is photos / show video part selector if GIF source is video
+                    if (imagePickerController.mediaType == QBImagePickerMediaTypeImage) {
+                         [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
+                    } else if (imagePickerController.mediaType == QBImagePickerMediaTypeVideo) {
+                        [self performSegueWithIdentifier:@"toVideoScrubberSegue" sender:sender];
+                    }
                 }
             }];
         });
