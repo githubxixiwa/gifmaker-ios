@@ -2,20 +2,23 @@
 //  UIImagePickerController+Additions.m
 //  gifmaker
 //
-//  Created by Sergio on 5/10/16.
+//  Created by Sergii Simakhin on 5/10/16.
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
-#import "UIImagePickerController+Additions.h"
+// Frameworks
 #import <AVFoundation/AVFoundation.h>
-#import "Photos/Photos.h"
+#import <Photos/Photos.h>
+
+// View Controllers
+#import "UIImagePickerController+Additions.h"
 
 @implementation UIImagePickerController (Additions)
 
 + (void)obtainPermissionForMediaSourceType:(UIImagePickerControllerSourceType)sourceType withSuccessHandler:(void (^) ())successHandler andFailure:(void (^) ())failureHandler {
     
     if (sourceType == UIImagePickerControllerSourceTypePhotoLibrary || sourceType == UIImagePickerControllerSourceTypeSavedPhotosAlbum) {
-        // Denied when photo disabled, authorized when photos is enabled. Not affected by camera
+        // Denied when photo disabled, authorized when photos is enabled (not affected by camera)
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
             switch (status) {
                 case PHAuthorizationStatusAuthorized: {
@@ -36,7 +39,7 @@
             }
         }];
     } else if (sourceType == UIImagePickerControllerSourceTypeCamera) {
-        // Checks for Camera access:
+        // Check for camera access
         AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
         switch (status) {
@@ -47,7 +50,7 @@
             }; break;
                 
             case AVAuthorizationStatusNotDetermined: {
-                // seek access first:
+                // Seek an access first
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                     if (granted) {
                         if (successHandler) {

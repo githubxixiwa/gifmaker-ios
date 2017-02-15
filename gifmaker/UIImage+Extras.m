@@ -2,11 +2,15 @@
 //  UIImage+Extras.m
 //  gifmaker
 //
-//  Created by Sergio on 11/25/15.
+//  Created by Sergii Simakhin on 11/25/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "UIImage+Extras.h"
+
+// Helpers
+#import "Macros.h"
 
 @implementation UIImage (Extras)
 
@@ -62,6 +66,50 @@
     UIGraphicsEndImageContext();
     
     return resizedImage;
+}
+
+
+#pragma mark - Captions drawer
+
+- (UIImage *)drawHeaderText:(NSString *)headerText
+                 footerText:(NSString *)footerText
+   withAttributesDictionary:(NSDictionary *)textAttributesDictionary
+                 forQuality:(GifQuality)quality {
+    
+    CGFloat sideSize = GifSideSizeFromQuality(quality);
+    
+    UIGraphicsBeginImageContext(CGSizeMake(sideSize, sideSize));
+    
+    // Draw image on context
+    [self drawAtPoint:CGPointMake(0, 0)];
+    
+    // Get attributed text size
+    CGSize headerTextSize = [headerText sizeWithAttributes:textAttributesDictionary];
+    CGSize footerTextSize = [footerText sizeWithAttributes:textAttributesDictionary];
+    
+    NSInteger offset = 2;
+    
+    CGRect headerCaptionRect = CGRectMake(offset,
+                                          offset * 2,
+                                          sideSize - (offset * 2),
+                                          headerTextSize.height);
+    
+    CGRect footerCaptionRect = CGRectMake(offset,
+                                          sideSize - (offset * 2) - footerTextSize.height,
+                                          sideSize - (offset * 2),
+                                          footerTextSize.height);
+    
+    // Draw header and footer
+    [headerText drawInRect:headerCaptionRect withAttributes:textAttributesDictionary];
+    [footerText drawInRect:footerCaptionRect withAttributes:textAttributesDictionary];
+    
+    // Make image out of bitmap context
+    UIImage *imageWithHeaderAndFooterText = UIGraphicsGetImageFromCurrentImageContext();
+    
+    // Free the context
+    UIGraphicsEndImageContext();
+    
+    return imageWithHeaderAndFooterText;
 }
 
 @end

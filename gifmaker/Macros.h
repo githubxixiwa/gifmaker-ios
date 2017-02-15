@@ -2,7 +2,7 @@
 //  Macros.h
 //  gifmaker
 //
-//  Created by Sergio on 4/5/16.
+//  Created by Sergii Simakhin on 4/5/16.
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 
 #define VIDEO_DURATION 5.0
 #define GIF_FPS 16.0
-#define GIF_SIDE_SIZE 480
+
+#define CAPTIONS_FONT_SIZE 40
 
 #endif /* Macros_h */

@@ -2,7 +2,7 @@
 //  Exporter.m
 //  gifmaker
 //
-//  Created by Sergio on 12/8/15.
+//  Created by Sergii Simakhin on 12/8/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -20,7 +20,7 @@
     }
     
     if (repeatCount > 1) {
-        NSMutableArray<UIImage *> *repeatedImagesArray = [[NSMutableArray alloc] init];
+        NSMutableArray<UIImage *> *repeatedImagesArray = [NSMutableArray array];
         for (int i = 0; i < repeatCount; i++) {
             for (int j = 0; j < images.count; j++) {
                 [repeatedImagesArray addObject:images[j]];

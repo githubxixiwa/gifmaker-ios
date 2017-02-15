@@ -2,7 +2,7 @@
 //  NSObject+Helpers.m
 //  gifmaker
 //
-//  Created by Sergio on 1/4/16.
+//  Created by Sergii Simakhin on 1/4/16.
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 

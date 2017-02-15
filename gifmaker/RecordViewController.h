@@ -2,7 +2,7 @@
 //  RecordViewController.h
 //  gifmaker
 //
-//  Created by Sergio on 11/24/15.
+//  Created by Sergii Simakhin on 11/24/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -24,6 +24,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
+@property (weak, nonatomic) IBOutlet UIView *cardView;
 
 @property (nonatomic, strong) id delegate;
 

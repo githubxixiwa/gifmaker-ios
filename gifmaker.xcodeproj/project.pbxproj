@@ -10,7 +10,7 @@
 		49043E8A1CB5760B00A3696C /* UIView+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 49043E891CB5760B00A3696C /* UIView+Extras.m */; };
 		49163E931E2E47BF008919D9 /* VideoScrubberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */; };
 		49178B3C1E29146A00E40B8B /* VideoSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 49178B3B1E29146A00E40B8B /* VideoSource.m */; };
-		491AE0CD1E48C0F200D3A427 /* UIImageView+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 491AE0CC1E48C0F200D3A427 /* UIImageView+Extras.m */; };
+		491AE1971E5356F30071D579 /* GifQuality.m in Sources */ = {isa = PBXBuildFile; fileRef = 491AE1961E5356F30071D579 /* GifQuality.m */; };
 		4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */; };
 		4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4331C3A9A84006FC60E /* NSObject+Helpers.m */; };
 		4958B4371C3A9DD1006FC60E /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4361C3A9DD1006FC60E /* UIImage+animatedGIF.m */; };
@@ -69,8 +69,7 @@
 		49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoScrubberViewController.m; sourceTree = "<group>"; };
 		49178B3A1E29146A00E40B8B /* VideoSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoSource.h; sourceTree = "<group>"; };
 		49178B3B1E29146A00E40B8B /* VideoSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoSource.m; sourceTree = "<group>"; };
-		491AE0CB1E48C0F200D3A427 /* UIImageView+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Extras.h"; sourceTree = "<group>"; };
-		491AE0CC1E48C0F200D3A427 /* UIImageView+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Extras.m"; sourceTree = "<group>"; };
+		491AE1961E5356F30071D579 /* GifQuality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifQuality.m; sourceTree = "<group>"; };
 		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
 		4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
 		4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Helpers.h"; sourceTree = "<group>"; };
@@ -125,6 +124,7 @@
 		49B4F0FD1C1091B6009475B1 /* impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = impact.ttf; sourceTree = "<group>"; };
 		49C388561D37CB4600FE0160 /* AnalyticsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsManager.h; sourceTree = "<group>"; };
 		49C388571D37CB4600FE0160 /* AnalyticsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsManager.m; sourceTree = "<group>"; };
+		49F8C02B1E5376E40075B4BE /* GifQuality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifQuality.h; sourceTree = "<group>"; };
 		D470C605D8547346565B5001 /* Pods-gifmaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gifmaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-gifmaker/Pods-gifmaker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -163,8 +163,6 @@
 				49043E891CB5760B00A3696C /* UIView+Extras.m */,
 				49693F661C062606007298EF /* UIImage+Extras.h */,
 				49693F671C062606007298EF /* UIImage+Extras.m */,
-				491AE0CB1E48C0F200D3A427 /* UIImageView+Extras.h */,
-				491AE0CC1E48C0F200D3A427 /* UIImageView+Extras.m */,
 				49693F691C087ECE007298EF /* NSString+Extras.h */,
 				49693F6A1C087ECE007298EF /* NSString+Extras.m */,
 				4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */,
@@ -280,6 +278,8 @@
 				49693F6F1C0881C9007298EF /* GifElement.m */,
 				49693F711C0889DE007298EF /* GifManager.h */,
 				49693F721C0889DE007298EF /* GifManager.m */,
+				49F8C02B1E5376E40075B4BE /* GifQuality.h */,
+				491AE1961E5356F30071D579 /* GifQuality.m */,
 				497131A21C176C2900DF7766 /* Exporter.h */,
 				497131A31C176C2900DF7766 /* Exporter.m */,
 				497B708D1D37B557006CA3FC /* NetworkManager.h */,
@@ -511,9 +511,9 @@
 				49C388581D37CB4600FE0160 /* AnalyticsManager.m in Sources */,
 				49693F681C062606007298EF /* UIImage+Extras.m in Sources */,
 				495E9E111CE20BE0005CF223 /* UIImagePickerController+Additions.m in Sources */,
+				491AE1971E5356F30071D579 /* GifQuality.m in Sources */,
 				4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */,
 				49163E931E2E47BF008919D9 /* VideoScrubberViewController.m in Sources */,
-				491AE0CD1E48C0F200D3A427 /* UIImageView+Extras.m in Sources */,
 				497131A41C176C2900DF7766 /* Exporter.m in Sources */,
 				49693F731C0889DE007298EF /* GifManager.m in Sources */,
 			);

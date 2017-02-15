@@ -513,6 +513,7 @@
                     <connections>
                         <outlet property="cameraPreviewUIView" destination="GyD-Pw-tTg" id="t0g-Pu-9jf"/>
                         <outlet property="cancelButton" destination="kli-3Q-W82" id="IgL-32-hXl"/>
+                        <outlet property="cardView" destination="kCt-2Q-Xi2" id="XyP-gF-Rkr"/>
                         <outlet property="circularProgressView" destination="fWQ-fa-1iE" id="28p-oW-lj2"/>
                         <outlet property="nextButton" destination="9c8-Fb-LN1" id="301-ab-1v0"/>
                         <segue destination="Upl-jv-59b" kind="show" identifier="toCaptionsSegue" id="zTT-XI-QlR"/>
@@ -711,9 +712,9 @@
         <!--Navigation Controller-->
         <scene sceneID="gIg-n5-ugN">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="b7C-cf-pHJ" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="b7C-cf-pHJ" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="KXD-Up-9Iv">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="KXD-Up-9Iv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -753,7 +754,7 @@
                                         </variation>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CWa-MK-5yc">
-                                        <rect key="frame" x="235" y="25" width="130" height="68"/>
+                                        <rect key="frame" x="235" y="25.5" width="130" height="67.5"/>
                                         <attributedString key="attributedText">
                                             <fragment content="GifMaker!">
                                                 <attributes>
@@ -845,7 +846,7 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="START" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wL8-5d-uS5" userLabel="START title">
-                                        <rect key="frame" x="32" y="24" width="80" height="50"/>
+                                        <rect key="frame" x="32" y="24" width="80" height="49.5"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="80" id="LhX-1e-btE"/>
                                         </constraints>
@@ -854,7 +855,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="END" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gGA-Pa-K1l" userLabel="END title">
-                                        <rect key="frame" x="506" y="518" width="54" height="50"/>
+                                        <rect key="frame" x="506" y="518.5" width="54" height="49.5"/>
                                         <fontDescription key="fontDescription" name="AvenirNextCondensed-Italic" family="Avenir Next Condensed" pointSize="36"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -874,22 +875,22 @@
                                                 <rect key="frame" x="2" y="47" width="556" height="93"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FPi-ya-8lX">
-                                                        <rect key="frame" x="0.0" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="92.5" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Qa-MZ-kZB">
-                                                        <rect key="frame" x="93" y="0.0" width="92" height="93"/>
+                                                        <rect key="frame" x="92.5" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tma-w9-lvp">
-                                                        <rect key="frame" x="185" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="185.5" y="0.0" width="92.5" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SfD-ek-a72">
-                                                        <rect key="frame" x="278" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="278" y="0.0" width="92.5" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WBn-CA-XaJ">
-                                                        <rect key="frame" x="371" y="0.0" width="92" height="93"/>
+                                                        <rect key="frame" x="370.5" y="0.0" width="93" height="93"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PKw-ds-ICB">
-                                                        <rect key="frame" x="463" y="0.0" width="93" height="93"/>
+                                                        <rect key="frame" x="463.5" y="0.0" width="92.5" height="93"/>
                                                     </imageView>
                                                 </subviews>
                                             </stackView>
@@ -953,11 +954,101 @@
                                             <constraint firstItem="N4f-T9-bly" firstAttribute="height" secondItem="0ye-Sy-cbq" secondAttribute="height" multiplier="0.5" id="zfg-iG-NYc"/>
                                         </constraints>
                                     </view>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mVj-OF-Fo3" userLabel="Card back side: gif settings panel">
+                                        <rect key="frame" x="16" y="16" width="560" height="560"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quality" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="75u-yR-h8b">
+                                                <rect key="frame" x="254.5" y="0.0" width="51.5" height="27.5"/>
+                                                <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="17"/>
+                                                <color key="textColor" red="0.0" green="0.25098039215686274" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="LUZ-7A-iWj">
+                                                <rect key="frame" x="192" y="43.5" width="176" height="29"/>
+                                                <segments>
+                                                    <segment title="Low"/>
+                                                    <segment title="Default"/>
+                                                    <segment title="High"/>
+                                                </segments>
+                                                <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <connections>
+                                                    <action selector="gifQualityDidChanged:" destination="kre-lP-Bux" eventType="valueChanged" id="OwL-lr-KYk"/>
+                                                </connections>
+                                            </segmentedControl>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q8q-Ix-Qux">
+                                                <rect key="frame" x="16" y="87.5" width="528" height="77"/>
+                                                <attributedString key="attributedText">
+                                                    <fragment content="5 seconds of GIF animation will be approximately: ">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="Noteworthy-Light"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content="●">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="STSongti-SC-Regular"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content=" 1 - 3 MB with 240x240 resolution at 16 fps (low quality) ">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="Noteworthy-Light"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content="●">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="STSongti-SC-Regular"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content=" 3 - 10 MB with 480x480 resolution at 16 fps (default) ">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="Noteworthy-Light"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content="●">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="STSongti-SC-Regular"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                    <fragment content=" 8 - 20 MB with 960x960 resolution at 16 fps (high quality)">
+                                                        <attributes>
+                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <font key="NSFont" size="12" name="Noteworthy-Light"/>
+                                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                </attributedString>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="Q8q-Ix-Qux" firstAttribute="leading" secondItem="mVj-OF-Fo3" secondAttribute="leading" constant="16" id="30f-HZ-j12"/>
+                                            <constraint firstItem="Q8q-Ix-Qux" firstAttribute="top" secondItem="LUZ-7A-iWj" secondAttribute="bottom" constant="16" id="8Qq-5b-odF"/>
+                                            <constraint firstItem="LUZ-7A-iWj" firstAttribute="top" secondItem="75u-yR-h8b" secondAttribute="bottom" constant="16" id="C6Y-CO-4OS"/>
+                                            <constraint firstItem="75u-yR-h8b" firstAttribute="centerX" secondItem="mVj-OF-Fo3" secondAttribute="centerX" id="EoM-r1-FU9"/>
+                                            <constraint firstItem="LUZ-7A-iWj" firstAttribute="centerX" secondItem="mVj-OF-Fo3" secondAttribute="centerX" id="Rqo-y4-Lu0"/>
+                                            <constraint firstAttribute="width" secondItem="mVj-OF-Fo3" secondAttribute="height" multiplier="1:1" id="YxL-wy-MHU"/>
+                                            <constraint firstAttribute="trailing" secondItem="Q8q-Ix-Qux" secondAttribute="trailing" constant="16" id="rr2-S5-ZLf"/>
+                                            <constraint firstItem="75u-yR-h8b" firstAttribute="top" secondItem="mVj-OF-Fo3" secondAttribute="top" id="wcP-Lw-DjU"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="SUl-GO-PJE" firstAttribute="leading" secondItem="eGD-SY-n7X" secondAttribute="leading" constant="16" id="0Oc-O8-awA"/>
                                     <constraint firstAttribute="trailing" secondItem="SUl-GO-PJE" secondAttribute="trailing" constant="16" id="0ob-nA-lhs"/>
+                                    <constraint firstItem="mVj-OF-Fo3" firstAttribute="top" secondItem="eGD-SY-n7X" secondAttribute="top" constant="16" id="21w-2u-aQR"/>
                                     <constraint firstAttribute="bottom" secondItem="0ye-Sy-cbq" secondAttribute="bottom" id="50A-Ep-WE1"/>
                                     <constraint firstItem="gGA-Pa-K1l" firstAttribute="trailing" secondItem="b7t-pz-wvW" secondAttribute="trailing" constant="-16" id="Egy-HX-XY8"/>
                                     <constraint firstAttribute="height" secondItem="SUl-GO-PJE" secondAttribute="height" multiplier="1.36" id="Fzl-Qf-WrW"/>
@@ -965,7 +1056,9 @@
                                     <constraint firstAttribute="trailing" secondItem="b7t-pz-wvW" secondAttribute="trailing" constant="16" id="PGg-Vz-hE1"/>
                                     <constraint firstItem="wL8-5d-uS5" firstAttribute="top" secondItem="SUl-GO-PJE" secondAttribute="top" constant="8" id="QPJ-2A-hcC"/>
                                     <constraint firstItem="wL8-5d-uS5" firstAttribute="leading" secondItem="SUl-GO-PJE" secondAttribute="leading" constant="16" id="SSn-z5-g0u"/>
+                                    <constraint firstAttribute="trailing" secondItem="mVj-OF-Fo3" secondAttribute="trailing" constant="16" id="SZY-FV-eq4"/>
                                     <constraint firstItem="0ye-Sy-cbq" firstAttribute="top" secondItem="SUl-GO-PJE" secondAttribute="bottom" id="U9C-LC-Y1n"/>
+                                    <constraint firstItem="mVj-OF-Fo3" firstAttribute="leading" secondItem="eGD-SY-n7X" secondAttribute="leading" constant="16" id="ZqP-sD-cPI"/>
                                     <constraint firstItem="SUl-GO-PJE" firstAttribute="top" secondItem="eGD-SY-n7X" secondAttribute="top" constant="16" id="dYL-bC-9za"/>
                                     <constraint firstItem="gGA-Pa-K1l" firstAttribute="bottom" secondItem="b7t-pz-wvW" secondAttribute="bottom" constant="-8" id="eLE-Bb-JCI"/>
                                     <constraint firstAttribute="trailing" secondItem="0ye-Sy-cbq" secondAttribute="trailing" constant="16" id="hup-0U-T9E"/>
@@ -973,15 +1066,52 @@
                                     <constraint firstItem="0ye-Sy-cbq" firstAttribute="leading" secondItem="eGD-SY-n7X" secondAttribute="leading" constant="16" id="zoN-Dk-gwe"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yuh-Up-io9" userLabel="Settings view">
+                                <rect key="frame" x="150" y="936" width="300" height="64"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="paper" translatesAutoresizingMaskIntoConstraints="NO" id="Izz-bZ-ZhE" userLabel="Settings paper">
+                                        <rect key="frame" x="22" y="6" width="256" height="118"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="208" id="dtY-0o-L9a"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="dtY-0o-L9a"/>
+                                            </mask>
+                                        </variation>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4pB-mi-OW9">
+                                        <rect key="frame" x="88" y="24" width="125" height="41"/>
+                                        <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="18"/>
+                                        <state key="normal" title="Advanced settings">
+                                            <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="settingsButtonDidTap:" destination="kre-lP-Bux" eventType="touchUpInside" id="DdB-EX-7I3"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="4pB-mi-OW9" firstAttribute="centerX" secondItem="Yuh-Up-io9" secondAttribute="centerX" id="Pnt-Am-WMI"/>
+                                    <constraint firstItem="4pB-mi-OW9" firstAttribute="centerY" secondItem="Yuh-Up-io9" secondAttribute="centerY" multiplier="1.36" id="XrX-kw-dhw"/>
+                                    <constraint firstAttribute="height" constant="64" id="sDz-0w-ofx"/>
+                                    <constraint firstAttribute="bottom" secondItem="Izz-bZ-ZhE" secondAttribute="bottom" constant="-60" id="utk-QD-x6N"/>
+                                    <constraint firstItem="Izz-bZ-ZhE" firstAttribute="centerX" secondItem="Yuh-Up-io9" secondAttribute="centerX" id="zZN-lf-nFp"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Ijy-b7-pH3" secondAttribute="trailing" id="7NY-Bo-uK7"/>
+                            <constraint firstItem="Yuh-Up-io9" firstAttribute="width" secondItem="1Y8-VG-i5f" secondAttribute="width" multiplier="0.5" id="8UB-3j-fXC"/>
                             <constraint firstItem="eGD-SY-n7X" firstAttribute="leading" secondItem="1Y8-VG-i5f" secondAttribute="leading" constant="4" id="CXq-So-lnH"/>
                             <constraint firstItem="Ijy-b7-pH3" firstAttribute="leading" secondItem="1Y8-VG-i5f" secondAttribute="leading" id="G0N-8O-UVE"/>
                             <constraint firstItem="eGD-SY-n7X" firstAttribute="top" secondItem="Ijy-b7-pH3" secondAttribute="bottom" id="GnB-Pn-geN"/>
+                            <constraint firstItem="Yuh-Up-io9" firstAttribute="centerX" secondItem="1Y8-VG-i5f" secondAttribute="centerX" id="cN6-03-mzY"/>
                             <constraint firstItem="Ijy-b7-pH3" firstAttribute="top" secondItem="1Y8-VG-i5f" secondAttribute="top" id="gLj-3z-iGf"/>
                             <constraint firstAttribute="trailing" secondItem="eGD-SY-n7X" secondAttribute="trailing" constant="4" id="nYz-MD-Ez3"/>
+                            <constraint firstItem="dD7-WD-CDt" firstAttribute="top" secondItem="Yuh-Up-io9" secondAttribute="bottom" id="tBk-lH-Yzx"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -990,11 +1120,15 @@
                     <size key="freeformSize" width="600" height="1000"/>
                     <connections>
                         <outlet property="cancelButton" destination="cmz-6F-tPw" id="PNa-3N-hZs"/>
+                        <outlet property="cardView" destination="eGD-SY-n7X" id="WsP-vY-rnq"/>
+                        <outlet property="gifQualitySettingsSegmentedControl" destination="LUZ-7A-iWj" id="E09-eE-T8t"/>
+                        <outlet property="gifSettingsPanel" destination="mVj-OF-Fo3" id="emp-aH-DBZ"/>
                         <outlet property="nextButton" destination="wg5-Gb-CPX" id="ypZ-5a-zpk"/>
                         <outlet property="previewEndImageView" destination="b7t-pz-wvW" id="NQE-P2-mIe"/>
                         <outlet property="previewStartImageView" destination="SUl-GO-PJE" id="g2o-fg-kRg"/>
                         <outlet property="scrubberCinemaTapeInnerOutlinerView" destination="taG-RC-6v8" id="oMM-Oh-Hm4"/>
                         <outlet property="scrubberCinemaTapeView" destination="Nge-0D-6Od" id="cGU-f5-QFA"/>
+                        <outlet property="scrubberControlsUnderneathView" destination="0ye-Sy-cbq" id="tOO-GT-4s1"/>
                         <outlet property="scrubberDragger" destination="Tcr-W4-aEz" id="PwF-xH-w8f"/>
                         <outlet property="scrubberDraggerBackgroundView" destination="AlA-BM-bTM" id="3eG-W8-gie"/>
                         <outlet property="scrubberDraggerContentView" destination="mg5-hU-bpS" id="b6J-8L-RV1"/>
@@ -1009,6 +1143,11 @@
                         <outlet property="scrubberFramesStackViewTrailingConstraint" destination="hfx-TF-yDX" id="nsT-kd-6Eq"/>
                         <outlet property="scrubberLeadingLayoutConstraint" destination="SOO-uH-cT1" id="RnR-Za-0w9"/>
                         <outlet property="scrubberWidthLayoutConstraint" destination="wca-KJ-ML8" id="hxg-pE-JHd"/>
+                        <outlet property="settingsButton" destination="4pB-mi-OW9" id="vzH-0i-Wqc"/>
+                        <outlet property="settingsPaper" destination="Izz-bZ-ZhE" id="ic0-TZ-yP2"/>
+                        <outlet property="settingsView" destination="Yuh-Up-io9" id="72y-hK-RVl"/>
+                        <outlet property="settingsViewBottomLayoutContraint" destination="tBk-lH-Yzx" id="ysw-Vq-zUg"/>
+                        <outlet property="settingsViewHeightConstraint" destination="sDz-0w-ofx" id="gmV-aL-1d7"/>
                         <segue destination="Upl-jv-59b" kind="show" identifier="toCaptionsSegue" id="OxW-AJ-doc"/>
                     </connections>
                 </viewController>
@@ -1025,7 +1164,7 @@
         <image name="switchCameraIconNew" width="121" height="121"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="B98-XQ-nQh"/>
         <segue reference="OxW-AJ-doc"/>
+        <segue reference="B98-XQ-nQh"/>
     </inferredMetricsTieBreakers>
 </document>

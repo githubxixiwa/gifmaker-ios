@@ -2,7 +2,7 @@
 //  GifElement.m
 //  gifmaker
 //
-//  Created by Sergio on 11/25/15.
+//  Created by Sergii Simakhin on 11/25/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -110,8 +110,7 @@
     BOOL isDirectory = YES;
     if ([[NSFileManager defaultManager] fileExistsAtPath:[[self savedFramesStorageFolderURL] path] isDirectory:&isDirectory]) {
         NSError *contentsOfDirectoryError;
-        NSMutableArray *imagesPathArray = [NSMutableArray arrayWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[self savedFramesStorageFolderURL] path]
-                                                                                       error:&contentsOfDirectoryError]];
+        NSMutableArray *imagesPathArray = [NSMutableArray arrayWithArray:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[self savedFramesStorageFolderURL] path] error:&contentsOfDirectoryError]];
         // Numeric sort, just to ensure that images are in proper order
         [imagesPathArray sortUsingComparator:^NSComparisonResult(NSString *str1, NSString *str2) {
             return [str1 compare:str2 options:(NSNumericSearch)];

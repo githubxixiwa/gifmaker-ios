@@ -2,7 +2,7 @@
 //  UIView+Extras.h
 //  gifmaker
 //
-//  Created by Sergio on 4/6/16.
+//  Created by Sergii Simakhin on 4/6/16.
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
@@ -11,6 +11,6 @@
 @interface UIView (Extras)
 
 - (UIImage *)croppedImageForRect:(CGRect)cropRect;
-+ (UIImage *)snapshot:(UIView *)view;
+- (void)applyShadow;
 
 @end

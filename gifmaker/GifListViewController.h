@@ -2,7 +2,7 @@
 //  GifListViewController.h
 //  gifmaker
 //
-//  Created by Sergio on 11/23/15.
+//  Created by Sergii Simakhin on 11/23/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 

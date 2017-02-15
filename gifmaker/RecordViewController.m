@@ -2,7 +2,7 @@
 //  RecordViewController.m
 //  gifmaker
 //
-//  Created by Sergio on 11/24/15.
+//  Created by Sergii Simakhin on 11/24/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -14,6 +14,7 @@
 #import "GifManager.h"
 
 // Categories
+#import "UIView+Extras.h"
 #import "UIImage+Extras.h"
 #import "NSString+Extras.h"
 
@@ -49,6 +50,7 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
+    [self.cardView applyShadow];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -182,7 +184,7 @@
                                                  CVPixelBufferGetHeight(cvImage))];
     
     // Crop square center from the photo
-    UIImage *croppedImage = [UIImage imageByCroppingCGImage:videoImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+    UIImage *croppedImage = [UIImage imageByCroppingCGImage:videoImage toSize:GifSizeFromQuality(GifQualityDefault)];
     
     // Add captured frame to 'capturedImages' array
     [self.capturedImages addObject:croppedImage];

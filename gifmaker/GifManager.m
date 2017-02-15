@@ -2,7 +2,7 @@
 //  GifManager.m
 //  gifmaker
 //
-//  Created by Sergio on 11/26/15.
+//  Created by Sergii Simakhin on 11/26/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 

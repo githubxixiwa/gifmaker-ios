@@ -2,7 +2,7 @@
 //  UIImagePickerController+Additions.h
 //  gifmaker
 //
-//  Created by Sergio on 5/10/16.
+//  Created by Sergii Simakhin on 5/10/16.
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 

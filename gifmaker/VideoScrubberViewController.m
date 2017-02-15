@@ -22,17 +22,18 @@
 // Categories
 #import "UIImage+Extras.h"
 #import "UIView+Extras.h"
-#import "UIImageView+Extras.h"
 
 // Helpers
 #import "Macros.h"
+#import "GifQuality.h"
 
 @interface VideoScrubberViewController ()
 
-@property (nonatomic, strong) AVAssetImageGenerator *imageGenerator;
 @property (nonatomic) NSInteger prevOffsetPointX;
 @property (nonatomic, strong) NSCache *frameCache;
 @property (nonatomic) NSInteger stepperInPix;
+
+@property (nonatomic) BOOL advancedSettingsMode;
 
 @end
 
@@ -45,14 +46,13 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
+    [self.cardView applyShadow];
+    
+    // Set 'default' quality as selected by default (0 - low, 1 - default, 2 - high)
+    [self.gifQualitySettingsSegmentedControl setSelectedSegmentIndex:GifQualityDefault];
     
     self.cancelButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
     self.nextButton.transform   = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
-    
-    self.imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self.videoSource.asset];
-    self.imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-    self.imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
-    self.imageGenerator.appliesPreferredTrackTransform = YES;
     
     [self.scrubberDragger addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(scrubberDidPan:)]];
     
@@ -65,16 +65,14 @@
     self.videoSource.firstFrameNumber = 0;
     self.videoSource.lastFrameNumber = VIDEO_DURATION * self.videoSource.fps;
 
-    [self.previewStartImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:self.videoSource.firstFrameNumber]
-                                                    orientation:self.videoSource.orientation];
-    [self.previewEndImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:self.videoSource.lastFrameNumber]
-                                                  orientation:self.videoSource.orientation];
+    [self.previewStartImageView setImage:[self thumbnailAtFrame:self.videoSource.firstFrameNumber]];
+    [self.previewEndImageView   setImage:[self thumbnailAtFrame:self.videoSource.lastFrameNumber]];
     
     /* Set 5 frames for the seeker frame previews */
     
     // Calculate frame step (divide by 5 because it's number of preview frames in scrubber)
     NSInteger frameStep = self.videoSource.framesCount / PREVIEW_FRAMES_COUNT;
-    NSMutableArray *previewFrames = [[NSMutableArray alloc] init];
+    NSMutableArray *previewFrames = [NSMutableArray array];
     
     for (int i = 0; i < self.videoSource.framesCount; i += frameStep) {
         UIImage *thumbnail = [self thumbnailAtFrame:i];
@@ -102,7 +100,7 @@
     
     // Set preview images for the scrubber frames
     for (int i = 0; i < PREVIEW_FRAMES_COUNT; i++) {
-        [scrubberPreviewFrames[i] setImageWithCheckingOrientation:previewFrames[i] orientation:self.videoSource.orientation];
+        [scrubberPreviewFrames[i] setImage:previewFrames[i]];
     }
 }
 
@@ -218,10 +216,8 @@
 
         // At second, set needed frame to the preview image views
         
-        [self.previewStartImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:firstFrame]
-                                                        orientation:self.videoSource.orientation];
-        [self.previewEndImageView setImageWithCheckingOrientation:[self thumbnailAtFrame:lastFrame]
-                                                      orientation:self.videoSource.orientation];
+        [self.previewStartImageView setImage:[self thumbnailAtFrame:firstFrame]];
+        [self.previewEndImageView   setImage:[self thumbnailAtFrame:lastFrame]];
         
         // At third, assign selected frames to the videoSource property
         self.videoSource.firstFrameNumber = firstFrame;
@@ -243,6 +239,47 @@
     [self performSegueWithIdentifier:@"toCaptionsSegue" sender:self.videoSource];
 }
 
+- (IBAction)settingsButtonDidTap:(id)sender {
+    self.advancedSettingsMode = !self.advancedSettingsMode;
+    
+    [self.nextButton setEnabled:!self.advancedSettingsMode];
+    [self.cancelButton setEnabled:!self.advancedSettingsMode];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat animationDuration = 0.64;
+        
+        // Flip card view
+        [UIView transitionWithView:self.cardView
+                          duration:animationDuration
+                           options:UIViewAnimationOptionTransitionFlipFromRight
+                        animations:^{
+                            self.scrubberControlsUnderneathView.hidden = self.advancedSettingsMode;
+                            self.gifSettingsPanel.hidden = !self.advancedSettingsMode;
+                        } completion:^(BOOL finished) {
+                            //
+                        }
+         ];
+        
+        // Move the settings view (at the bottom of the screen) down off the screen and bring it back with a new text
+        [self.view layoutIfNeeded];
+        self.settingsViewBottomLayoutContraint.constant = -self.settingsViewHeightConstraint.constant;
+        [UIView animateWithDuration:animationDuration / 2
+                         animations:^{
+                            [self.view layoutIfNeeded];
+                         } completion:^(BOOL finished) {
+                             [self.settingsButton setTitle:self.advancedSettingsMode ? @"Flip back" : @"Advanced settings" forState:UIControlStateNormal];
+                             self.settingsViewBottomLayoutContraint.constant = 0;
+                             [UIView animateWithDuration:animationDuration / 2 animations:^{
+                                 [self.view layoutIfNeeded];
+                             }];
+                         }];
+    });
+}
+
+- (IBAction)gifQualityDidChanged:(id)sender {
+    self.videoSource.outputGifQuality = ((UISegmentedControl *)sender).selectedSegmentIndex;
+}
+
 
 #pragma mark - Thumbnails getter
 
@@ -253,13 +290,8 @@
     if (cachedImage != nil) {
         return cachedImage;
     } else {
-        NSError *error;
-        CGImageRef frameCGImage = [self.imageGenerator copyCGImageAtTime:CMTimeMake(frameNumber, (CGFloat)self.videoSource.fps) actualTime:nil error:&error];
-        UIImage *frameImage = [UIImage imageByCroppingVideoFrameCGImage:frameCGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-        CGImageRelease(frameCGImage);
-        
+        UIImage *frameImage = [self.videoSource thumbnailAtFrame:frameNumber withSize:self.previewStartImageView.frame.size];
         [self.frameCache setObject:frameImage forKey:frameNumberKey];
-        
         return frameImage;
     }
 }

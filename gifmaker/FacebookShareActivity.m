@@ -2,7 +2,7 @@
 //  FacebookShareActivity.m
 //  gifmaker
 //
-//  Created by Sergio on 12/23/15.
+//  Created by Sergii Simakhin on 12/23/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -52,7 +52,8 @@
     /* First of all we need to upload a GIF to our backend */
     
     // Show progress HUD
-    [SVProgressHUD showProgress:0 maskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showProgress:0];
     
     // Create form-data multipart request
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST"
@@ -79,7 +80,7 @@
                       // Control progress in main thread
                       dispatch_async(dispatch_get_main_queue(), ^{
                           // Update progress bar
-                          [SVProgressHUD showProgress:uploadProgress.fractionCompleted maskType:SVProgressHUDMaskTypeBlack];
+                          [SVProgressHUD showProgress:uploadProgress.fractionCompleted];
                       });
                   }
                   completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {

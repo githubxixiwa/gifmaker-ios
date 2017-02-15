@@ -2,7 +2,7 @@
 //  SaveVideoActivity.m
 //  gifmaker
 //
-//  Created by Sergio on 12/23/15.
+//  Created by Sergii Simakhin on 12/23/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -40,7 +40,8 @@
 }
 
 - (void)performActivity {
-    [SVProgressHUD showWithStatus:@"Exporting... Please wait." maskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Exporting... Please wait."];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.gifElement saveToGalleryAsVideo];

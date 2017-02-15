@@ -2,7 +2,7 @@
 //  GifElement.h
 //  gifmaker
 //
-//  Created by Sergio on 11/25/15.
+//  Created by Sergii Simakhin on 11/25/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 

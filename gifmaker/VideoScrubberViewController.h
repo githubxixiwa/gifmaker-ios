@@ -20,12 +20,15 @@
 // UI elements
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
+@property (weak, nonatomic) IBOutlet UIView *cardView;
 
 @property (weak, nonatomic) IBOutlet UIImageView *previewStartImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *previewEndImageView;
 
 @property (weak, nonatomic) IBOutlet UIView *scrubberCinemaTapeView;
 @property (weak, nonatomic) IBOutlet UIView *scrubberCinemaTapeInnerOutlinerView;
+
+@property (weak, nonatomic) IBOutlet UIView *scrubberControlsUnderneathView;
 
 @property (weak, nonatomic) IBOutlet UIStackView *scrubberFramesStackView;
 @property (weak, nonatomic) IBOutlet UIImageView *scrubberFrame1;
@@ -44,6 +47,16 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrubberWidthLayoutConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrubberLeadingLayoutConstraint;
+
+@property (weak, nonatomic) IBOutlet UIView *gifSettingsPanel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *gifQualitySettingsSegmentedControl;
+
+@property (weak, nonatomic) IBOutlet UIView *settingsView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *settingsViewBottomLayoutContraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *settingsViewHeightConstraint;
+
+@property (weak, nonatomic) IBOutlet UIImageView *settingsPaper;
+@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 
 // Stored properties
 @property (nonatomic, strong) VideoSource *videoSource;

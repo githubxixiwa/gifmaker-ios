@@ -2,7 +2,7 @@
 //  GifListViewController.m
 //  gifmaker
 //
-//  Created by Sergio on 11/23/15.
+//  Created by Sergii Simakhin on 11/23/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
@@ -439,6 +439,7 @@ static double const headerMinimumHeight = 0.0;
     
     if (imagePickerController.mediaType == QBImagePickerMediaTypeImage) {
         NSMutableArray<UIImage *> *frames = [NSMutableArray array];
+        CGFloat sideSize = GifSideSizeFromQuality(GifQualityDefault);
         
         for (PHAsset *asset in assets) {
             if (error) {
@@ -446,7 +447,7 @@ static double const headerMinimumHeight = 0.0;
             }
             
             // Photo asset
-            CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(GIF_SIDE_SIZE, CGFLOAT_MAX) : CGSizeMake(CGFLOAT_MAX, GIF_SIDE_SIZE);
+            CGSize targetSize = (asset.pixelHeight > asset.pixelWidth) ? CGSizeMake(sideSize, CGFLOAT_MAX) : CGSizeMake(CGFLOAT_MAX, sideSize);
             
             // Get UIImage from PHAsset and add it to the 'frames' array
             [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:requestOptions resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
@@ -454,7 +455,7 @@ static double const headerMinimumHeight = 0.0;
                     error = YES;
                 } else {
                     // Crop center part of the image
-                    UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
+                    UIImage *croppedImage = [UIImage imageByCroppingCGImage:result.CGImage toSize:CGSizeMake(sideSize, sideSize)];
                     
                     // Add cropped image to the 'frames' array (with image quality downgrade to reduce GIF size)
                     [frames addObject:[UIImage imageWithData:UIImageJPEGRepresentation(croppedImage, 0.2)]];
@@ -478,31 +479,8 @@ static double const headerMinimumHeight = 0.0;
                 [imagePickerController presentViewController:alertController animated:YES completion:nil];
                 return;
             }
-            
-            NSArray *movieTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-            AVAssetTrack *movieTrack = [movieTracks firstObject];
-            
-            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
-            imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-            imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
-            imageGenerator.appliesPreferredTrackTransform = YES;
-            
-            Float64 framesCount = videoDuration * movieTrack.nominalFrameRate;
-            
-            // Extract first frame from the video to save a thumbnail
-            NSError *error;
-            CGImageRef firstFrame = [imageGenerator copyCGImageAtTime:CMTimeMake(0, movieTrack.nominalFrameRate) actualTime:nil error:&error];
-            UIImage *firstFrameImage = [UIImage imageByCroppingVideoFrameCGImage:firstFrame toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-            CGImageRelease(firstFrame);
-            
-            VideoSource *videoSource = [[VideoSource alloc] init];
-            videoSource.fps = movieTrack.nominalFrameRate + 1;
-            videoSource.duration = videoDuration;
-            videoSource.framesCount = framesCount;
-            videoSource.thumbnail = firstFrameImage;
-            videoSource.asset = asset;
-            videoSource.orientation = [self extractOrientationFromVideoTrack:movieTrack];
-            
+
+            VideoSource *videoSource = [[VideoSource alloc] initWithAsset:asset];
             dismissViewController(videoSource);
         }];
     }
@@ -606,20 +584,6 @@ static double const headerMinimumHeight = 0.0;
         NSIndexPath *top = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
         [self.tableView scrollToRowAtIndexPath:top atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-}
-
-- (UIInterfaceOrientation)extractOrientationFromVideoTrack:(AVAssetTrack *)videoTrack {
-    CGSize size = [videoTrack naturalSize];
-    CGAffineTransform transform = [videoTrack preferredTransform];
-    
-    if (size.width == transform.tx && size.height == transform.ty)
-        return UIInterfaceOrientationLandscapeRight;
-    else if (transform.tx == 0 && transform.ty == 0)
-        return UIInterfaceOrientationLandscapeLeft;
-    else if (transform.tx == 0 && transform.ty == size.width)
-        return UIInterfaceOrientationPortraitUpsideDown;
-    else
-        return UIInterfaceOrientationPortrait;
 }
 
 @end

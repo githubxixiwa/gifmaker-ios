@@ -2,11 +2,10 @@
 //  CaptionsViewController.m
 //  gifmaker
 //
-//  Created by Sergio on 12/3/15.
+//  Created by Sergii Simakhin on 12/3/15.
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define FONT_SIZE 40
 #define SMALL_SCREEN ([UIScreen mainScreen].bounds.size.height < 667)
 
 #import "Macros.h"
@@ -21,12 +20,13 @@
 // Categories
 #import "NSString+Extras.h"
 #import "UIImage+Extras.h"
-#import "UIImageView+Extras.h"
+#import "UIView+Extras.h"
 
 @interface CaptionsViewController ()
 
 /*! Center point of the current UIViewController's view. */
 @property (nonatomic) CGPoint center;
+
 @property (nonatomic) BOOL scrollViewOffsetDidSet;
 @property (nonatomic) CGSize scrollViewDefaultSize;
 
@@ -39,8 +39,8 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
-    [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
-    [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:FONT_SIZE]];
+    [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
+    [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
     
     if (self.frameSource == GifFrameSourceGalleryPhotos || self.frameSource == GifFrameSourceCamera) {
         [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
@@ -48,8 +48,7 @@
         if (self.creationSource == GifCreationSourceEdited) {
             [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
         } else {
-            [self.GIFFirstFramePreviewImageView setImageWithCheckingOrientation:self.videoSource.thumbnail
-                                                                    orientation:self.videoSource.orientation];
+            [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
         }
     }
     
@@ -73,10 +72,7 @@
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     
     // Set shadow for the card
-    [self.cardView.layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [self.cardView.layer setShadowOffset:CGSizeMake(6, 6)];
-    [self.cardView.layer setShadowRadius:3.0];
-    [self.cardView.layer setShadowOpacity:0.3];
+    [self.cardView applyShadow];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -159,6 +155,9 @@
 }
 
 - (void)makeGifButtonDidPress:(id)sender {
+    // Get GIF size (based on settings)
+    CGSize gifSize = GifSizeFromQuality(self.videoSource.outputGifQuality);
+    
     // Disable 'GIF IT!' button
     [self.gifItButton setEnabled:NO];
     
@@ -203,12 +202,7 @@
         
         // If frameSource is a video (to make a GIF from), take all needed frames(images) first
         if (self.frameSource == GifFrameSourceGalleryVideo && self.creationSource != GifCreationSourceEdited) {
-            self.capturedImages = [[NSMutableArray alloc] init];
-            
-            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:self.videoSource.asset];
-            imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-            imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
-            imageGenerator.appliesPreferredTrackTransform = YES;
+            self.capturedImages = [NSMutableArray array];
             
             //Step through the frames (the counter must rely on fps: for 25fps video it will take every second frame, because typical gif fps number is 16)
             for (NSInteger counter = self.videoSource.firstFrameNumber; counter <= self.videoSource.lastFrameNumber; counter += round(self.videoSource.fps / GIF_FPS)) {
@@ -217,23 +211,24 @@
                     if (self.capturedImages.count >= VIDEO_DURATION * GIF_FPS) {
                         break;
                     }
-                    
-                    NSError *error;
-                    CGImageRef cgImage = [imageGenerator copyCGImageAtTime:CMTimeMake(counter, (int32_t)self.videoSource.fps) actualTime:nil error:&error];
-                    UIImage *croppedImage = [UIImage imageByCroppingVideoFrameCGImage:cgImage toSize:CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE)];
-                    CGImageRelease(cgImage);
-                    
-                    [self.capturedImages addObject:croppedImage];
+
+                    [self.capturedImages addObject:[self.videoSource thumbnailAtFrame:counter withSize:gifSize]];
                 }
             }
         }
         
+        // Get real font size, because font size on screen is mostly smaller than original default gif size (480)
+        CGFloat sideSize = GifSideSizeFromQuality(self.videoSource.outputGifQuality);
+        NSInteger realFontSize = (CAPTIONS_FONT_SIZE * (sideSize / self.GIFFirstFramePreviewImageView.frame.size.width)) + 1;
+        
         // Add captions to the images
         for (UIImage *capturedImage in self.capturedImages) {
             @autoreleasepool {
-                UIImage *imageWithTextOnIt = [self drawTextOnImage:capturedImage
-                                              headerText:self.headerCaptionTextField.attributedText.string
-                                              footerText:self.footerCaptionTextField.attributedText.string];
+                UIImage *imageWithTextOnIt = [capturedImage drawHeaderText:self.headerCaptionTextField.attributedText.string
+                                                                footerText:self.footerCaptionTextField.attributedText.string
+                                                  withAttributesDictionary:[self attributesDictionaryWithFontSize:realFontSize]
+                                                                forQuality:self.videoSource.outputGifQuality
+                                              ];
                 UIImage *imageWithTextOnItCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(imageWithTextOnIt, 0.2)];
                 UIImage *imageWithoutTextCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(capturedImage, 0.2)];
                 [gifReadyImagesWithCaptions addObject:imageWithTextOnItCompressed];
@@ -281,9 +276,8 @@
 
 #pragma mark - Helpers
 
-/*! Used for captions text style */
 - (NSAttributedString *)attributedStringWithText:(NSString *)text {
-    return [[NSAttributedString alloc] initWithString:text attributes:[self attributesDictionaryWithFontSize:FONT_SIZE]];
+    return [[NSAttributedString alloc] initWithString:text attributes:[self attributesDictionaryWithFontSize:CAPTIONS_FONT_SIZE]];
 }
 
 - (NSDictionary *)attributesDictionaryWithFontSize:(NSInteger)fontSize {
@@ -298,45 +292,6 @@
                                            NSFontAttributeName: [UIFont fontWithName:@"Impact" size:fontSize]
                                            };
     return attributesDictionary;
-}
-
-- (UIImage *)drawTextOnImage:(UIImage *)image headerText:(NSString *)headerText footerText:(NSString *)footerText {
-    UIGraphicsBeginImageContext(CGSizeMake(GIF_SIDE_SIZE, GIF_SIDE_SIZE));
-    
-    // Draw image on context
-    [image drawAtPoint:CGPointMake(0, 0)];
-    
-    // Get real font size, because font size on screen is mostly smaller than original GIF_SIZE_SIZE (480)
-    NSInteger realFontSize = (FONT_SIZE * (GIF_SIDE_SIZE / self.GIFFirstFramePreviewImageView.frame.size.width)) + 1;
-    
-    // Get attributed text size
-    NSDictionary *attributesDictionary = [self attributesDictionaryWithFontSize:realFontSize];
-    CGSize headerTextSize = [headerText sizeWithAttributes:attributesDictionary];
-    CGSize footerTextSize = [footerText sizeWithAttributes:attributesDictionary];
-    
-    NSInteger offset = 2;
-    
-    CGRect headerCaptionRect = CGRectMake(offset,
-                                          offset * 2,
-                                          GIF_SIDE_SIZE - (offset * 2),
-                                          headerTextSize.height);
-    
-    CGRect footerCaptionRect = CGRectMake(offset,
-                                          GIF_SIDE_SIZE - (offset * 2) - footerTextSize.height,
-                                          GIF_SIDE_SIZE - (offset * 2),
-                                          footerTextSize.height);
-    
-    // Draw header and footer
-    [headerText drawInRect:headerCaptionRect withAttributes:attributesDictionary];
-    [footerText drawInRect:footerCaptionRect withAttributes:attributesDictionary];
-    
-    // Make image out of bitmap context
-    UIImage *imageWithHeaderAndFooterText = UIGraphicsGetImageFromCurrentImageContext();
-    
-    // Free the context
-    UIGraphicsEndImageContext();
-    
-    return imageWithHeaderAndFooterText;
 }
 
 - (void)scrollViewEnableScrolling {
