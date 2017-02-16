@@ -1,3 +1,13 @@
+//
+//  UIImage+animatedGIF.h
+//  gifmaker
+//
+//  Created by Sergii Simakhin on 2015-2016.
+//  Copyright © 2016 Cayugasoft. All rights reserved.
+//
+//  Taken somewhere from the Internet.
+
+// Frameworks
 #import <UIKit/UIKit.h>
 
 /**

@@ -28,6 +28,14 @@
 @property (nonatomic) NSInteger lastFrameNumber;
 
 - (instancetype)initWithAsset:(AVAsset *)asset;
+
+/**
+ Extract frame (image) from video (it will be cropped to rectangle)
+
+ @param frameNumber number of frame
+ @param size specified size (rectangle preferred) of extracted frame
+ @return image of specified frame number (can be nil if frame doesn't exist)
+ */
 - (UIImage *)thumbnailAtFrame:(NSUInteger)frameNumber withSize:(CGSize)size;
 
 @end

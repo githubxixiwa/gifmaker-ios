@@ -6,8 +6,6 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#import "Macros.h"
-
 // View Controllers
 #import "GifListViewController.h"
 #import "CaptionsViewController.h"
@@ -30,6 +28,9 @@
 #import "FacebookMessengerShareActivity.h"
 #import "SaveVideoActivity.h"
 
+// Helpers
+#import "Macros.h"
+
 @interface GifListViewController()
 
 @property (weak, nonatomic) IBOutlet UIView *headerView;
@@ -47,9 +48,6 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerViewTopConstraint;
 
 @property (nonatomic) BOOL waitingToScrollTheCell;
-@property (nonatomic) NSInteger waitingCellTopY;
-@property (nonatomic) NSInteger waitingCellRowIndex;
-@property (nonatomic) NSInteger waitingCellLastYOffset;
 
 @end
 
@@ -67,7 +65,7 @@ static double const headerMinimumHeight = 0.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // Precalculate cell height
+    // Precalculate cell height (iOS zoom mode is also handled by checking native scale)
     self.precalculatedCellHeight = [[UIScreen mainScreen] bounds].size.width * ([UIScreen mainScreen].scale == [UIScreen mainScreen].nativeScale ? 1.24 : 1.28);
 
     // Preinit date formatter
@@ -86,7 +84,7 @@ static double const headerMinimumHeight = 0.0;
     self.lastContentOffsetY = 0;
     self.waitingToScrollTheCell = NO;
 
-    // Refresh GIF-files from storage
+    // Refresh GIF-files (loading them from disk)
     [self refresh];
 }
 
@@ -114,7 +112,7 @@ static double const headerMinimumHeight = 0.0;
 }
 
 
-#pragma mark - Table View Delegate Methods
+#pragma mark - TableView Delegate Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -144,11 +142,13 @@ static double const headerMinimumHeight = 0.0;
     return self.precalculatedCellHeight;
 }
 
+
+#pragma mark - Scroll View
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     BOOL scrollingUp = scrollView.contentOffset.y > self.lastContentOffsetY;
     
-    //NSLog(@"Content offset: %f, decelerating: %@", scrollView.contentOffset.y, scrollView.isDecelerating ? @"yes" : @"no");
-
+    /* Several scrolling optimizations to make it smoother */
     if (self.lastContentOffsetY == 0 && scrollView.contentOffset.y == 0) {
         // Last & current offset zero: Optim #0
         self.lastContentOffsetY = scrollView.contentOffset.y;
@@ -188,7 +188,8 @@ static double const headerMinimumHeight = 0.0;
 
     if (scrollingUp) {
         self.waitingToScrollTheCell = NO;
-        // SCR UP
+        
+        // Scrolling up
         if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
             newTopConstraintValue = headerMinimumHeight - headerDefaultHeight;
         }
@@ -197,65 +198,7 @@ static double const headerMinimumHeight = 0.0;
             setPreviousScrollOffsetBack();
         }
     } else {
-        /*
-        if (self.headerViewTopConstraint.constant == -headerDefaultHeight && self.gifElements.count > 0) {
-            NSIndexPath *firstVisibleCellIndexPath = [self.tableView indexPathForCell:self.tableView.visibleCells.firstObject];
-            
-            if (firstVisibleCellIndexPath.row > 0) {
-                void (^nullateWaitingCell)() = ^void() {
-                    self.waitingToScrollTheCell = NO;
-                    self.waitingCellLastYOffset = -1;
-                    self.waitingCellTopY = -1;
-                    self.waitingCellRowIndex = -1;
-                    backFromWaitingCell = YES;
-                };
-                
-                CGRect firstVisibleCellRect = [self.tableView rectForRowAtIndexPath:firstVisibleCellIndexPath];
-                NSInteger firstVisibleCellYOffset = scrollView.contentOffset.y - (firstVisibleCellIndexPath.row * self.precalculatedCellHeight);
-                NSInteger firstVisibleCellCurrentOffsetToTop = firstVisibleCellRect.origin.y - (firstVisibleCellIndexPath.row * self.precalculatedCellHeight);
-                
-                BOOL abort = NO;
-                
-                if (self.waitingToScrollTheCell) {
-                    if (firstVisibleCellIndexPath.row != self.waitingCellRowIndex) {
-                        if (firstVisibleCellYOffset > self.waitingCellLastYOffset) {
-                            //NSLog(@"Changing ownership abort");
-                            abort = YES;
-                            nullateWaitingCell();
-                        } else {
-                            //NSLog(@"Changing ownership");
-                            self.waitingCellRowIndex = firstVisibleCellIndexPath.row;
-                            self.waitingCellTopY = firstVisibleCellRect.origin.y;
-                        }
-                    }
-                }
-                
-                if (!abort) {
-                    if (self.waitingToScrollTheCell && firstVisibleCellYOffset > firstVisibleCellCurrentOffsetToTop) {
-                        self.waitingCellLastYOffset = firstVisibleCellYOffset;
-                        
-                        //NSLog(@"QRT (fvcyf: %ld)", (long)firstVisibleCellYOffset);
-                        self.lastContentOffsetY = scrollView.contentOffset.y;
-                        return;
-                    } else if (firstVisibleCellYOffset > firstVisibleCellCurrentOffsetToTop) {
-                        self.waitingToScrollTheCell = YES;
-                        self.waitingCellRowIndex = firstVisibleCellIndexPath.row;
-                        self.waitingCellTopY = firstVisibleCellRect.origin.y;
-                        self.waitingCellLastYOffset = firstVisibleCellYOffset;
-                        
-                        //NSLog(@"aer (fvcyf: %ld)", (long)firstVisibleCellYOffset);
-                        self.lastContentOffsetY = scrollView.contentOffset.y;
-                        return;
-                    } else if (firstVisibleCellYOffset == firstVisibleCellCurrentOffsetToTop) {
-                        nullateWaitingCell();
-                        //NSLog(@"abe!");
-                    }
-                }
-            }
-        }
-        */
-        
-        // SCR DOWN
+        // Scrolling down
         if (newTopConstraintValue > headerMinimumHeight) {
             newTopConstraintValue = headerMinimumHeight;
         } else if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
@@ -267,13 +210,10 @@ static double const headerMinimumHeight = 0.0;
         }
     }
     
-    /* Header's off screen percentage
-    double percentage = 100 - ((newTopConstraintValue / (headerMinimumHeight - headerDefaultHeight)) * 100);
-     */
-    
     self.headerViewTopConstraint.constant = newTopConstraintValue;
     self.lastContentOffsetY = scrollView.contentOffset.y;
 }
+
 
 #pragma mark - Bar Button Items Methods
 
@@ -293,17 +233,13 @@ static double const headerMinimumHeight = 0.0;
     UIAlertAction *videoSelectionAction = [UIAlertAction actionWithTitle:@"From 🎞 video" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self selectMediaFromGallery:GifFrameSourceGalleryVideo];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"cancel");
-    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) { }];
     
     [mediaSelectionMethodController addAction:imageSelectionAction];
     [mediaSelectionMethodController addAction:videoSelectionAction];
     [mediaSelectionMethodController addAction:cancelAction];
     
-    [self presentViewController:mediaSelectionMethodController animated:YES completion:^{
-        //
-    }];
+    [self presentViewController:mediaSelectionMethodController animated:YES completion:^{ }];
 }
 
 - (void)selectMediaFromGallery:(GifFrameSource)frameSource {
@@ -313,7 +249,7 @@ static double const headerMinimumHeight = 0.0;
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.minimumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * 1 / 8 : 1;
-        imagePickerController.maximumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * VIDEO_DURATION : 1;
+        imagePickerController.maximumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * ANIMATION_MAX_DURATION : 1;
         imagePickerController.showsNumberOfSelectedAssets = YES;
         imagePickerController.mediaType = (frameSource == GifFrameSourceGalleryPhotos) ? QBImagePickerMediaTypeImage : QBImagePickerMediaTypeVideo;
         imagePickerController.assetCollectionSubtypes =
@@ -374,6 +310,7 @@ static double const headerMinimumHeight = 0.0;
             ((CaptionsViewController*)segue.destinationViewController).frameSource = editingGif.frameSource;
         }
     } else if ([segue.identifier isEqualToString:@"toVideoScrubberSegue"]) {
+        // Opening video to select exact part of it
         ((VideoScrubberViewController*)segue.destinationViewController).videoSource = sender;
         ((VideoScrubberViewController*)segue.destinationViewController).gifListController = self;
     }
@@ -382,6 +319,7 @@ static double const headerMinimumHeight = 0.0;
 
 #pragma mark - RecordGifDelegate Methods
 
+/*! Refresh UITableView by scanning stored content on disk */
 - (void)refresh {
     self.gifElements = [NSMutableArray array];
 
@@ -470,8 +408,8 @@ static double const headerMinimumHeight = 0.0;
             Float64 videoDuration = CMTimeGetSeconds(asset.duration);
             
             // Check if video duration is lower than 5 seconds (if so, don't let GIF it)
-            if (videoDuration < VIDEO_DURATION) {
-                NSString *alertMessage = [NSString stringWithFormat:@"Video is too short!\nIt must be %ld seconds or longer 😿", (long)VIDEO_DURATION];
+            if (videoDuration < ANIMATION_MAX_DURATION) {
+                NSString *alertMessage = [NSString stringWithFormat:@"Video is too short!\nIt must be %ld seconds or longer 😿", (long)ANIMATION_MAX_DURATION];
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Uh oh 😬"
                                                                                          message:alertMessage
                                                                                   preferredStyle:UIAlertControllerStyleAlert];

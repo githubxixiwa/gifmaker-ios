@@ -6,11 +6,11 @@
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
 #import <UIKit/UIKit.h>
 
 @interface UIView (Extras)
 
-- (UIImage *)croppedImageForRect:(CGRect)cropRect;
 - (void)applyShadow;
 
 @end

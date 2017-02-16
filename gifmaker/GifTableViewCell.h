@@ -6,7 +6,10 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
 #import <UIKit/UIKit.h>
+
+// Models
 #import "FLAnimatedImageView.h"
 
 @protocol GifTableViewСellActionsDelegate <NSObject>

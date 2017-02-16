@@ -31,9 +31,13 @@
 
 @property (nonatomic) NSInteger prevOffsetPointX;
 @property (nonatomic, strong) NSCache *frameCache;
-@property (nonatomic) NSInteger stepperInPix;
-
 @property (nonatomic) BOOL advancedSettingsMode;
+
+/*! Size of stepper (stepper is a space which jumped when user scrolls the video scrubber at the bottom of the card) in pixels.
+ For example, now it's possible to select any part of video, but it will start from integer. From the 1st second, then from the 2nd, then from the 3rd, etc.
+ So the stepper is a 1-second space in pixels at the video scrubber.
+ */
+@property (nonatomic) NSInteger stepperInPix;
 
 @end
 
@@ -63,7 +67,7 @@
     [super viewWillAppear:animated];
     
     self.videoSource.firstFrameNumber = 0;
-    self.videoSource.lastFrameNumber = VIDEO_DURATION * self.videoSource.fps;
+    self.videoSource.lastFrameNumber = ANIMATION_MAX_DURATION * self.videoSource.fps;
 
     [self.previewStartImageView setImage:[self thumbnailAtFrame:self.videoSource.firstFrameNumber]];
     [self.previewEndImageView   setImage:[self thumbnailAtFrame:self.videoSource.lastFrameNumber]];
@@ -141,7 +145,7 @@
     [super viewDidAppear:animated];
     
     // Update scrubber frame size related to max gif time (5 seconds) according to video lenght
-    self.scrubberWidthLayoutConstraint.constant = (self.scrubberFramesStackView.frame.size.width / self.videoSource.framesCount) * (self.videoSource.fps * VIDEO_DURATION);
+    self.scrubberWidthLayoutConstraint.constant = (self.scrubberFramesStackView.frame.size.width / self.videoSource.framesCount) * (self.videoSource.fps * ANIMATION_MAX_DURATION);
     [UIView animateWithDuration:0.1 animations:^{
         [self.scrubberDragger setNeedsUpdateConstraints];
         [self.scrubberDragger setAlpha:1.0];
@@ -204,7 +208,7 @@
     if (self.prevOffsetPointX != offsetPoint.x) {
         // At first, detect number of first and last frame
         CGFloat firstFrame = (self.videoSource.framesCount / self.scrubberFramesStackView.frame.size.width) * newConstant;
-        CGFloat lastFrame = firstFrame + (self.videoSource.fps * VIDEO_DURATION);
+        CGFloat lastFrame = firstFrame + (self.videoSource.fps * ANIMATION_MAX_DURATION);
         
         // Check if frames are correct
         if (firstFrame < 0) {

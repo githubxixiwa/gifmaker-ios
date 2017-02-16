@@ -6,6 +6,7 @@
 //  Copyright © 2017 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "VideoSource.h"
 
 // Categories
@@ -80,7 +81,5 @@
     
     return frameImage;
 }
-
-
 
 @end

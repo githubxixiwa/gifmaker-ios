@@ -10,7 +10,7 @@
 
 @implementation NSString (Extras)
 
-+ (NSString *) generateRandomString {
++ (NSString *)generateRandomString {
     int len = 50;
     static NSString * letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString * randomString = [NSMutableString stringWithCapacity: len];

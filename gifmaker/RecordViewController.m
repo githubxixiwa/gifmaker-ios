@@ -46,20 +46,16 @@
     
     [self.circularProgressView addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchDown];
     [self.circularProgressView addTarget:self action:@selector(pauseCapturing:) forControlEvents:UIControlEventTouchUpInside];
-    [self.circularProgressView setProgressTintColor:[UIColor redColor]];//RGB(199, 156, 106)];
+    [self.circularProgressView setProgressTintColor:[UIColor redColor]];
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     [self.cardView applyShadow];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.timer invalidate];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -111,9 +107,13 @@
     [self.captureSession startRunning];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [self.timer invalidate];
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 
@@ -157,15 +157,15 @@
     [connection setVideoMirrored:self.frontCameraIsActive];
     
     // Update progress bar state
-    if (!self.recording || self.capturedImages.count == GIF_FPS * VIDEO_DURATION) {
-        if (self.capturedImages.count == GIF_FPS * VIDEO_DURATION) {
+    if (!self.recording || self.capturedImages.count == GIF_FPS * ANIMATION_MAX_DURATION) {
+        if (self.capturedImages.count == GIF_FPS * ANIMATION_MAX_DURATION) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.circularProgressView setAlpha:0.3];
             });
         }
         return;
     } else {
-        CGFloat progress = self.capturedImages.count / ((GIF_FPS * VIDEO_DURATION) - 1);
+        CGFloat progress = self.capturedImages.count / ((GIF_FPS * ANIMATION_MAX_DURATION) - 1);
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.navigationItem.rightBarButtonItem setEnabled:YES];
             [self.circularProgressView setProgress:progress animated:YES];
@@ -261,7 +261,7 @@
 
 // Check if user reached max time of record
 - (void)timerFired:(id)sender {
-    if (self.capturedImages.count >= GIF_FPS * VIDEO_DURATION) {
+    if (self.capturedImages.count >= GIF_FPS * ANIMATION_MAX_DURATION) {
         [self nextButtonDidTap:sender];
     }
 }

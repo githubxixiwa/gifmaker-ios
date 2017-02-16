@@ -6,10 +6,11 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
 #import <Foundation/Foundation.h>
 
 @interface NSString (Extras)
 
-+ (NSString *) generateRandomString;
++ (NSString *)generateRandomString;
 
 @end

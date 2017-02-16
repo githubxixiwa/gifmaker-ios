@@ -10,7 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
 
-// View Controllers
+// Models
 #import "UIImagePickerController+Additions.h"
 
 @implementation UIImagePickerController (Additions)

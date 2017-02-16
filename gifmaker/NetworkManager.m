@@ -6,6 +6,7 @@
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "NetworkManager.h"
 
 @implementation NetworkManager

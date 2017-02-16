@@ -6,6 +6,7 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "IMessageShareActivity.h"
 
 // Categories

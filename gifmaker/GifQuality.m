@@ -6,6 +6,7 @@
 //  Copyright © 2017 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "GifQuality.h"
 
 CGFloat GifSideSizeFromQuality(GifQuality quality) {

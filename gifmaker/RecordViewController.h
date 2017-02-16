@@ -14,7 +14,9 @@
 #import "LLACircularProgressView.h"
 
 @protocol RecordGifDelegate <NSObject>
+
 - (void)refresh;
+
 @end
 
 @interface RecordViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>

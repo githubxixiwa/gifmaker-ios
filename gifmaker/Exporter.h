@@ -6,6 +6,7 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -13,7 +14,7 @@
 
 @interface Exporter : NSObject
 
-/*! Save images array to the videofile in temporary directory. */
+/*! Save images array to the videofile in temporary directory */
 + (void)exportImageArrayAsVideo:(NSArray<UIImage *> *)images
                        filename:(NSString *)filename
                     repeatCount:(NSInteger)repeatCount

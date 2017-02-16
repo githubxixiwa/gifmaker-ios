@@ -1,5 +1,18 @@
-#import "UIImage+animatedGIF.h"
+//
+//  UIImage+animatedGIF.m
+//  gifmaker
+//
+//  Created by Sergii Simakhin on 2015-2016.
+//  Copyright © 2016 Cayugasoft. All rights reserved.
+//
+//  Taken somewhere from the Internet.
+//
+
+// Frameworks
 #import <ImageIO/ImageIO.h>
+
+// Models
+#import "UIImage+animatedGIF.h"
 
 #if __has_feature(objc_arc)
 #define toCF (__bridge CFTypeRef)

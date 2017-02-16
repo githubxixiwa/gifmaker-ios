@@ -14,7 +14,7 @@
 
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
-#define VIDEO_DURATION 5.0
+#define ANIMATION_MAX_DURATION 5.0
 #define GIF_FPS 16.0
 
 #define CAPTIONS_FONT_SIZE 40

@@ -6,11 +6,12 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#import "Macros.h"
-
 // Models
 #import "GifManager.h"
 #import "GifTableViewCell.h"
+
+// Helpers
+#import "Macros.h"
 
 @interface GifTableViewCell()
 

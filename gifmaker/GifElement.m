@@ -24,6 +24,9 @@
 
 @implementation GifElement
 
+
+#pragma mark - Init methods
+
 - (instancetype)initWithFilenameWithoutExtension:(NSString *)filename datePosted:(NSDate *)datePosted {
     self = [super init];
     if (self) {
@@ -92,6 +95,9 @@
     [encoder encodeInteger:self.frameSource forKey:kFrameSource];
 }
 
+
+#pragma mark - Editable Frames
+
 - (void)makeEditable:(NSArray<UIImage *> *)images {
     self.editable = YES;
     
@@ -132,17 +138,22 @@
     }
 }
 
-- (NSURL *)gifURL {
-    return [GifManager gifURLWithFilename:self.filename];
-}
 
-- (NSURL *)savedFramesStorageFolderURL {
-    return [GifManager gifRawFramesStorageFolderURL:self.filename];
-}
+#pragma mark - Save
 
 - (void)save {
     [NSKeyedArchiver archiveRootObject:self toFile:[[GifManager metadataURLWithFilename:self.filename] relativePath]];
 }
+
+- (void)saveToGalleryAsVideo {
+    [Exporter exportImageArrayAsVideo:[UIImage animatedImageWithAnimatedGIFURL:[self gifURL]].images
+                             filename:@"temp.mov"
+                          repeatCount:5
+                        saveToGallery:YES];
+}
+
+
+#pragma mark - Remove
 
 - (void)removeFromDisk {
     NSError *gifFileRemoveError;
@@ -161,11 +172,16 @@
     }
 }
 
-- (void)saveToGalleryAsVideo {
-    [Exporter exportImageArrayAsVideo:[UIImage animatedImageWithAnimatedGIFURL:[self gifURL]].images
-                             filename:@"temp.mov"
-                          repeatCount:5
-                        saveToGallery:YES];
+
+#pragma mark - Helpers
+
+- (NSURL *)gifURL {
+    return [GifManager gifURLWithFilename:self.filename];
+}
+
+/*! Path to folder which contains gif's raw frames (without captions) */
+- (NSURL *)savedFramesStorageFolderURL {
+    return [GifManager gifRawFramesStorageFolderURL:self.filename];
 }
 
 @end

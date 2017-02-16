@@ -205,19 +205,10 @@
 				496CBBD41C2B392200D5C117 /* models */,
 				496CBBD31C2B38FA00D5C117 /* sharingActivities */,
 				49693F6D1C087F0A007298EF /* categories */,
+				49A8A21E1E55E37F004EC288 /* ui */,
 				49043E871CB3FFDD00A3696C /* Macros.h */,
 				496BC5421C03A559001713BA /* AppDelegate.h */,
 				496BC5431C03A559001713BA /* AppDelegate.m */,
-				49693F741C08AA35007298EF /* GifListViewController.h */,
-				49693F751C08AA35007298EF /* GifListViewController.m */,
-				496BC57F1C0505BA001713BA /* RecordViewController.h */,
-				496BC5801C0505BA001713BA /* RecordViewController.m */,
-				49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */,
-				49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */,
-				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
-				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
-				49693F771C08B444007298EF /* GifTableViewCell.h */,
-				49693F781C08B444007298EF /* GifTableViewCell.m */,
 				496BC5481C03A559001713BA /* Main.storyboard */,
 				496BC54B1C03A559001713BA /* Assets.xcassets */,
 				496BC54D1C03A559001713BA /* LaunchScreen.storyboard */,
@@ -288,6 +279,39 @@
 				49C388571D37CB4600FE0160 /* AnalyticsManager.m */,
 			);
 			name = models;
+			sourceTree = "<group>";
+		};
+		49A8A21D1E55E364004EC288 /* viewcontrollers */ = {
+			isa = PBXGroup;
+			children = (
+				49693F741C08AA35007298EF /* GifListViewController.h */,
+				49693F751C08AA35007298EF /* GifListViewController.m */,
+				496BC57F1C0505BA001713BA /* RecordViewController.h */,
+				496BC5801C0505BA001713BA /* RecordViewController.m */,
+				49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */,
+				49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */,
+				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
+				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
+			);
+			name = viewcontrollers;
+			sourceTree = "<group>";
+		};
+		49A8A21E1E55E37F004EC288 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				49A8A21F1E55E38B004EC288 /* cells */,
+				49A8A21D1E55E364004EC288 /* viewcontrollers */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		49A8A21F1E55E38B004EC288 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				49693F771C08B444007298EF /* GifTableViewCell.h */,
+				49693F781C08B444007298EF /* GifTableViewCell.m */,
+			);
+			name = cells;
 			sourceTree = "<group>";
 		};
 		E0229A771DEF1E82F63CEC06 /* Frameworks */ = {

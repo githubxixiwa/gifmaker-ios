@@ -6,10 +6,6 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
-#define SMALL_SCREEN ([UIScreen mainScreen].bounds.size.height < 667)
-
-#import "Macros.h"
-
 // View Controllers
 #import "CaptionsViewController.h"
 
@@ -21,6 +17,9 @@
 #import "NSString+Extras.h"
 #import "UIImage+Extras.h"
 #import "UIView+Extras.h"
+
+// Helpers
+#import "Macros.h"
 
 @interface CaptionsViewController ()
 
@@ -208,7 +207,7 @@
             for (NSInteger counter = self.videoSource.firstFrameNumber; counter <= self.videoSource.lastFrameNumber; counter += round(self.videoSource.fps / GIF_FPS)) {
                 @autoreleasepool {
                     NSLog(@"%@", [NSString stringWithFormat:@"Will handle %lu frame", (unsigned long)self.capturedImages.count]);
-                    if (self.capturedImages.count >= VIDEO_DURATION * GIF_FPS) {
+                    if (self.capturedImages.count >= ANIMATION_MAX_DURATION * GIF_FPS) {
                         break;
                     }
 

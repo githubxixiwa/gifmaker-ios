@@ -6,12 +6,12 @@
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
+// Models
 #import "AnalyticsManager.h"
 
 @implementation AnalyticsManager
 
-+ (instancetype)sharedAnalyticsManager
-{
++ (instancetype)sharedAnalyticsManager {
     static dispatch_once_t once;
     static id sharedInstance;
     dispatch_once (&once, ^{

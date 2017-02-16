@@ -94,7 +94,8 @@
     
     // Finalize GIF-file
     if (!CGImageDestinationFinalize(destination)) {
-        NSLog(@"failed to finalize image destination");
+        CFRelease(destination);
+        NSLog(@"Failed to finalize image destination");
         return NO;
     }
     
