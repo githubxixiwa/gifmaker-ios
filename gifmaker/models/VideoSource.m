@@ -40,7 +40,7 @@
         self.outputGifQuality = GifQualityDefault;
         
         self.firstFrameNumber = 0;
-        self.lastFrameNumber = VIDEO_DURATION * self.fps;
+        self.lastFrameNumber = ANIMATION_MAX_DURATION * self.fps;
         self.thumbnail = [self thumbnailAtFrame:self.firstFrameNumber withSize:GifSizeFromQuality(self.outputGifQuality)];
         
         // Set up image generator

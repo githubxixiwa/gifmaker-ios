@@ -159,33 +159,34 @@
 		49693F6D1C087F0A007298EF /* categories */ = {
 			isa = PBXGroup;
 			children = (
-				49043E881CB5760B00A3696C /* UIView+Extras.h */,
-				49043E891CB5760B00A3696C /* UIView+Extras.m */,
-				49693F661C062606007298EF /* UIImage+Extras.h */,
-				49693F671C062606007298EF /* UIImage+Extras.m */,
-				49693F691C087ECE007298EF /* NSString+Extras.h */,
-				49693F6A1C087ECE007298EF /* NSString+Extras.m */,
 				4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */,
 				4958B4331C3A9A84006FC60E /* NSObject+Helpers.m */,
+				49693F691C087ECE007298EF /* NSString+Extras.h */,
+				49693F6A1C087ECE007298EF /* NSString+Extras.m */,
+				49693F661C062606007298EF /* UIImage+Extras.h */,
+				49693F671C062606007298EF /* UIImage+Extras.m */,
 				4958B4351C3A9DD1006FC60E /* UIImage+animatedGIF.h */,
 				4958B4361C3A9DD1006FC60E /* UIImage+animatedGIF.m */,
 				495E9E0F1CE20BE0005CF223 /* UIImagePickerController+Additions.h */,
 				495E9E101CE20BE0005CF223 /* UIImagePickerController+Additions.m */,
+				49043E881CB5760B00A3696C /* UIView+Extras.h */,
+				49043E891CB5760B00A3696C /* UIView+Extras.m */,
 			);
 			name = categories;
+			path = categories;
 			sourceTree = "<group>";
 		};
 		496BC5331C03A559001713BA = {
 			isa = PBXGroup;
 			children = (
-				4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */,
-				496BC5721C03B383001713BA /* AVFoundation.framework */,
+				E0229A771DEF1E82F63CEC06 /* Frameworks */,
+				E7F8C0EF88CD92431F779AB5 /* Pods */,
+				496BC53D1C03A559001713BA /* Products */,
 				496BC53E1C03A559001713BA /* gifmaker */,
 				496BC5581C03A559001713BA /* gifmakerTests */,
 				496BC5631C03A559001713BA /* gifmakerUITests */,
-				496BC53D1C03A559001713BA /* Products */,
-				E0229A771DEF1E82F63CEC06 /* Frameworks */,
-				E7F8C0EF88CD92431F779AB5 /* Pods */,
+				496BC5721C03B383001713BA /* AVFoundation.framework */,
+				4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -202,19 +203,19 @@
 		496BC53E1C03A559001713BA /* gifmaker */ = {
 			isa = PBXGroup;
 			children = (
+				496BC53F1C03A559001713BA /* Supporting Files */,
+				49693F6D1C087F0A007298EF /* categories */,
 				496CBBD41C2B392200D5C117 /* models */,
 				496CBBD31C2B38FA00D5C117 /* sharingActivities */,
-				49693F6D1C087F0A007298EF /* categories */,
 				49A8A21E1E55E37F004EC288 /* ui */,
-				49043E871CB3FFDD00A3696C /* Macros.h */,
 				496BC5421C03A559001713BA /* AppDelegate.h */,
 				496BC5431C03A559001713BA /* AppDelegate.m */,
-				496BC5481C03A559001713BA /* Main.storyboard */,
 				496BC54B1C03A559001713BA /* Assets.xcassets */,
-				496BC54D1C03A559001713BA /* LaunchScreen.storyboard */,
 				496BC5501C03A559001713BA /* Info.plist */,
+				496BC54D1C03A559001713BA /* LaunchScreen.storyboard */,
+				49043E871CB3FFDD00A3696C /* Macros.h */,
+				496BC5481C03A559001713BA /* Main.storyboard */,
 				49B4F0FD1C1091B6009475B1 /* impact.ttf */,
-				496BC53F1C03A559001713BA /* Supporting Files */,
 			);
 			path = gifmaker;
 			sourceTree = "<group>";
@@ -225,13 +226,14 @@
 				496BC5401C03A559001713BA /* main.m */,
 			);
 			name = "Supporting Files";
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		496BC5581C03A559001713BA /* gifmakerTests */ = {
 			isa = PBXGroup;
 			children = (
-				496BC5591C03A559001713BA /* gifmakerTests.m */,
 				496BC55B1C03A559001713BA /* Info.plist */,
+				496BC5591C03A559001713BA /* gifmakerTests.m */,
 			);
 			path = gifmakerTests;
 			sourceTree = "<group>";
@@ -239,8 +241,8 @@
 		496BC5631C03A559001713BA /* gifmakerUITests */ = {
 			isa = PBXGroup;
 			children = (
-				496BC5641C03A559001713BA /* gifmakerUITests.m */,
 				496BC5661C03A559001713BA /* Info.plist */,
+				496BC5641C03A559001713BA /* gifmakerUITests.m */,
 			);
 			path = gifmakerUITests;
 			sourceTree = "<group>";
@@ -248,52 +250,55 @@
 		496CBBD31C2B38FA00D5C117 /* sharingActivities */ = {
 			isa = PBXGroup;
 			children = (
+				496CBBCD1C2AF51100D5C117 /* FacebookMessengerShareActivity.h */,
+				496CBBCE1C2AF51100D5C117 /* FacebookMessengerShareActivity.m */,
 				496CBBC71C2AE52C00D5C117 /* FacebookShareActivity.h */,
 				496CBBC81C2AE52C00D5C117 /* FacebookShareActivity.m */,
 				496CBBCA1C2AED4400D5C117 /* IMessageShareActivity.h */,
 				496CBBCB1C2AED4400D5C117 /* IMessageShareActivity.m */,
-				496CBBCD1C2AF51100D5C117 /* FacebookMessengerShareActivity.h */,
-				496CBBCE1C2AF51100D5C117 /* FacebookMessengerShareActivity.m */,
 				496CBBD01C2AFE5400D5C117 /* SaveVideoActivity.h */,
 				496CBBD11C2AFE5400D5C117 /* SaveVideoActivity.m */,
 			);
 			name = sharingActivities;
+			path = sharingActivities;
 			sourceTree = "<group>";
 		};
 		496CBBD41C2B392200D5C117 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				49178B3A1E29146A00E40B8B /* VideoSource.h */,
-				49178B3B1E29146A00E40B8B /* VideoSource.m */,
+				49C388561D37CB4600FE0160 /* AnalyticsManager.h */,
+				49C388571D37CB4600FE0160 /* AnalyticsManager.m */,
+				497131A21C176C2900DF7766 /* Exporter.h */,
+				497131A31C176C2900DF7766 /* Exporter.m */,
 				49693F6E1C0881C9007298EF /* GifElement.h */,
 				49693F6F1C0881C9007298EF /* GifElement.m */,
 				49693F711C0889DE007298EF /* GifManager.h */,
 				49693F721C0889DE007298EF /* GifManager.m */,
 				49F8C02B1E5376E40075B4BE /* GifQuality.h */,
 				491AE1961E5356F30071D579 /* GifQuality.m */,
-				497131A21C176C2900DF7766 /* Exporter.h */,
-				497131A31C176C2900DF7766 /* Exporter.m */,
 				497B708D1D37B557006CA3FC /* NetworkManager.h */,
 				497B708E1D37B557006CA3FC /* NetworkManager.m */,
-				49C388561D37CB4600FE0160 /* AnalyticsManager.h */,
-				49C388571D37CB4600FE0160 /* AnalyticsManager.m */,
+				49178B3A1E29146A00E40B8B /* VideoSource.h */,
+				49178B3B1E29146A00E40B8B /* VideoSource.m */,
 			);
 			name = models;
+			path = models;
 			sourceTree = "<group>";
 		};
 		49A8A21D1E55E364004EC288 /* viewcontrollers */ = {
 			isa = PBXGroup;
 			children = (
+				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
+				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 				49693F741C08AA35007298EF /* GifListViewController.h */,
 				49693F751C08AA35007298EF /* GifListViewController.m */,
 				496BC57F1C0505BA001713BA /* RecordViewController.h */,
 				496BC5801C0505BA001713BA /* RecordViewController.m */,
 				49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */,
 				49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */,
-				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
-				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 			);
 			name = viewcontrollers;
+			path = viewcontrollers;
 			sourceTree = "<group>";
 		};
 		49A8A21E1E55E37F004EC288 /* ui */ = {
@@ -303,6 +308,7 @@
 				49A8A21D1E55E364004EC288 /* viewcontrollers */,
 			);
 			name = ui;
+			path = ui;
 			sourceTree = "<group>";
 		};
 		49A8A21F1E55E38B004EC288 /* cells */ = {
@@ -312,6 +318,7 @@
 				49693F781C08B444007298EF /* GifTableViewCell.m */,
 			);
 			name = cells;
+			path = cells;
 			sourceTree = "<group>";
 		};
 		E0229A771DEF1E82F63CEC06 /* Frameworks */ = {
@@ -581,6 +588,7 @@
 				496BC5491C03A559001713BA /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		496BC54D1C03A559001713BA /* LaunchScreen.storyboard */ = {
@@ -589,6 +597,7 @@
 				496BC54E1C03A559001713BA /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
