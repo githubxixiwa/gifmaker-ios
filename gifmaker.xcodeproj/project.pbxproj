@@ -172,7 +172,6 @@
 				49043E881CB5760B00A3696C /* UIView+Extras.h */,
 				49043E891CB5760B00A3696C /* UIView+Extras.m */,
 			);
-			name = categories;
 			path = categories;
 			sourceTree = "<group>";
 		};
@@ -225,7 +224,6 @@
 			children = (
 				496BC5401C03A559001713BA /* main.m */,
 			);
-			name = "Supporting Files";
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
@@ -259,7 +257,6 @@
 				496CBBD01C2AFE5400D5C117 /* SaveVideoActivity.h */,
 				496CBBD11C2AFE5400D5C117 /* SaveVideoActivity.m */,
 			);
-			name = sharingActivities;
 			path = sharingActivities;
 			sourceTree = "<group>";
 		};
@@ -281,23 +278,21 @@
 				49178B3A1E29146A00E40B8B /* VideoSource.h */,
 				49178B3B1E29146A00E40B8B /* VideoSource.m */,
 			);
-			name = models;
 			path = models;
 			sourceTree = "<group>";
 		};
 		49A8A21D1E55E364004EC288 /* viewcontrollers */ = {
 			isa = PBXGroup;
 			children = (
-				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
-				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 				49693F741C08AA35007298EF /* GifListViewController.h */,
 				49693F751C08AA35007298EF /* GifListViewController.m */,
 				496BC57F1C0505BA001713BA /* RecordViewController.h */,
 				496BC5801C0505BA001713BA /* RecordViewController.m */,
+				49B4F0FA1C107AC6009475B1 /* CaptionsViewController.h */,
+				49B4F0FB1C107AC6009475B1 /* CaptionsViewController.m */,
 				49163E911E2E47BF008919D9 /* VideoScrubberViewController.h */,
 				49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */,
 			);
-			name = viewcontrollers;
 			path = viewcontrollers;
 			sourceTree = "<group>";
 		};
@@ -307,7 +302,6 @@
 				49A8A21F1E55E38B004EC288 /* cells */,
 				49A8A21D1E55E364004EC288 /* viewcontrollers */,
 			);
-			name = ui;
 			path = ui;
 			sourceTree = "<group>";
 		};
@@ -317,7 +311,6 @@
 				49693F771C08B444007298EF /* GifTableViewCell.h */,
 				49693F781C08B444007298EF /* GifTableViewCell.m */,
 			);
-			name = cells;
 			path = cells;
 			sourceTree = "<group>";
 		};

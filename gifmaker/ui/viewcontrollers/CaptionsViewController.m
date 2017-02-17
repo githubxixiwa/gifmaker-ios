@@ -226,7 +226,7 @@
                 UIImage *imageWithTextOnIt = [capturedImage drawHeaderText:self.headerCaptionTextField.attributedText.string
                                                                 footerText:self.footerCaptionTextField.attributedText.string
                                                   withAttributesDictionary:[self attributesDictionaryWithFontSize:realFontSize]
-                                                                forQuality:self.videoSource.outputGifQuality
+                                                                forQuality:self.videoSource == nil ? GifQualityDefault : self.videoSource.outputGifQuality
                                               ];
                 UIImage *imageWithTextOnItCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(imageWithTextOnIt, 0.2)];
                 UIImage *imageWithoutTextCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(capturedImage, 0.2)];

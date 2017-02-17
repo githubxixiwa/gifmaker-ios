@@ -353,8 +353,6 @@ static double const headerMinimumHeight = 0.0;
     requestOptions.version                = PHImageRequestOptionsVersionCurrent;
     requestOptions.networkAccessAllowed   = YES;
     requestOptions.synchronous            = YES;
-
-    //TODO: make a preloader when photos are loading from iCloud? Because for now UI can stuck in this case (weird!).
     
     void (^dismissViewController)(id) = ^void(id sender) {
         dispatch_async(dispatch_get_main_queue(), ^{
