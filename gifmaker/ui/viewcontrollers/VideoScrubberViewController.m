@@ -147,7 +147,12 @@
     // Update scrubber frame size related to max gif time (5 seconds) according to video lenght
     self.scrubberWidthLayoutConstraint.constant = (self.scrubberFramesStackView.frame.size.width / self.videoSource.framesCount) * (self.videoSource.fps * ANIMATION_MAX_DURATION);
     [UIView animateWithDuration:0.1 animations:^{
-        [self.scrubberDragger setNeedsUpdateConstraints];
+        if (SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")) {
+            [self.scrubberDragger setNeedsUpdateConstraints];
+        } else {
+            [self.scrubberDragger layoutIfNeeded];
+        }
+
         [self.scrubberDragger setAlpha:1.0];
     }];
     

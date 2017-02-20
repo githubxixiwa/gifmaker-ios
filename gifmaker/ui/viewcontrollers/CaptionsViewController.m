@@ -166,6 +166,7 @@
     // Dismiss keyboard (if open)
     [self.view endEditing:YES];
     
+    // Animate card: flip it and animate the app logo
     dispatch_async(dispatch_get_main_queue(), ^{
         // Hide captions with animation
         [UIView animateWithDuration:0.2 animations:^{
@@ -181,20 +182,19 @@
                             // Set the app logo image on flip
                             self.GIFFirstFramePreviewImageView.image = [UIImage imageNamed:@"weareallmakers"];
                         } completion:^(BOOL finished) {
-                            // Animate app logo rotation if we are making GIF from video (usually it takes longer time)
-                            if (self.frameSource == GifFrameSourceGalleryVideo) {
-                                CABasicAnimation* rotationAnimation;
-                                rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-                                rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0];
-                                rotationAnimation.duration = 4.0;
-                                rotationAnimation.cumulative = YES;
-                                rotationAnimation.repeatCount = INT_MAX;
-                                
-                                [self.GIFFirstFramePreviewImageView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
-                            }
+                            // Rotate app logo
+                            CABasicAnimation* rotationAnimation;
+                            rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+                            rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0];
+                            rotationAnimation.duration = 4.0;
+                            rotationAnimation.cumulative = YES;
+                            rotationAnimation.repeatCount = INT_MAX;
+                            
+                            [self.GIFFirstFramePreviewImageView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
                         }];
     });
     
+    // Do in backgroud: extract frames, save them, convert to GIF animation
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray<UIImage *> *gifReadyImagesWithCaptions = [NSMutableArray array];
         NSMutableArray<UIImage *> *gifReadyImagesWithoutCaptions = [NSMutableArray array];
@@ -217,7 +217,7 @@
         }
         
         // Get real font size, because font size on screen is mostly smaller than original default gif size (480)
-        CGFloat sideSize = GifSideSizeFromQuality(self.videoSource.outputGifQuality);
+        CGFloat sideSize = self.videoSource ? GifSideSizeFromQuality(self.videoSource.outputGifQuality) : ((UIImage *)self.capturedImages.firstObject).size.width;
         NSInteger realFontSize = (CAPTIONS_FONT_SIZE * (sideSize / self.GIFFirstFramePreviewImageView.frame.size.width)) + 1;
         
         // Add captions to the images
