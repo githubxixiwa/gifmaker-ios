@@ -1,7 +1,7 @@
 [![CAYUGAsoft](https://rawgithub.com/cayugasoft/Resources/master/Badges_by_Cayuga/by_Cayuga.svg)](http://cayugasoft.com/?utm_source=github)
 ![Platform](https://img.shields.io/badge/platform-ios-lightgray.svg)
 ![Language](https://img.shields.io/badge/language-objective--c-brightgreen.svg)
-![AppStore Version](https://img.shields.io/badge/appstore-v1.2-brightgreen.svg)
+![AppStore Version](https://img.shields.io/badge/appstore-v1.3-brightgreen.svg)
 [![License](https://rawgit.com/Cayugasoft/Resources/master/License/license.svg)]()
  
 # ![Imgur](http://i.imgur.com/oLGWaiP.png) GifMaker!
@@ -17,6 +17,14 @@ App features:
   - Low: 240x240px at 16 fps
   - Default: 480x480px at 16 fps
   - High: 960x960px at 16 fps
+- Filters
+  - 6 basic filters that can be applied on animation
+    - Sepia
+    - Blackwhite
+    - Vintage
+    - Fade
+    - Chrome
+    - Transfer
 - Sharing options:
   - iMessage
   - Facebook Messenger
