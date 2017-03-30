@@ -11,6 +11,7 @@
 
 // Helpers
 #import "Macros.h"
+#import "AppDelegate.h"
 
 @implementation UIImage (Extras)
 
@@ -66,6 +67,32 @@
     UIGraphicsEndImageContext();
     
     return resizedImage;
+}
+
+- (UIImage *)applyFilter:(Filter *)filter {
+    // Check filter title / if empty return original image back
+    if ([filter.ciFilterTitle isEqualToString:@""]) {
+        return self;
+    }
+    
+    // Prepare OpenGL ES context (to process filtering on GPU)
+    CIImage *ciImage = [CIImage imageWithCGImage:self.CGImage];
+    
+    // Prepare filter based on ciImage and filter title
+    CIFilter *ciFilter = [CIFilter filterWithName:filter.ciFilterTitle withInputParameters:@{kCIInputImageKey: ciImage}];
+    
+    // Check intensivity / apply only if value is more than 0
+    if (filter.ciFilterIntensivity >= 0) {
+        [ciFilter setValue:@(filter.ciFilterIntensivity) forKey:kCIInputIntensityKey];
+    }
+    
+    // Get output image
+    CIImage *outputCIImage = [ciFilter outputImage];
+    struct CGImage *resultCGImage = [((AppDelegate *)[[UIApplication sharedApplication] delegate]).context createCGImage:outputCIImage fromRect:outputCIImage.extent];
+    UIImage *resultImage = [UIImage imageWithCGImage:resultCGImage];
+    CGImageRelease(resultCGImage);
+    
+    return resultImage;
 }
 
 

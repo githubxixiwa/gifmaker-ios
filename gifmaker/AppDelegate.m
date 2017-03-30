@@ -34,6 +34,9 @@
         self.shortcutFromFreshStart = YES;
     }
     
+    EAGLContext *eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    self.context = [CIContext contextWithEAGLContext:eaglContext options:@{kCIContextUseSoftwareRenderer: @(YES)}];
+    
     return YES;
 }
 

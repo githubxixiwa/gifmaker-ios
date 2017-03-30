@@ -16,7 +16,7 @@
 // View Controllers
 #import "RecordViewController.h"
 
-@interface CaptionsViewController : UIViewController
+@interface CaptionsViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIImageView *GIFFirstFramePreviewImageView;
 @property (weak, nonatomic) IBOutlet UITextField *headerCaptionTextField;
@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *gifItButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet UICollectionView *filtersCollectionView;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 
@@ -31,6 +32,7 @@
 @property (nonatomic, strong) VideoSource *videoSource;
 @property (nonatomic) GifCreationSource creationSource;
 @property (nonatomic) GifFrameSource frameSource;
+@property (nonatomic, strong) Filter *activeFilter;
 @property (nonatomic, strong) id delegate;
 
 /*! Force set text in header caption */

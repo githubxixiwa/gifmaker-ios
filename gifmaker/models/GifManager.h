@@ -40,6 +40,7 @@
           footerCaption:(NSString *)footerCaption
             frameSource:(GifFrameSource)frameSource
          creationSource:(GifCreationSource)creationSource
+                 filter:(Filter *)filter
                filename:(NSString *)filename;
 
 @end

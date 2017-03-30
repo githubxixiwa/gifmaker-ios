@@ -6,12 +6,16 @@
 //  Copyright © 2015 Cayugasoft. All rights reserved.
 //
 
+#define FILTER_TITLE_FONT_SIZE 12.0
+
 // View Controllers
 #import "CaptionsViewController.h"
 
 // Models
+#import "GifFilterCollectionViewCell.h"
 #import "GifManager.h"
 #import "AnalyticsManager.h"
+#import "Filter.h"
 
 // Categories
 #import "NSString+Extras.h"
@@ -29,6 +33,9 @@
 @property (nonatomic) BOOL scrollViewOffsetDidSet;
 @property (nonatomic) CGSize scrollViewDefaultSize;
 
+@property (nonatomic, strong) NSArray<Filter *> *filters;
+@property (nonatomic, strong) NSCache *cachedFilteredImages;
+
 @end
 
 @implementation CaptionsViewController
@@ -41,8 +48,9 @@
     [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
     
+    // Set GIF preview image
     if (self.frameSource == GifFrameSourceGalleryPhotos || self.frameSource == GifFrameSourceCamera) {
-        [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.lastObject];
+        [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
     } else if (self.frameSource == GifFrameSourceGalleryVideo) {
         if (self.creationSource == GifCreationSourceEdited) {
             [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
@@ -72,12 +80,40 @@
     
     // Set shadow for the card
     [self.cardView applyShadow];
+    
+    // Init filters
+    self.filters = @[
+        [[Filter alloc] initWithTitle:@"Normal" ciFilterTitle:@""],
+        [[Filter alloc] initWithTitle:@"Sepia" ciFilterTitle:@"CISepiaTone"],
+        [[Filter alloc] initWithTitle:@"BW" ciFilterTitle:@"CIPhotoEffectMono"],
+        [[Filter alloc] initWithTitle:@"Vintage" ciFilterTitle:@"CIPhotoEffectInstant"],
+        [[Filter alloc] initWithTitle:@"Fade" ciFilterTitle:@"CIPhotoEffectFade"],
+        [[Filter alloc] initWithTitle:@"Chrome" ciFilterTitle:@"CIPhotoEffectChrome"],
+        [[Filter alloc] initWithTitle:@"Transfer" ciFilterTitle:@"CIPhotoEffectTransfer"]
+    ];
+    
+    // Set active filter (not) if it's not set (first filter from filters list is always normal)
+    if (self.activeFilter == nil) {
+        self.activeFilter = self.filters.firstObject;
+    } else {
+        self.GIFFirstFramePreviewImageView.image = [self.GIFFirstFramePreviewImageView.image applyFilter:self.activeFilter];
+    }
+    
+    // Init filtered images cache
+    self.cachedFilteredImages = [[NSCache alloc] init];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     self.center = self.view.center;
     self.scrollViewDefaultSize = self.scrollView.frame.size;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.cachedFilteredImages removeAllObjects];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -147,6 +183,73 @@
 }
 
 
+#pragma mark - UICollectionView Delegate Methods
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.filters.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    return [collectionView dequeueReusableCellWithReuseIdentifier:@"filterCell" forIndexPath:indexPath];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(nonnull UICollectionViewCell *)cell forItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    GifFilterCollectionViewCell *displayCell = (GifFilterCollectionViewCell *)cell;
+    Filter *displayFilter = self.filters[indexPath.row];
+    
+    // Check if we have filtered image in cache
+    if ([self.cachedFilteredImages objectForKey:displayFilter.title] == nil) {
+        // If not, make it & cache
+        
+        [displayCell setAlpha:0.0];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            UIImage *thumbnail = (self.frameSource == GifFrameSourceGalleryVideo && self.creationSource != GifCreationSourceEdited) ? self.videoSource.thumbnail : self.capturedImages.firstObject;
+            UIImage *filteredImage = [thumbnail applyFilter:displayFilter];
+            [self.cachedFilteredImages setObject:filteredImage forKey:displayFilter.title];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                displayCell.previewImage.image = filteredImage;
+                [UIView animateWithDuration:0.3 animations:^{
+                    [displayCell setAlpha:1.0];
+                }];
+            });
+        });
+    } else {
+        [displayCell setAlpha:1.0];
+        displayCell.previewImage.image = [self.cachedFilteredImages objectForKey:displayFilter.title];
+    }
+    
+    displayCell.title.text = displayFilter.title;
+    
+    // Make bold font for title if current filter is an active filter
+    if ([displayFilter.title isEqualToString:self.activeFilter.title]) {
+        displayCell.title.font = [UIFont boldSystemFontOfSize:FILTER_TITLE_FONT_SIZE];
+    } else {
+        displayCell.title.font = [UIFont systemFontOfSize:FILTER_TITLE_FONT_SIZE];
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    GifFilterCollectionViewCell *selectedCell = (GifFilterCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    self.activeFilter = self.filters[indexPath.row];
+    
+    // Set all filter titles to regular font
+    for (GifFilterCollectionViewCell *visibleCell in [collectionView visibleCells]) {
+        visibleCell.title.font = [UIFont systemFontOfSize:FILTER_TITLE_FONT_SIZE];
+    }
+    
+    // Make selected filter title bold
+    selectedCell.title.font = [UIFont boldSystemFontOfSize:FILTER_TITLE_FONT_SIZE];
+    
+    // Set filtered image as a GIF's preview image
+    self.GIFFirstFramePreviewImageView.image = selectedCell.previewImage.image;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake(CGRectGetHeight(collectionView.frame) * 0.75, CGRectGetHeight(collectionView.frame));
+}
+
+
 #pragma mark - Navigation Buttons Methods
 
 - (void)cancelButtonDidPress:(id)sender {
@@ -162,6 +265,12 @@
     
     // Disable 'Cancel' button
     [self.cancelButton setEnabled:NO];
+    
+    // Disable ability to change filter by tapping on it
+    [self.filtersCollectionView setUserInteractionEnabled:NO];
+    
+    // Disable scrolling
+    [self.scrollView setScrollEnabled:false];
     
     // Dismiss keyboard (if open)
     [self.view endEditing:YES];
@@ -181,6 +290,7 @@
                         animations:^{
                             // Set the app logo image on flip
                             self.GIFFirstFramePreviewImageView.image = [UIImage imageNamed:@"weareallmakers"];
+                            [self.filtersCollectionView setHidden:YES];
                         } completion:^(BOOL finished) {
                             // Rotate app logo
                             CABasicAnimation* rotationAnimation;
@@ -223,7 +333,8 @@
         // Add captions to the images
         for (UIImage *capturedImage in self.capturedImages) {
             @autoreleasepool {
-                UIImage *imageWithTextOnIt = [capturedImage drawHeaderText:self.headerCaptionTextField.attributedText.string
+                UIImage *capturedImageFiltered = [capturedImage applyFilter:self.activeFilter];
+                UIImage *imageWithTextOnIt = [capturedImageFiltered drawHeaderText:self.headerCaptionTextField.attributedText.string
                                                                 footerText:self.footerCaptionTextField.attributedText.string
                                                   withAttributesDictionary:[self attributesDictionaryWithFontSize:realFontSize]
                                                                 forQuality:self.videoSource == nil ? GifQualityDefault : self.videoSource.outputGifQuality
@@ -234,6 +345,11 @@
                 [gifReadyImagesWithoutCaptions addObject:imageWithoutTextCompressed];
             }
         }
+        
+        // Inform analytics that GIF was baked with filter (title is included)
+        if (![self.activeFilter isNormal]) {
+            [[AnalyticsManager sharedAnalyticsManager] gifAppliedFilter:self.activeFilter.title];
+        }
     
         // Make GIF
         if ([GifManager makeAnimatedGif:gifReadyImagesWithCaptions
@@ -243,6 +359,7 @@
                           footerCaption:self.footerCaptionTextField.attributedText.string
                             frameSource:self.frameSource
                          creationSource:self.creationSource
+                                 filter:self.activeFilter
                                filename:[NSString generateRandomString]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // Gif done

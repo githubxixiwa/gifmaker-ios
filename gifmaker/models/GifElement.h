@@ -10,6 +10,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+// Models
+#import "Filter.h"
+
 // The way how gif was created
 typedef NS_ENUM(NSInteger, GifFrameSource) {
     GifFrameSourceUnknown,
@@ -35,6 +38,7 @@ typedef NS_ENUM(NSInteger, GifCreationSource) {
 @property (nonatomic) GifCreationSource creationSource;
 @property (nonatomic, strong) NSString *headerCaption;
 @property (nonatomic, strong) NSString *footerCaption;
+@property (nonatomic, strong) Filter *filter;
 @property (nonatomic) BOOL editable;
 
 /**

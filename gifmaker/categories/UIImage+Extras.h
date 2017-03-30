@@ -11,11 +11,13 @@
 
 // Models
 #import "GifQuality.h"
+#import "Filter.h"
 
 @interface UIImage (Extras)
 
 + (UIImage *)imageByCroppingCGImage:(CGImageRef)cgImage toSize:(CGSize)size;
 + (UIImage *)imageByCroppingVideoFrameCGImage:(CGImageRef)cgImage toSize:(CGSize)size;
+- (UIImage *)applyFilter:(Filter *)filter;
 
 - (UIImage *)drawHeaderText:(NSString *)headerText
                  footerText:(NSString *)footerText

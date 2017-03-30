@@ -11,6 +11,8 @@
 		49163E931E2E47BF008919D9 /* VideoScrubberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 49163E921E2E47BF008919D9 /* VideoScrubberViewController.m */; };
 		49178B3C1E29146A00E40B8B /* VideoSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 49178B3B1E29146A00E40B8B /* VideoSource.m */; };
 		491AE1971E5356F30071D579 /* GifQuality.m in Sources */ = {isa = PBXBuildFile; fileRef = 491AE1961E5356F30071D579 /* GifQuality.m */; };
+		491BBAEF1E6599C100F27BDD /* GifFilterCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 491BBAEE1E6599C100F27BDD /* GifFilterCollectionViewCell.m */; };
+		491BBAF71E683C9A00F27BDD /* Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = 491BBAF61E683C9A00F27BDD /* Filter.m */; };
 		4932A1441C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */; };
 		4958B4341C3A9A84006FC60E /* NSObject+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4331C3A9A84006FC60E /* NSObject+Helpers.m */; };
 		4958B4371C3A9DD1006FC60E /* UIImage+animatedGIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 4958B4361C3A9DD1006FC60E /* UIImage+animatedGIF.m */; };
@@ -70,6 +72,10 @@
 		49178B3A1E29146A00E40B8B /* VideoSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoSource.h; sourceTree = "<group>"; };
 		49178B3B1E29146A00E40B8B /* VideoSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoSource.m; sourceTree = "<group>"; };
 		491AE1961E5356F30071D579 /* GifQuality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifQuality.m; sourceTree = "<group>"; };
+		491BBAED1E6599C100F27BDD /* GifFilterCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GifFilterCollectionViewCell.h; sourceTree = "<group>"; };
+		491BBAEE1E6599C100F27BDD /* GifFilterCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GifFilterCollectionViewCell.m; sourceTree = "<group>"; };
+		491BBAF51E683C9A00F27BDD /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Filter.h; sourceTree = "<group>"; };
+		491BBAF61E683C9A00F27BDD /* Filter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Filter.m; sourceTree = "<group>"; };
 		4932A1411C1F2B38003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = "../Downloads/FacebookSDKs-iOS-20151111/FBSDKMessengerShareKit.framework"; sourceTree = "<group>"; };
 		4932A1431C1F2CB1003FA850 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
 		4958B4321C3A9A84006FC60E /* NSObject+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Helpers.h"; sourceTree = "<group>"; };
@@ -277,6 +283,8 @@
 				497B708E1D37B557006CA3FC /* NetworkManager.m */,
 				49178B3A1E29146A00E40B8B /* VideoSource.h */,
 				49178B3B1E29146A00E40B8B /* VideoSource.m */,
+				491BBAF51E683C9A00F27BDD /* Filter.h */,
+				491BBAF61E683C9A00F27BDD /* Filter.m */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -310,6 +318,8 @@
 			children = (
 				49693F771C08B444007298EF /* GifTableViewCell.h */,
 				49693F781C08B444007298EF /* GifTableViewCell.m */,
+				491BBAED1E6599C100F27BDD /* GifFilterCollectionViewCell.h */,
+				491BBAEE1E6599C100F27BDD /* GifFilterCollectionViewCell.m */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -517,8 +527,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				496CBBCC1C2AED4400D5C117 /* IMessageShareActivity.m in Sources */,
+				491BBAF71E683C9A00F27BDD /* Filter.m in Sources */,
 				49043E8A1CB5760B00A3696C /* UIView+Extras.m in Sources */,
 				496CBBD21C2AFE5400D5C117 /* SaveVideoActivity.m in Sources */,
+				491BBAEF1E6599C100F27BDD /* GifFilterCollectionViewCell.m in Sources */,
 				49693F761C08AA35007298EF /* GifListViewController.m in Sources */,
 				496BC5441C03A559001713BA /* AppDelegate.m in Sources */,
 				496BC5411C03A559001713BA /* main.m in Sources */,

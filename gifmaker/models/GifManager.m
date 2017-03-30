@@ -66,6 +66,7 @@
           footerCaption:(NSString *)footerCaption
             frameSource:(GifFrameSource)frameSource
          creationSource:(GifCreationSource)creationSource
+                 filter:(Filter *)filter
                filename:(NSString *)filename {
     // Set up GIF-file properties
     NSDictionary *fileProperties = @{
@@ -109,6 +110,7 @@
     [element makeEditable:rawFrames];
     [element setFrameSource:frameSource];
     [element setCreationSource:creationSource];
+    [element setFilter:filter];
     [element save];
     
     NSLog(@"Gif done");

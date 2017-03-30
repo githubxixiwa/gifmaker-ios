@@ -20,6 +20,9 @@
 - (void)gifSharedViaFacebookWallpost;
 - (void)gifSharedViaSavingLocallyAsVideo;
 
+// Filters methods
+- (void)gifAppliedFilter:(NSString *)title;
+
 // App activities methods
 - (void)gifCreatedFrom:(GifFrameSource)frameSource;
 - (void)gifCreatedFromGallery;

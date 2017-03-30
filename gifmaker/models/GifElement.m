@@ -13,6 +13,7 @@
 #define kFooterCaption @"footerCaption"
 #define kCreationSource @"creationSource"
 #define kFrameSource @"frameSource"
+#define kFilter @"filter"
 
 // Models
 #import "GifElement.h"
@@ -37,6 +38,7 @@
         self.footerCaption = @"";
         self.creationSource = GifCreationSourceUnknown;
         self.frameSource = GifFrameSourceUnknown;
+        self.filter = [[Filter alloc] init];
     }
     
     return self;
@@ -60,8 +62,7 @@
     self.footerCaption  = [decoder decodeObjectForKey:kFooterCaption];
     self.creationSource = [decoder decodeIntegerForKey:kCreationSource];
     self.frameSource    = [decoder decodeIntegerForKey:kFrameSource];
-    
-    /* 1.0.2 version attributes */
+    self.filter         = [decoder decodeObjectOfClass:[Filter class] forKey:kFilter];
     
     // Detect if we need to save params which are unknown by default (creationSource & frameSource as example)
     BOOL needToApplyChanges = NO;
@@ -77,10 +78,17 @@
         needToApplyChanges = YES;
     }
     
+    // Check if gif does not have support for attributes added in 1.3 version
+    if (self.filter == nil) {
+        self.filter = [[Filter alloc] init];
+        needToApplyChanges = YES;
+    }
+    
+    // Apply changes if needed
     if (needToApplyChanges) {
         [self save];
     }
-    
+
     // Return
     return self;
 }
@@ -93,6 +101,7 @@
     [encoder encodeObject:self.footerCaption forKey:kFooterCaption];
     [encoder encodeInteger:self.creationSource forKey:kCreationSource];
     [encoder encodeInteger:self.frameSource forKey:kFrameSource];
+    [encoder encodeObject:self.filter forKey:kFilter];
 }
 
 

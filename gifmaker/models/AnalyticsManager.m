@@ -20,6 +20,7 @@
     return sharedInstance;
 }
 
+
 #pragma mark - Shared Analytics Methods
 
 // Sharing methods
@@ -38,6 +39,12 @@
 
 - (void)gifSharedViaSavingLocallyAsVideo {
     [self performAnalyticsActionWithTitle:@"gifSharedViaSavingLocallyAsVideo"];
+}
+
+// Filters methods
+
+- (void)gifAppliedFilter:(NSString *)title {
+    [self performAnalyticsActionWithTitle:[NSString stringWithFormat:@"gifAppliedFilter%@", title]];
 }
 
 // App activities methods

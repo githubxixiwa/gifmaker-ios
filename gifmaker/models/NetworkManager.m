@@ -21,6 +21,7 @@
     return sharedInstance;
 }
 
+
 #pragma mark - Static instances
 
 static NSString * const APIDomain = @"http://telemetry.ego-cms.com/save";
@@ -39,6 +40,7 @@ static NSString * const APIDomain = @"http://telemetry.ego-cms.com/save";
 - (void)performAnalyticsActionWithTitle:(NSString *)actionTitle {
     [self makeNetworkRequest:[self urlStringFromActionTitle:actionTitle]];
 }
+
 
 #pragma mark - Private Methods
 

@@ -308,6 +308,7 @@ static double const headerMinimumHeight = 0.0;
             ((CaptionsViewController*)segue.destinationViewController).footerCaptionTextForced = editingGif.footerCaption;
             ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceEdited;
             ((CaptionsViewController*)segue.destinationViewController).frameSource = editingGif.frameSource;
+            ((CaptionsViewController*)segue.destinationViewController).activeFilter = editingGif.filter;
         }
     } else if ([segue.identifier isEqualToString:@"toVideoScrubberSegue"]) {
         // Opening video to select exact part of it
