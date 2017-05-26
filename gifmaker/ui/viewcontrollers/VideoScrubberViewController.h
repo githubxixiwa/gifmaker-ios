@@ -21,6 +21,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 @property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet UIView *headerViewBottomLine;
+
+@property (weak, nonatomic) IBOutlet UILabel *startTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *endTitleLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView *previewStartImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *previewEndImageView;

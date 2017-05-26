@@ -22,6 +22,8 @@
 
 // Categories
 #import "UIImage+animatedGIF.h"
+#import "UIImage+Extras.h"
+#import "NSDictionary+Extras.h"
 
 @implementation GifElement
 
@@ -183,6 +185,18 @@
 
 
 #pragma mark - Helpers
+
+- (UIImage *)thumbnail:(CGSize)containerSize {
+    UIImage *firstFrame = [self getEditableFrames].firstObject;
+    return [[firstFrame applyFilter:self.filter] drawHeaderText:self.headerCaption
+                                                                               footerText:self.footerCaption
+                                                                 withAttributesDictionary:[NSDictionary
+                                                                                           fontAttributesDictionaryBasedOnImageSize:firstFrame.size
+                                                                                           containerSize:containerSize
+                                                                                           ]
+                                                                               forQuality:GifQualityDefault
+            ];
+}
 
 - (NSURL *)gifURL {
     return [GifManager gifURLWithFilename:self.filename];

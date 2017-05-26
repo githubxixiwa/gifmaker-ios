@@ -6,6 +6,9 @@
 //  Copyright © 2016 Cayugasoft. All rights reserved.
 //
 
+// Frameworks
+#import <QuartzCore/QuartzCore.h>
+
 // Models
 #import "UIView+Extras.h"
 
@@ -16,6 +19,14 @@
     [self.layer setShadowOffset:CGSizeMake(6, 6)];
     [self.layer setShadowRadius:3.0];
     [self.layer setShadowOpacity:0.3];
+}
+
+- (UIImage *)screenshot {
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0);
+    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return screenshot;
 }
 
 @end

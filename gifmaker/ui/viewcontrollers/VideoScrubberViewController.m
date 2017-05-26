@@ -22,6 +22,7 @@
 // Categories
 #import "UIImage+Extras.h"
 #import "UIView+Extras.h"
+#import "UIImageView+Extras.h"
 
 // Helpers
 #import "Macros.h"
@@ -48,7 +49,6 @@
     
     self.frameCache = [[NSCache alloc] init];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     [self.cardView applyShadow];
     
@@ -66,8 +66,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.videoSource.firstFrameNumber = 0;
-    self.videoSource.lastFrameNumber = ANIMATION_MAX_DURATION * self.videoSource.fps;
+    self.videoSource.firstFrameNumber = self.videoSource.firstFrameNumber;//0;
+    self.videoSource.lastFrameNumber = self.videoSource.lastFrameNumber;//ANIMATION_MAX_DURATION * self.videoSource.fps;
 
     [self.previewStartImageView setImage:[self thumbnailAtFrame:self.videoSource.firstFrameNumber]];
     [self.previewEndImageView   setImage:[self thumbnailAtFrame:self.videoSource.lastFrameNumber]];
@@ -112,18 +112,7 @@
     [super viewWillLayoutSubviews];
 
     /* Add mask to the END image */
-    CGRect frame = self.previewEndImageView.frame;
-    
-    UIBezierPath *trianglePath = [UIBezierPath bezierPath];
-    [trianglePath moveToPoint:CGPointMake(0, frame.size.height)];
-    [trianglePath addLineToPoint:CGPointMake(frame.size.width, 0)];
-    [trianglePath addLineToPoint:CGPointMake(frame.size.width, frame.size.height)];
-    [trianglePath closePath];
-    
-    CAShapeLayer *previewEndImageViewTriangleMask = [CAShapeLayer layer];
-    [previewEndImageViewTriangleMask setPath:trianglePath.CGPath];
-    
-    self.previewEndImageView.layer.mask = previewEndImageViewTriangleMask;
+    [self.previewEndImageView applyTriangleMask];
     
     /* Make scrubber view the underneath frames by adding a mask */
     UIBezierPath *frameLookerMaskPath = [UIBezierPath bezierPathWithRect:self.scrubberDraggerBackgroundView.frame];
@@ -139,6 +128,12 @@
     /* Set scrubber cinema tape border */
     self.scrubberCinemaTapeView.layer.borderWidth = 2.0;
     self.scrubberCinemaTapeView.layer.borderColor = [UIColor blackColor].CGColor;
+    
+    /* Set header view shadow */
+    self.headerViewBottomLine.layer.masksToBounds = NO;
+    self.headerViewBottomLine.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.headerViewBottomLine.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+    self.headerViewBottomLine.layer.shadowOpacity = 1.0;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -157,6 +152,8 @@
     }];
     
     self.stepperInPix = self.scrubberFramesStackView.frame.size.width / self.videoSource.duration / STEPPER_IN_SECONDS;
+    
+    [self.scrubberControlsUnderneathView layoutIfNeeded];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -224,7 +221,6 @@
         }
 
         // At second, set needed frame to the preview image views
-        
         [self.previewStartImageView setImage:[self thumbnailAtFrame:firstFrame]];
         [self.previewEndImageView   setImage:[self thumbnailAtFrame:lastFrame]];
         
@@ -241,7 +237,7 @@
 #pragma mark - Buttons handlers
 
 - (IBAction)cancelButtonDidTap:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self performSegueWithIdentifier:@"videoScrubberToGifListSegue" sender:self];
 }
 
 - (IBAction)nextButtonDidTap:(id)sender {
@@ -317,7 +313,12 @@
         ((CaptionsViewController*)segue.destinationViewController).delegate = self.gifListController;
         ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
         ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceGalleryVideo;
+        ((CaptionsViewController*)segue.destinationViewController).videoScrubberScreenshot = [self.scrubberControlsUnderneathView screenshot];
     }
+}
+
+- (IBAction)backToVideoScrubber:(UIStoryboardSegue *)segue {
+    
 }
 
 @end

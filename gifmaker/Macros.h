@@ -21,4 +21,6 @@
 
 #define CAPTIONS_FONT_SIZE 40
 
+#define CUSTOM_SEGUE_DURATION 0.35
+
 #endif /* Macros_h */

@@ -26,10 +26,16 @@
 @property (weak, nonatomic) IBOutlet FLAnimatedImageView *gifView;
 @property (weak, nonatomic) IBOutlet UILabel *postedDateLabel;
 @property (weak, nonatomic) IBOutlet UIButton *editButton;
+@property (weak, nonatomic) IBOutlet UIStackView *underneathButtonsStackView;
 @property (weak, nonatomic) id delegate;
+
+@property (nonatomic) NSInteger inclineDegree;
 
 - (IBAction)shareButtonDidTap:(id)sender;
 - (IBAction)editGifDidTap:(id)sender;
 - (IBAction)deleteButtonDidTap:(id)sender;
+
+- (void)resetTransform;
+- (void)makeSubviewsVisible;
 
 @end

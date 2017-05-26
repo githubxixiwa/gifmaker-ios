@@ -58,6 +58,14 @@ typedef NS_ENUM(NSInteger, GifCreationSource) {
  */
 - (instancetype)initWithMetadataFile:(NSURL *)metadataFileURL;
 
+/**
+ First frame (with active filter and captions if they are exist)
+
+ @param containerSize size of container (typically UIImageView) used for present GIF animation in
+ @return GIF thumbnail
+ */
+- (UIImage *)thumbnail:(CGSize)containerSize;
+
 /*! GIF file path on disk */
 - (NSURL *)gifURL;
 

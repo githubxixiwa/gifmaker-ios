@@ -22,11 +22,14 @@
 @interface RecordViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *cameraPreviewUIView;
+@property (weak, nonatomic) IBOutlet UIImageView *topCameraPreviewImageView;
 @property (weak, nonatomic) IBOutlet LLACircularProgressView *circularProgressView;
+@property (weak, nonatomic) IBOutlet UIView *headerViewBottomLineView;
 
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 @property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (weak, nonatomic) IBOutlet UIButton *switchCameraButton;
 
 @property (nonatomic, strong) id delegate;
 

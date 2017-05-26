@@ -12,5 +12,6 @@
 @interface UIView (Extras)
 
 - (void)applyShadow;
+- (UIImage *)screenshot;
 
 @end

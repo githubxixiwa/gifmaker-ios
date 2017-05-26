@@ -53,8 +53,22 @@
         double rads = DEGREES_TO_RADIANS(randomDegree);
         CGAffineTransform transform = CGAffineTransformRotate(CGAffineTransformIdentity, rads);
         self.cardView.transform = transform;
+        
         self.rotated = YES;
+        self.inclineDegree = randomDegree;
     }
+}
+
+- (void)resetTransform {
+    self.transform = CGAffineTransformIdentity;
+    self.gifView.transform = CGAffineTransformIdentity;
+    self.underneathButtonsStackView.transform = CGAffineTransformIdentity;
+}
+
+- (void)makeSubviewsVisible {
+    self.underneathButtonsStackView.alpha = 1;
+    self.gifView.layer.borderWidth = 1;
+    self.postedDateLabel.alpha = 1;
 }
 
 @end

@@ -1,9 +1,9 @@
 [![CAYUGAsoft](https://rawgithub.com/cayugasoft/Resources/master/Badges_by_Cayuga/by_Cayuga.svg)](http://cayugasoft.com/?utm_source=github)
 ![Platform](https://img.shields.io/badge/platform-ios-lightgray.svg)
 ![Language](https://img.shields.io/badge/language-objective--c-brightgreen.svg)
-![AppStore Version](https://img.shields.io/badge/appstore-v1.3-brightgreen.svg)
+![AppStore Version](https://img.shields.io/badge/appstore-v1.4-brightgreen.svg)
 [![License](https://rawgit.com/Cayugasoft/Resources/master/License/license.svg)]()
- 
+
 # ![Imgur](http://i.imgur.com/oLGWaiP.png) GifMaker!
 
 GifMaker helps you to make a GIF by using your iPhone camera 🎥, photos 🖼 (up to 80) or video 🎞.
@@ -12,6 +12,7 @@ GifMaker helps you to make a GIF by using your iPhone camera 🎥, photos 🖼 (
 App features:
 - Adding captions on top of animation
 - Sending usage stats (using [**Egometry**](https://github.com/ego-cms/egometry))
+- Powered with custom fully fashioned transition animations
 - 3D Touch on a homescreen icon (see screenshots below)
 - Quality chooser (available only on video to GIF):
   - Low: 240x240px at 16 fps

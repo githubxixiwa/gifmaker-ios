@@ -24,7 +24,6 @@
 @interface RecordViewController ()
 
 @property (nonatomic, strong) AVCaptureSession *captureSession;
-@property (nonatomic, strong) AVCaptureDevice *currentCaptureDevice;
 @property (nonatomic, strong) NSMutableArray<UIImage *> *capturedImages;
 @property (nonatomic) BOOL recording;
 @property (nonatomic) BOOL frontCameraIsActive;
@@ -38,8 +37,6 @@
     [super viewDidLoad];
     
     self.capturedImages = [NSMutableArray array];
-    self.recording = NO;
-    self.frontCameraIsActive = YES;
     
     self.cancelButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
     self.nextButton.transform   = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
@@ -48,9 +45,15 @@
     [self.circularProgressView addTarget:self action:@selector(pauseCapturing:) forControlEvents:UIControlEventTouchUpInside];
     [self.circularProgressView setProgressTintColor:[UIColor redColor]];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
     [self.cardView applyShadow];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.recording = NO;
+    self.frontCameraIsActive = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -63,6 +66,9 @@
     
     // Init capture session
     self.captureSession = [[AVCaptureSession alloc] init];
+    
+    // Begin configuration
+    [self.captureSession beginConfiguration];
     
     AVCaptureDevice *device = [self frontCamera];
     
@@ -89,11 +95,12 @@
     }
     
     // Set output
-    AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
-    [captureOutput setSampleBufferDelegate:self queue:dispatch_queue_create("cameraFramesQueue", DISPATCH_QUEUE_SERIAL)];
-    [captureOutput setAlwaysDiscardsLateVideoFrames:YES];
-    
-    [self.captureSession addOutput:captureOutput];
+    AVCaptureVideoDataOutput *output = [self videoCaptureOutput];
+    if ([self.captureSession canAddOutput:output]) {
+        [self.captureSession addOutput:[self videoCaptureOutput]];
+    }
+
+    // Set session preset
     [self.captureSession setSessionPreset:AVCaptureSessionPreset640x480];
     
     // Set preview layer
@@ -102,9 +109,20 @@
     [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     [self.cameraPreviewUIView.layer addSublayer:previewLayer];
     
+    // Commit capture session configuration
+    [self.captureSession commitConfiguration];
+    
     // Start the capture session
-    self.currentCaptureDevice = device;
     [self.captureSession startRunning];
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    self.headerViewBottomLineView.layer.masksToBounds = NO;
+    self.headerViewBottomLineView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.headerViewBottomLineView.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+    self.headerViewBottomLineView.layer.shadowOpacity = 1.0;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -120,41 +138,15 @@
 #pragma mark - AVFoundation methods
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    // [One-time case] Control camera preferences: FPS, mirroring, orientation, stabilization
-    AVCaptureDevice *device = self.currentCaptureDevice;
-    CMTime frameDuration = CMTimeMake(1, GIF_FPS);
-    if (!(CMTIME_COMPARE_INLINE(device.activeVideoMaxFrameDuration, ==, frameDuration)
-        && CMTIME_COMPARE_INLINE(device.activeVideoMinFrameDuration, ==, frameDuration))) {
-        // Configure camera to use 16 FPS (GIF Gold Standard)
-        NSError *errorSettingFramerate;
-        
-        NSArray *supportedFrameRateRanges = [device.activeFormat videoSupportedFrameRateRanges];
-        BOOL frameRateSupported = NO;
-        for (AVFrameRateRange *range in supportedFrameRateRanges) {
-            if (CMTIME_COMPARE_INLINE(frameDuration, >=, range.minFrameDuration) &&
-                CMTIME_COMPARE_INLINE(frameDuration, <=, range.maxFrameDuration)) {
-                frameRateSupported = YES;
-            }
-        }
-        
-        if (frameRateSupported && [device lockForConfiguration:&errorSettingFramerate]) {
-            [device setActiveVideoMaxFrameDuration:frameDuration];
-            [device setActiveVideoMinFrameDuration:frameDuration];
-            [device unlockForConfiguration];
-        }
-        
-        // Set cinematic stabilization
-        AVCaptureVideoStabilizationMode stabilizationMode = AVCaptureVideoStabilizationModeCinematic;
-        if ([device.activeFormat isVideoStabilizationModeSupported:stabilizationMode]) {
-            [connection setPreferredVideoStabilizationMode:stabilizationMode];
-        }
-        
-        // Set camera orientation
+    // Set camera orientation
+    if (connection.videoOrientation != AVCaptureVideoOrientationPortrait) {
         [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
     }
     
-    // Set camera mirrored (to have a "what you see is what you got" result)
-    [connection setVideoMirrored:self.frontCameraIsActive];
+    if (self.frontCameraIsActive) {
+        // Set camera mirrored (to have a "what you see is what you got" result)
+        [connection setVideoMirrored:YES];
+    }
     
     // Update progress bar state
     if (!self.recording || self.capturedImages.count == GIF_FPS * ANIMATION_MAX_DURATION) {
@@ -167,7 +159,6 @@
     } else {
         CGFloat progress = self.capturedImages.count / ((GIF_FPS * ANIMATION_MAX_DURATION) - 1);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.navigationItem.rightBarButtonItem setEnabled:YES];
             [self.circularProgressView setProgress:progress animated:YES];
         });
     }
@@ -220,7 +211,7 @@
 - (IBAction)cancelButtonDidTap:(id)sender {
     void (^performPop)() = ^void() {
         [self.captureSession stopRunning];
-        [self.navigationController popViewControllerAnimated:YES];
+        [self performSegueWithIdentifier:@"unwindToGifList" sender:self];
     };
     
     if (self.capturedImages.count > 0) {
@@ -273,17 +264,41 @@
     // Change active camera indicator
     self.frontCameraIsActive = !self.frontCameraIsActive;
     
-    // Stop session
-    [self.captureSession stopRunning];
+    // Begin configuring session
+    [self.captureSession beginConfiguration];
+    
+    // Remove old video input
     [self.captureSession removeInput:self.captureSession.inputs.firstObject];
     
     // Select new capture device
     AVCaptureDevice *newCaptureDevice = self.frontCameraIsActive ? [self frontCamera] : [self backCamera];
-    self.currentCaptureDevice = newCaptureDevice;
+    
+    // Set FPS for the new capture device
+    CMTime frameDuration = CMTimeMake(1, GIF_FPS);
+    NSArray *supportedFrameRateRanges = [newCaptureDevice.activeFormat videoSupportedFrameRateRanges];
+    BOOL frameRateSupported = NO;
+    for (AVFrameRateRange *range in supportedFrameRateRanges) {
+        if (CMTIME_COMPARE_INLINE(frameDuration, >=, range.minFrameDuration) &&
+            CMTIME_COMPARE_INLINE(frameDuration, <=, range.maxFrameDuration)) {
+            frameRateSupported = YES;
+        }
+    }
+    
+    NSError *errorSettingFramerate;
+    if (frameRateSupported && [newCaptureDevice lockForConfiguration:&errorSettingFramerate]) {
+        [newCaptureDevice setActiveVideoMaxFrameDuration:frameDuration];
+        [newCaptureDevice setActiveVideoMinFrameDuration:frameDuration];
+        [newCaptureDevice unlockForConfiguration];
+    }
+    
+    if (errorSettingFramerate != nil) {
+        NSLog(@"Can't set framerate (16FPS). Reason: %@", [errorSettingFramerate localizedDescription]);
+    }
     
     // Get input stream from the new capture device
     NSError *error;
-    AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:newCaptureDevice error:&error];
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:newCaptureDevice error:&error];
+    
     if (error) {
         NSLog(@"Error adding new AVCaptureDeviceInput!");
         [self displayCameraErrorAlert];
@@ -291,29 +306,44 @@
     }
     
     // Set new input for the capture session
-    [self.captureSession addInput:input];
+    if ([self.captureSession canAddInput:input]) {
+        [self.captureSession addInput:input];
+    }
     
-    // Start capture session
-    [self.captureSession startRunning];
+    // Commit configuration to let capture session know that it was reconfigured
+    [self.captureSession commitConfiguration];
 }
 
 
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    ((CaptionsViewController*)segue.destinationViewController).capturedImages = self.capturedImages;
-    ((CaptionsViewController*)segue.destinationViewController).delegate = self.delegate;
-    ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceCamera;
-    ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
+    if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
+        ((CaptionsViewController*)segue.destinationViewController).capturedImages = self.capturedImages;
+        ((CaptionsViewController*)segue.destinationViewController).delegate = self.delegate;
+        ((CaptionsViewController*)segue.destinationViewController).frameSource = GifFrameSourceCamera;
+        ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceBaked;
+        ((CaptionsViewController*)segue.destinationViewController).thumbnail = self.capturedImages.lastObject;
+    }
+}
+
+- (IBAction)backToRecorder:(UIStoryboardSegue *)segue {
+    
 }
 
 
 #pragma mark - Helpers
 
+- (AVCaptureVideoDataOutput *)videoCaptureOutput {
+    AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [captureOutput setSampleBufferDelegate:self queue:dispatch_queue_create("cameraFramesQueue", DISPATCH_QUEUE_SERIAL)];
+    return captureOutput;
+}
+
 - (void)displayCameraErrorAlert {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Couldn't get a camera." message:@"Please allow camera usage if you disabled that." preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Open Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self.navigationController popViewControllerAnimated:true];
+        [self performSegueWithIdentifier:@"unwindToGifList" sender:self];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     }]];
     [self presentViewController:alertController animated:YES completion:nil];

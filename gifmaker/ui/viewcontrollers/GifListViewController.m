@@ -10,6 +10,7 @@
 #import "GifListViewController.h"
 #import "CaptionsViewController.h"
 #import "VideoScrubberViewController.h"
+#import "QBImagePickerControllerWOStatusBar.h"
 
 // Models
 #import "VideoSource.h"
@@ -28,36 +29,36 @@
 #import "FacebookMessengerShareActivity.h"
 #import "SaveVideoActivity.h"
 
+// Custom segues
+#import "EditGifSegue.h"
+#import "EndEditingSegue.h"
+#import "VideoScrubberToGifListSegue.h"
+#import "CaptionsCancelsGifFromGalleryToGifList.h"
+#import "RecordCancelsToGifListSegue.h"
+
 // Helpers
 #import "Macros.h"
 
 @interface GifListViewController()
 
-@property (weak, nonatomic) IBOutlet UIView *headerView;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIButton *cameraButton;
-@property (weak, nonatomic) IBOutlet UIButton *galleryButton;
-
 @property (nonatomic, strong) NSMutableArray<GifElement *> *gifElements;
 @property (nonatomic) NSInteger precalculatedCellHeight;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
-@property (weak, nonatomic) IBOutlet UIView *headerViewBottomLineView;
 @property (nonatomic) NSInteger lastContentOffsetY;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerViewHeightConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerViewTopConstraint;
 
 @property (nonatomic) BOOL waitingToScrollTheCell;
+@property (nonatomic, strong) NSMutableArray<NSIndexPath *> *indexPathsOfCellsToAnimateAppearance;
+
+/**
+ Determine if this view controller is currently on screen
+ */
+@property (nonatomic) BOOL visible;
 
 @end
 
 @implementation GifListViewController
-
-
-#pragma mark - Global variables
-
-static double const headerDefaultHeight = 128.0;
-static double const headerMinimumHeight = 0.0;
 
 
 #pragma mark - Lifecycle
@@ -73,16 +74,19 @@ static double const headerMinimumHeight = 0.0;
     [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
 
     // Set up navigation bar buttons
-    self.galleryButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
-    self.cameraButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    self.galleryLabel.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    self.cameraLabel.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
 
-    [self.galleryButton addTarget:self action:@selector(selectMediaSelectionMethod:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cameraButton addTarget:self action:@selector(shootGIFFromCamera:) forControlEvents:UIControlEventTouchUpInside];
+    [self.galleryLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectMediaSelectionMethod:)]];
+    [self.cameraLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shootGIFFromCamera:)]];
 
     [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"backgroundWood1"]]];
 
     self.lastContentOffsetY = 0;
     self.waitingToScrollTheCell = NO;
+    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:@[]];
+    
+    [self setRecordingCardToInitialPosition];
 
     // Refresh GIF-files (loading them from disk)
     [self refresh];
@@ -90,12 +94,15 @@ static double const headerMinimumHeight = 0.0;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    
+    self.visible = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.visible = NO;
+    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:@[]];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -131,7 +138,30 @@ static double const headerMinimumHeight = 0.0;
 
     cell.delegate = self;
     cell.tag = indexPath.row;
+    
+    if ([self.indexPathsOfCellsToAnimateAppearance containsObject:indexPath]) {
+        cell.contentView.alpha = 0;
+    }
+    
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.visible) {
+        if ([self.indexPathsOfCellsToAnimateAppearance containsObject:indexPath]) {
+            [UIView animateWithDuration:0.25 animations:^{
+                cell.contentView.alpha = 1.0;
+            }];
+            [self.indexPathsOfCellsToAnimateAppearance removeObject:indexPath];
+        }
+        
+        // Reset transformations, ensure that subviews is visible too
+        GifTableViewCell *gifCell = (GifTableViewCell *)cell;
+        [gifCell resetTransform];
+        [gifCell makeSubviewsVisible];
+    } else {
+        NSLog(@"Gif list is not visible, so visual preparations on cell will not be handled.");
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -155,13 +185,13 @@ static double const headerMinimumHeight = 0.0;
         return;
     }
     
-    if (self.headerViewTopConstraint.constant == headerMinimumHeight - headerDefaultHeight && scrollingUp) {
+    if (self.headerViewTopConstraint.constant == HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT && scrollingUp) {
         // Header already reached off: Optim #1
         self.lastContentOffsetY = scrollView.contentOffset.y;
         return;
     }
     
-    if (self.headerViewTopConstraint.constant == headerMinimumHeight && !scrollingUp) {
+    if (self.headerViewTopConstraint.constant == HEADER_MINIMUM_HEIGHT && !scrollingUp) {
         // Header already reached on: Optim #2
         self.lastContentOffsetY = scrollView.contentOffset.y;
         return;
@@ -190,22 +220,22 @@ static double const headerMinimumHeight = 0.0;
         self.waitingToScrollTheCell = NO;
         
         // Scrolling up
-        if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
-            newTopConstraintValue = headerMinimumHeight - headerDefaultHeight;
+        if (newTopConstraintValue < HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT) {
+            newTopConstraintValue = HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT;
         }
 
-        if (newTopConstraintValue > headerMinimumHeight - headerDefaultHeight) {
+        if (newTopConstraintValue > HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT) {
             setPreviousScrollOffsetBack();
         }
     } else {
         // Scrolling down
-        if (newTopConstraintValue > headerMinimumHeight) {
-            newTopConstraintValue = headerMinimumHeight;
-        } else if (newTopConstraintValue < headerMinimumHeight - headerDefaultHeight) {
-            newTopConstraintValue = headerMinimumHeight - headerDefaultHeight;
+        if (newTopConstraintValue > HEADER_MINIMUM_HEIGHT) {
+            newTopConstraintValue = HEADER_MINIMUM_HEIGHT;
+        } else if (newTopConstraintValue < HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT) {
+            newTopConstraintValue = HEADER_MINIMUM_HEIGHT - HEADER_DEFAULT_HEIGHT;
         }
 
-        if (newTopConstraintValue < headerMinimumHeight) {
+        if (newTopConstraintValue < HEADER_MINIMUM_HEIGHT) {
             setPreviousScrollOffsetBack();
         }
     }
@@ -244,8 +274,11 @@ static double const headerMinimumHeight = 0.0;
 
 - (void)selectMediaFromGallery:(GifFrameSource)frameSource {
     [UIImagePickerController obtainPermissionForMediaSourceType:UIImagePickerControllerSourceTypePhotoLibrary withSuccessHandler:^{
+        // Update tableView screenshot (because image picker will be called after)
+        self.tableViewScreenshot = [self.tableView screenshot];
+        
         // Permissions OK, open photo library to select
-        QBImagePickerController *imagePickerController = [QBImagePickerController new];
+        QBImagePickerControllerWOStatusBar *imagePickerController = [[QBImagePickerControllerWOStatusBar alloc] init];
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.minimumNumberOfSelection = (frameSource == GifFrameSourceGalleryPhotos) ? GIF_FPS * 1 / 8 : 1;
@@ -269,6 +302,7 @@ static double const headerMinimumHeight = 0.0;
         ;
         imagePickerController.prompt = frameSource == GifFrameSourceGalleryPhotos ? [NSString stringWithFormat:@"%lu photos min, %lu max. Select them in proper order!", (unsigned long)imagePickerController.minimumNumberOfSelection, (unsigned long)imagePickerController.maximumNumberOfSelection] : @"Select the video for your new GIF 😺";
         
+        imagePickerController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
         [self presentViewController:imagePickerController animated:YES completion:NULL];
     } andFailure:^{
         // Permissions NOT OK, show error alert
@@ -283,10 +317,37 @@ static double const headerMinimumHeight = 0.0;
 
 #pragma mark - Navigation
 
+/**
+ Called when unwind segue is performed (but BEFORE the custom segue animation)
+
+ @param segue performed segue
+ */
+- (IBAction)backToGifList:(UIStoryboardSegue *)segue {
+    if ([segue isKindOfClass:[EndEditingSegue class]]
+        || [segue isKindOfClass:[VideoScrubberToGifListSegue class]]
+        || [segue isKindOfClass:[CaptionsCancelsGifFromGalleryToGifList class]]) {
+        // Get list of visible gifs
+        self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:self.tableView.indexPathsForVisibleRows];
+        
+        if ([segue isKindOfClass:[EndEditingSegue class]]) {
+            // Remove the editing gif
+            [self.indexPathsOfCellsToAnimateAppearance removeObject:[NSIndexPath
+                                                    indexPathForRow:((CaptionsViewController *)segue.sourceViewController).editingGifIndex
+                                                    inSection:0]
+             ];
+        }
+        
+        /* When 'tableView:willDisplayCell:forRowAtIndexPath' will be called, all cells who have index path stored in 'self.indexPathsOfCellsToAnimateAppearance' will be displayed with fade-in animation. Typically it's all visible GIF's (one or two fit on screen) except of a new/editing one. */
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"toRecordSegue"]) {
         ((RecordViewController*)segue.destinationViewController).delegate = self;
-    } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"]) {
+        
+        // Also update table view screenshot before disappering a current VC
+        self.tableViewScreenshot = [self.tableView screenshot];
+    } else if ([segue.identifier isEqualToString:@"toCaptionsSegue"] || [segue.identifier isEqualToString:@"toCaptionsSegue_noAnimation"]) {
         if ([sender isKindOfClass:[NSArray class]]) {
             // Creating gif from photos
             ((CaptionsViewController*)segue.destinationViewController).capturedImages = sender;
@@ -309,6 +370,22 @@ static double const headerMinimumHeight = 0.0;
             ((CaptionsViewController*)segue.destinationViewController).creationSource = GifCreationSourceEdited;
             ((CaptionsViewController*)segue.destinationViewController).frameSource = editingGif.frameSource;
             ((CaptionsViewController*)segue.destinationViewController).activeFilter = editingGif.filter;
+            
+            self.headerViewTopConstraintOldValue = self.headerViewTopConstraint.constant;
+            NSInteger indexOfEditingGif = [self.gifElements indexOfObject:editingGif];
+            ((CaptionsViewController*)segue.destinationViewController).editingGifIndex = indexOfEditingGif;
+            
+            GifTableViewCell *editingGifCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexOfEditingGif inSection:0]];
+            ((CaptionsViewController*)segue.destinationViewController).thumbnail = editingGifCell.gifView.animatedImage.posterImage;
+            ((EditGifSegue *)segue).editingGifCell = editingGifCell;
+            
+            if (indexOfEditingGif - 1 >= 0) {
+                ((EditGifSegue *)segue).previousGifCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexOfEditingGif - 1 inSection:0]];
+            }
+            
+            if (indexOfEditingGif + 1 < self.gifElements.count) {
+                ((EditGifSegue *)segue).nextGifCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexOfEditingGif + 1 inSection:0]];
+            }
         }
     } else if ([segue.identifier isEqualToString:@"toVideoScrubberSegue"]) {
         // Opening video to select exact part of it
@@ -357,18 +434,24 @@ static double const headerMinimumHeight = 0.0;
     
     void (^dismissViewController)(id) = ^void(id sender) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            // If we have no errors, set up next VC in order to see it after image picker being flipped back
+            if (!error) {
+                if (imagePickerController.mediaType == QBImagePickerMediaTypeImage) {
+                    // Show captions editor if GIF source is photos
+                    [self performSegueWithIdentifier:@"toCaptionsSegue_noAnimation" sender:sender];
+    
+                } else if (imagePickerController.mediaType == QBImagePickerMediaTypeVideo) {
+                    // Show video part selector if GIF source is video
+                    [self performSegueWithIdentifier:@"toVideoScrubberSegue" sender:sender];
+                }
+            }
+            
+            // Dismiss image picker controller
             [imagePickerController dismissViewControllerAnimated:YES completion:^{
                 if (error) {
                     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops 🤕" message:@"You can't import some photos because they can be compressed in the memory due to lack of it.\nTry to enable network and try again." preferredStyle:UIAlertControllerStyleAlert];
                     [alertController addAction:[UIAlertAction actionWithTitle:@"OK, will try!" style:UIAlertActionStyleDefault handler:nil]];
                     [self presentViewController:alertController animated:YES completion:nil];
-                } else {
-                    // Show captions editor if GIF source is photos / show video part selector if GIF source is video
-                    if (imagePickerController.mediaType == QBImagePickerMediaTypeImage) {
-                         [self performSegueWithIdentifier:@"toCaptionsSegue" sender:sender];
-                    } else if (imagePickerController.mediaType == QBImagePickerMediaTypeVideo) {
-                        [self performSegueWithIdentifier:@"toVideoScrubberSegue" sender:sender];
-                    }
                 }
             }];
         });
@@ -432,7 +515,6 @@ static double const headerMinimumHeight = 0.0;
 
 - (void)shareButtonDidTapHandler:(NSInteger)index {
     // Prepare custom share buttons
-
     IMessageShareActivity *imessageShareActivity = [[IMessageShareActivity alloc] init];
     imessageShareActivity.gifData = [NSData dataWithContentsOfURL:[self.gifElements[index] gifURL]];
     imessageShareActivity.viewController = self;
@@ -521,6 +603,11 @@ static double const headerMinimumHeight = 0.0;
         NSIndexPath *top = [NSIndexPath indexPathForRow:NSNotFound inSection:0];
         [self.tableView scrollToRowAtIndexPath:top atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
+}
+
+- (void)setRecordingCardToInitialPosition {
+    self.recordingCardViewTrailingConstraint.constant = -[UIScreen mainScreen].bounds.size.width;
+    self.recordingCardViewLeadingConstraint.constant = [UIScreen mainScreen].bounds.size.width;
 }
 
 @end

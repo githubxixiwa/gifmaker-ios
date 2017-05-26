@@ -21,6 +21,10 @@
 #import "NSString+Extras.h"
 #import "UIImage+Extras.h"
 #import "UIView+Extras.h"
+#import "NSDictionary+Extras.h"
+
+// Segue
+#import "EndEditingSegue.h"
 
 // Helpers
 #import "Macros.h"
@@ -43,21 +47,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
     [self.headerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
     [self.footerCaptionTextField setFont:[UIFont fontWithName:@"Impact" size:CAPTIONS_FONT_SIZE]];
     
-    // Set GIF preview image
-    if (self.frameSource == GifFrameSourceGalleryPhotos || self.frameSource == GifFrameSourceCamera) {
-        [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
-    } else if (self.frameSource == GifFrameSourceGalleryVideo) {
-        if (self.creationSource == GifCreationSourceEdited) {
-            [self.GIFFirstFramePreviewImageView setImage:self.capturedImages.firstObject];
-        } else {
-            [self.GIFFirstFramePreviewImageView setImage:self.videoSource.thumbnail];
-        }
+    // If captions does not exist - hide them. Using a custom segue animation it will imitate smooth appearing of caption placeholders.
+    if ([self.headerCaptionTextForced isEqualToString:@""]) {
+        [self.headerCaptionTextField setAlpha:0.0];
     }
+    if ([self.footerCaptionTextForced isEqualToString:@""]) {
+        [self.footerCaptionTextField setAlpha:0.0];
+    }
+    
+    [self.GIFFirstFramePreviewImageView setImage:[self gifThumbnail]];
     
     if (self.headerCaptionTextForced) {
         [self setAttributedTextAsCaptionToTextField:self.headerCaptionTextField text:self.headerCaptionTextForced];
@@ -67,10 +68,10 @@
     }
     
     // Set up navigation bar buttons
-    self.cancelButton.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
-    self.gifItButton.transform  = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
-    [self.cancelButton addTarget:self action:@selector(cancelButtonDidPress:)  forControlEvents:UIControlEventTouchUpInside];
-    [self.gifItButton  addTarget:self action:@selector(makeGifButtonDidPress:) forControlEvents:UIControlEventTouchUpInside];
+    self.cancelLabel.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(270));
+    self.gifItLabel.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90));
+    [self.cancelLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelByUnwinding:)]];
+    [self.gifItLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeGifButtonDidPress:)]];
     
     // Hide keyboard (if it's open) on gif preview tap
     [self.GIFFirstFramePreviewImageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gifPreviewImageDidTap:)]];
@@ -108,6 +109,21 @@
     
     self.center = self.view.center;
     self.scrollViewDefaultSize = self.scrollView.frame.size;
+    
+    /* Animate captions smooth appearing (if needed) */
+    CGFloat captionsAppearingAnimationTime = 0.25;
+    
+    if (self.headerCaptionTextField.alpha == 0) {
+        [UIView animateWithDuration:captionsAppearingAnimationTime animations:^{
+            self.headerCaptionTextField.alpha = 1.0;
+        }];
+    }
+    
+    if (self.footerCaptionTextField.alpha == 0) {
+        [UIView animateWithDuration:captionsAppearingAnimationTime animations:^{
+            self.footerCaptionTextField.alpha = 1.0;
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -118,6 +134,15 @@
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    self.headerViewBottomLineView.layer.masksToBounds = NO;
+    self.headerViewBottomLineView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.headerViewBottomLineView.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+    self.headerViewBottomLineView.layer.shadowOpacity = 1.0;
 }
 
 - (void)gifPreviewImageDidTap:(id)sender {
@@ -203,7 +228,7 @@
         
         [displayCell setAlpha:0.0];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UIImage *thumbnail = (self.frameSource == GifFrameSourceGalleryVideo && self.creationSource != GifCreationSourceEdited) ? self.videoSource.thumbnail : self.capturedImages.firstObject;
+            UIImage *thumbnail = [self gifThumbnail];
             UIImage *filteredImage = [thumbnail applyFilter:displayFilter];
             [self.cachedFilteredImages setObject:filteredImage forKey:displayFilter.title];
             
@@ -252,8 +277,18 @@
 
 #pragma mark - Navigation Buttons Methods
 
-- (void)cancelButtonDidPress:(id)sender {
-    [self.navigationController popViewControllerAnimated:true];
+- (void)cancelByUnwinding:(id)sender {
+    if (self.videoSource) {
+        [self performSegueWithIdentifier:@"unwindToVideoScrubber" sender:@(EndEditingGifAnimationTypeCancel)];
+    } else {
+        if (self.creationSource == GifCreationSourceBaked && self.frameSource == GifFrameSourceGalleryPhotos) {
+            [self performSegueWithIdentifier:@"unwindAsCancelToGifList" sender:@(EndEditingGifAnimationTypeCancel)];
+        } else if (self.creationSource == GifCreationSourceBaked && self.frameSource == GifFrameSourceCamera) {
+            [self performSegueWithIdentifier:@"unwindToRecordSegue" sender:@(EndEditingGifAnimationTypeCancel)];
+        } else {
+            [self performSegueWithIdentifier:@"unwindToGifList" sender:@(EndEditingGifAnimationTypeCancel)];
+        }
+    }
 }
 
 - (void)makeGifButtonDidPress:(id)sender {
@@ -261,10 +296,12 @@
     CGSize gifSize = GifSizeFromQuality(self.videoSource.outputGifQuality);
     
     // Disable 'GIF IT!' button
-    [self.gifItButton setEnabled:NO];
+    [self.gifItLabel setEnabled:NO];
+    [self.gifItLabel setUserInteractionEnabled:NO];
     
     // Disable 'Cancel' button
-    [self.cancelButton setEnabled:NO];
+    [self.cancelLabel setEnabled:NO];
+    [self.cancelLabel setUserInteractionEnabled:NO];
     
     // Disable ability to change filter by tapping on it
     [self.filtersCollectionView setUserInteractionEnabled:NO];
@@ -275,6 +312,9 @@
     // Dismiss keyboard (if open)
     [self.view endEditing:YES];
     
+    // Update thumbnail with a new image (maybe user filtered it already, who knows)
+    self.thumbnail = self.GIFFirstFramePreviewImageView.image;
+    
     // Animate card: flip it and animate the app logo
     dispatch_async(dispatch_get_main_queue(), ^{
         // Hide captions with animation
@@ -283,7 +323,7 @@
             [self.footerCaptionTextField setHidden:YES];
         }];
         
-        // Flip card view an app logo
+        // Flip card view with app logo
         [UIView transitionWithView:self.cardView
                           duration:0.64
                            options:UIViewAnimationOptionTransitionFlipFromRight
@@ -336,7 +376,7 @@
                 UIImage *capturedImageFiltered = [capturedImage applyFilter:self.activeFilter];
                 UIImage *imageWithTextOnIt = [capturedImageFiltered drawHeaderText:self.headerCaptionTextField.attributedText.string
                                                                 footerText:self.footerCaptionTextField.attributedText.string
-                                                  withAttributesDictionary:[self attributesDictionaryWithFontSize:realFontSize]
+                                                  withAttributesDictionary:[NSDictionary fontAttributesDictionaryWithSize:realFontSize]
                                                                 forQuality:self.videoSource == nil ? GifQualityDefault : self.videoSource.outputGifQuality
                                               ];
                 UIImage *imageWithTextOnItCompressed = [UIImage imageWithData:UIImageJPEGRepresentation(imageWithTextOnIt, 0.2)];
@@ -373,7 +413,11 @@
                 
                 // Perform 'done'-stage actions
                 [[self delegate] refresh];
-                [self.navigationController popToRootViewControllerAnimated:YES];
+                
+                // Display animation of flipping back the card and returning it to the top of the gif list (root view controller)
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self flipCardBackAndDisplayUnwindSegue];
+                });
             });
         } else {
             NSLog(@"Gif creation error");
@@ -381,7 +425,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Oops!" message:@"Error occured!" preferredStyle:UIAlertControllerStyleAlert];
                 [alertController addAction:[UIAlertAction actionWithTitle:@"Go back" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [self.navigationController popToRootViewControllerAnimated:YES];
+                    [self flipCardBackAndDisplayUnwindSegue];
                 }]];
                 [self presentViewController:alertController animated:YES completion:nil];
             });
@@ -389,25 +433,39 @@
     });
 }
 
+- (void)flipCardBackAndDisplayUnwindSegue {
+    [self.GIFFirstFramePreviewImageView.layer removeAllAnimations];
+    
+    // Flip card view back with GIF preview
+    [UIView transitionWithView:self.cardView
+                      duration:0.48
+                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                    animations:^{
+                        // Set the app logo image on flip
+                        self.GIFFirstFramePreviewImageView.image = [self.thumbnail applyFilter:self.activeFilter];
+                        
+                        // Unhide captions if they have text
+                        if (![self.headerCaptionTextField.text isEqualToString:@""]) {
+                            [self.headerCaptionTextField setHidden:NO];
+                        }
+                        
+                        if (![self.footerCaptionTextField.text isEqualToString:@""]) {
+                            [self.footerCaptionTextField setHidden:NO];
+                        }
+                    } completion:^(BOOL finished) {
+                        // Set editing gif index to 0 because new animations are always on top in the list of gifs.
+                        self.editingGifIndex = 0;
+                        
+                        // Run unwind segue
+                        [self performSegueWithIdentifier:@"unwindToGifList" sender:@(EndEditingGifAnimationTypeBakedGIF)];
+                    }];
+}
+
 
 #pragma mark - Helpers
 
 - (NSAttributedString *)attributedStringWithText:(NSString *)text {
-    return [[NSAttributedString alloc] initWithString:text attributes:[self attributesDictionaryWithFontSize:CAPTIONS_FONT_SIZE]];
-}
-
-- (NSDictionary *)attributesDictionaryWithFontSize:(NSInteger)fontSize {
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    NSDictionary *attributesDictionary = @{
-                                           NSStrokeColorAttributeName: [UIColor blackColor],
-                                           NSForegroundColorAttributeName: [UIColor whiteColor],
-                                           NSParagraphStyleAttributeName: paragraphStyle,
-                                           NSStrokeWidthAttributeName: @(-4.0),
-                                           NSFontAttributeName: [UIFont fontWithName:@"Impact" size:fontSize]
-                                           };
-    return attributesDictionary;
+    return [[NSAttributedString alloc] initWithString:text attributes:[NSDictionary fontAttributesDictionaryWithSize:CAPTIONS_FONT_SIZE]];
 }
 
 - (void)scrollViewEnableScrolling {
@@ -428,6 +486,63 @@
     [UIView animateWithDuration:0.24 animations:^{
         action(self);
     }];
+}
+
+- (NSInteger)framePreviewSideSize {
+    // All values are taken from storyboard. Please update it here if you change them in storyboard.
+    NSInteger cardEdgeOffset = 4;
+    
+    NSInteger framePreviewEdgeOffset = 16;
+    NSInteger framePreviewSideSize = [UIScreen mainScreen].bounds.size.width - (cardEdgeOffset * 2) - (framePreviewEdgeOffset * 2);
+    
+    return framePreviewSideSize;
+}
+
+
+- (UIImage *)gifThumbnail {
+    if (self.frameSource == GifFrameSourceGalleryPhotos || self.frameSource == GifFrameSourceCamera) {
+        return self.capturedImages.firstObject;
+    } else if (self.frameSource == GifFrameSourceGalleryVideo) {
+        if (self.creationSource == GifCreationSourceEdited) {
+            return self.capturedImages.firstObject;
+        } else {
+            return self.videoSource.thumbnail;
+        }
+    } else {
+        return self.capturedImages.firstObject;
+    }
+}
+
+- (CGSize)cardSize {
+    CGFloat cardHeight = 0;
+    
+    CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
+    // iPhone 5/5S/SE family
+    if (screenHeight == 568) {
+        cardHeight = 381;
+    }
+    
+    // iPhone 6/7 family
+    if (screenHeight == 667) {
+        cardHeight = 455;
+    }
+    
+    // iPhone Plus family
+    if (screenHeight == 736) {
+        cardHeight = 508;
+    }
+    
+    NSInteger cardEdgeOffset = 4;
+    NSInteger cardWidth = [UIScreen mainScreen].bounds.size.width - (cardEdgeOffset * 2);
+    
+    return CGSizeMake(cardWidth, cardHeight);
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue isKindOfClass:[EndEditingSegue class]]) {
+        // Assign animation type for segue (for example: cancel or gif completion animation)
+        ((EndEditingSegue *)segue).animationType = (EndEditingGifAnimationType)[sender integerValue];
+    }
 }
 
 @end
