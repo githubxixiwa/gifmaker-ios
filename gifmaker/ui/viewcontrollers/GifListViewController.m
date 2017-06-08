@@ -50,6 +50,7 @@
 
 @property (nonatomic) BOOL waitingToScrollTheCell;
 @property (nonatomic, strong) NSMutableArray<NSIndexPath *> *indexPathsOfCellsToAnimateAppearance;
+@property (nonatomic) BOOL needToFadeInVisibleCellsOnAppear;
 
 /**
  Determine if this view controller is currently on screen
@@ -84,7 +85,7 @@
 
     self.lastContentOffsetY = 0;
     self.waitingToScrollTheCell = NO;
-    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:@[]];
+    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray array];
     
     [self setRecordingCardToInitialPosition];
 
@@ -96,13 +97,19 @@
     [super viewWillAppear:animated];
     
     self.visible = YES;
+    
+    if (self.needToFadeInVisibleCellsOnAppear) {
+        self.needToFadeInVisibleCellsOnAppear = NO;
+        self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:self.tableView.indexPathsForVisibleRows];
+        [self.tableView reloadData];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     self.visible = NO;
-    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:@[]];
+    self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray array];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -325,16 +332,27 @@
 - (IBAction)backToGifList:(UIStoryboardSegue *)segue {
     if ([segue isKindOfClass:[EndEditingSegue class]]
         || [segue isKindOfClass:[VideoScrubberToGifListSegue class]]
-        || [segue isKindOfClass:[CaptionsCancelsGifFromGalleryToGifList class]]) {
+        || [segue isKindOfClass:[CaptionsCancelsGifFromGalleryToGifList class]]
+        || [segue isKindOfClass:[RecordCancelsToGifListSegue class]]) {
         // Get list of visible gifs
         self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray arrayWithArray:self.tableView.indexPathsForVisibleRows];
         
         if ([segue isKindOfClass:[EndEditingSegue class]]) {
-            // Remove the editing gif
+            // Remove the new/editing gif
             [self.indexPathsOfCellsToAnimateAppearance removeObject:[NSIndexPath
                                                     indexPathForRow:((CaptionsViewController *)segue.sourceViewController).editingGifIndex
                                                     inSection:0]
              ];
+        }
+        
+        // Check if current segue is a returning segue from the recording screen
+        if ([segue isKindOfClass:[RecordCancelsToGifListSegue class]]) {
+            // Check the need to animate content fading in (if not, clear the index pathes of cells needed to fade in)
+            if (self.tableViewScreenshot) {
+                self.indexPathsOfCellsToAnimateAppearance = [NSMutableArray array];
+            } else {
+                self.needToFadeInVisibleCellsOnAppear = YES;
+            }
         }
         
         /* When 'tableView:willDisplayCell:forRowAtIndexPath' will be called, all cells who have index path stored in 'self.indexPathsOfCellsToAnimateAppearance' will be displayed with fade-in animation. Typically it's all visible GIF's (one or two fit on screen) except of a new/editing one. */

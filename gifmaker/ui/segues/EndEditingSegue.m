@@ -72,9 +72,6 @@
     [editingGifCell resetTransform];
     [editingGifCell makeSubviewsVisible];
     
-    // Reload source to display animation
-    [destinationVC.tableView reloadData];
-    
     // Set header bottom line visible
     destinationVC.headerViewBottomLineView.alpha = 1.0;
     
@@ -147,6 +144,10 @@
         } else {
             [sourceVC dismissViewControllerAnimated:false completion:nil];
         }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [destinationVC.tableView reloadData];
+        });
     }];
 }
 

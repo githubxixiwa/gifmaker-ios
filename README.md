@@ -1,7 +1,7 @@
 [![CAYUGAsoft](https://rawgithub.com/cayugasoft/Resources/master/Badges_by_Cayuga/by_Cayuga.svg)](http://cayugasoft.com/?utm_source=github)
 ![Platform](https://img.shields.io/badge/platform-ios-lightgray.svg)
 ![Language](https://img.shields.io/badge/language-objective--c-brightgreen.svg)
-![AppStore Version](https://img.shields.io/badge/appstore-v1.4-brightgreen.svg)
+![AppStore Version](https://img.shields.io/badge/appstore-v1.4.1-brightgreen.svg)
 [![License](https://rawgit.com/Cayugasoft/Resources/master/License/license.svg)]()
 
 # ![Imgur](http://i.imgur.com/oLGWaiP.png) GifMaker!
